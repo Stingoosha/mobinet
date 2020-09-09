@@ -1,0 +1,314 @@
+body {
+	background-color: #f8f8f8;
+	width: 90%;
+	height: 100%;
+	margin: 0 auto;
+}
+
+h1 {
+	text-align: center;
+}
+
+h4 {
+	font-style: italic;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="textarea"] {
+	width: 200px;
+	height: 20px;
+	color: #484343;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+input[type="text"],
+input[type="textarea"] {
+	color: #484343;
+}
+
+input[type="email"]:focus {
+	color: green;
+	background-color: orange;
+}
+
+input[type="textarea"] {
+	height: 150px;
+}
+
+input[type="button"]:hover {
+	color: orange;
+}
+
+input[type="button"]:active {
+	color: red;
+}
+
+input[type="button"] {
+	width: 100%;
+    padding: 10px;
+    align-self: center;
+    font-size: 25px;
+    font-weight: 700;
+    color: orange;
+}
+
+input[type="number"] {
+	width: 100%;
+    padding: 10px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 700;
+    color: orange;
+}
+
+a {
+	text-decoration: none;
+	color: #707070;
+}
+
+a:hover {
+	color: #484343;
+}
+
+a:active {
+	color: red;
+}
+
+.navbar {
+	height: 100px;
+	padding: 20px;
+	background-image: url(../img/header-bkg.jpg);
+	background-size: cover;
+}
+
+.logo {
+	border-top-right-radius: 20px;
+	border-top-left-radius: 20px;
+	border: 2px solid orange;
+	float: left;
+}
+
+.menu {
+	overflow: hidden;
+	margin-top: 40px;
+	float: right;
+}
+
+.menu li {
+	display: inline;
+	list-style: none;
+	font-size: 18px;
+	margin-left: 30px;
+}
+
+.poster {
+	width: 100%;
+	height: 200px;
+	object-fit: contain;
+}
+
+.container {
+	width: 800px;
+	margin: 0 auto;
+}
+
+.footer {
+    height: 70px;
+    text-align: right;
+}
+
+.footer-text {
+	height: 100%;
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.catalog {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+
+.product {
+	width: 30%;
+	min-height: 100%;
+	padding: 10px;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	outline: 2px solid orange;
+}
+
+.product img {
+	outline: 1px solid orange;
+}
+
+.map {
+	width: 100%;
+	height: 374px;
+	overflow: hidden;
+}
+
+.description-title {
+	font-size: 18px;
+	font-weight: 400;
+	background-color: #eaeaea;
+	clear: both;
+}
+
+.image-main {
+	outline: orange solid 2px;
+	float: left;
+	margin-right: 30px;
+	margin-bottom: 20px;
+}
+
+.description-short {
+    height: auto;
+	color: #707070;
+	font-size: 14px;
+	font-style: italic;
+	line-height: 16px;
+}
+
+.description-long {
+	color: #484343;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 24px;
+	text-align: left;
+}
+
+.features-list {
+	padding: 10px;
+	color: #707070;
+	font-size: 18px;
+	border-collapse: collapse;
+}
+
+.features-list td {
+	padding: 10px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+table tr, th, td {
+	border: 2px solid orange;
+	padding: 15px;
+	font-size: 20px;
+}
+
+table th {
+	color: orange;
+}
+
+table img {
+	width: 70px;
+	margin-right: 25px;
+}
+
+table a {
+	display: flex;
+	align-items: center;
+}
+
+.remove {
+	flex-direction: column;
+}
+
+.total {
+	font-size: 28px;
+	color: green;
+	text-align: end;
+}
+
+.order {
+	padding: 20px;
+    background-color: orange;
+    font-size: 20px;
+    color: darkolivegreen;
+    border-radius: 15px;
+}
+
+.order:hover {
+	background-color: darkolivegreen;
+	color: orange;
+}
+
+.info {
+    text-align: center;
+}
+
+.block_buy {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	align-self: center;
+}
+
+.wrapper {
+	text-align: center;
+}
+
+.orders-menu {
+	display: flex;
+    justify-content: space-around;
+}
+
+.orders-menu li{
+	list-style: none;
+}
+
+.good {
+	display: flex;
+}
+
+.good-desc {
+	width: 65%;
+	margin-right: 5%;
+}
+
+.good-buy {
+	width: 30%;
+}
+
+.good-price {
+	font-size: 25px;
+}
+
+.good-info {
+	flex: 1 0 auto;
+}
+
+del {
+	position: relative;
+	text-decoration: none;
+}
+
+del:before {
+	content: "";
+    border-bottom: 3px solid orange;
+    position: absolute;
+    left: -10px;
+    width: 125%;
+    height: 45%;
+    transform: rotate(-12deg);
+}
+
+a.nav-link, a.active {
+	color: #484343;
+}
+
+.card-img-top {
+	height: 12rem;
+}

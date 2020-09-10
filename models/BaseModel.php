@@ -1,7 +1,9 @@
 <?php
 namespace models;
 use PDO;
-
+//
+// Базовая модель сайта
+//
 class BaseModel extends AbstractModel
 {
     protected const DRIVER = 'mysql';
@@ -13,8 +15,11 @@ class BaseModel extends AbstractModel
     protected const AS_ARRAY = PDO::FETCH_ASSOC;
     protected const AS_OBJECT = PDO::FETCH_CLASS;
     protected static $db; // соединение с базой данных
-    protected $table;
+    protected $table; // таблица, используемая моделью
 
+    //
+    // функция подключения к БД (singleton)
+    //
     protected function connect()
     {
         if (self::$db === null) {
@@ -30,6 +35,12 @@ class BaseModel extends AbstractModel
         return self::$db;
     }
 
+    //
+    // унифицированная функция запроса к БД через подготовленный запрос
+    // @sql - строка SQL-запроса
+    // @return - строка названия возвращаемой функции
+    // @params - параметры подготовленного запроса (по умолчанию отсутствуют)
+    //
     protected function query($sql, $return, $params = [])
     {
         // var_dump($sql);die;
@@ -46,6 +57,10 @@ class BaseModel extends AbstractModel
         }
     }
 
+    //
+    // проверка запроса на ошибку
+    // @query - запрос к БД
+    //
     protected function checkErrors($query)
     {
         $errInfo = $query->errorInfo();
@@ -58,6 +73,9 @@ class BaseModel extends AbstractModel
         return true;
     }
 
+    //
+    // функция вывода всех данных таблицы по id
+    //
     public function one(int $id)
     {
         $sql = "SELECT * FROM $this->table WHERE id=:id";
@@ -65,6 +83,9 @@ class BaseModel extends AbstractModel
         return $this->query($sql, 'fetch', ['id' => $id]);
     }
 
+    //
+    // функция вывода ограниченного количества данных таблицы
+    //
     public function some(string $table, int $limit)
     {
         $sql = "SELECT * FROM $table LIMIT $limit";
@@ -72,6 +93,9 @@ class BaseModel extends AbstractModel
         return $this->query($sql, 'fetchAll');
     }
 
+    //
+    // функция добавления данных в таблицу
+    //
     public function insert($object)
     {
         $columns = array();
@@ -94,6 +118,9 @@ class BaseModel extends AbstractModel
         return self::$db->lastInsertId();
     }
 
+    //
+    // функция обновления данных таблицы по условию
+    //
     public function update($object, $where)
     {
         $sets = array();
@@ -113,6 +140,9 @@ class BaseModel extends AbstractModel
         return $this->query($sql, 'rowCount', $object);
     }
 
+    //
+    // функция удаления данных таблицы по условию
+    //
     public function delete($where)
     {
         $sql = "DELETE FROM $this->table WHERE $where";

@@ -1,16 +1,24 @@
 <?php
 
 namespace models;
-
+//
+// Модель формирования заказа
+//
 class OrderModel extends BaseModel
 {
     protected $table = 'orders';
 
+    //
+    // функция вывода всех заказов пользователя по его id
+    //
     public function allOrders($id)
     {
         return $this->query("SELECT * FROM $this->table WHERE user_id=:user_id", 'fetchAll', ['user_id' => $id]);
     }
 
+    //
+    // функция формирования заказа с помощью транзакции
+    //
     public function createOrder($params)
     {
 
@@ -58,6 +66,9 @@ class OrderModel extends BaseModel
         }
     }
 
+    //
+    // функция подсчета стоимости заказа
+    //
     public function getOrderSum()
     {
         $sql = "SELECT sum, new_sum FROM summ_calc";
@@ -74,6 +85,9 @@ class OrderModel extends BaseModel
         return $sumTotal;
     }
 
+    //
+    // функция удаления промежуточной таблицы, служащей для расчета стоимости заказа
+    //
     public function clearSum()
     {
         self::$db = $this->connect();

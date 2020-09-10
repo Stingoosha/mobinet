@@ -47,6 +47,14 @@ abstract class AbstractController
 	}
 
 	//
+	// Установка сессии
+	//
+	protected function session($param, $val)
+	{
+		$_SESSION[$param] = $val;
+	}
+
+	//
 	// Сохраняем просмотренные страницы в логи
 	//
 	protected function saveLogs()
@@ -57,12 +65,19 @@ abstract class AbstractController
 		}
 	}
 
-	protected function session($param, $val)
-	{
-		$_SESSION[$param] = $val;
-	}
+	/**
+	 * функция запрета входа на страницу с установкой нужного сообщения и страницы редиректа
+	 */
+    public function redirect(string $message, string $redirect)
+    {
+        $this->flash($message);
+        header("Location: /$redirect");
+        exit;
+    }
 
+	//
 	// Если вызвали метод, которого нет - завершаем работу
+	//
 	public function __call($name, $params){
         die('Не пишите фигню в url-адресе!!!');
 	}

@@ -15,17 +15,14 @@ abstract class BaseController extends AbstractController
 	protected $content; // содержание страницы
 	protected $message = ''; // информативное сообщение на странице
 	protected $active; // маркер активности страницы
-	protected $blade; // экземпляр шаблонизатора blade
+	protected $blade; // модель шаблонизатора Blade
 
 	// функция отрабатывается перед основным action
 	protected function before()
 	{
 		session_start();
-		// var_dump($GLOBALS['path']);die;
-		$this->blade = new Blade('views', 'cache');
+		$this->blade = new Blade('views', 'cache'); // создаем экземпляр модели шаблонизатора Blade
 		$this->saveLogs();
-		$this->title = 'Название сайта';
-		$this->content = '';
 	}
 
 }

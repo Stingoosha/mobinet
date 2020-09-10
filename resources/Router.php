@@ -1,89 +1,59 @@
 <?php
 namespace resources;
-
+/**
+ * класс, отвечающий за маршрутизацию URL-запросов
+ */
 class Router
 {
     protected static $routes = [];
     protected static $routePath;
 
-    public static function setRoutePath(string $routePath)
+	/**
+	 * функция установки пути загрузки данных маршрутизации
+	 */
+    public static function setRoutePath(string $routePath) :void
     {
         self::$routePath = $routePath;
     }
 
-    // public static function routing(string $url)
-    // {
-    //     self::$routes = include self::$routePath;
-
-    //     // var_dump($url);die;
-    //     if (array_key_exists($url, self::$routes)) {
-    //         return self::$routes[$url];
-    //     }
-
-    //     return self::$routes[array_key_last(self::$routes)];
-    // }
-
-    //РОУТЕР!!!
-    public static function routing($url)
+	/**
+	 * функция - роутер
+	 */
+    public static function routing(string $url) :array
     {
+        // загрузка данных маршрутизации в массив
         self::$routes = include self::$routePath;
 
+        // разделение URL на части
         $urlParts = explode("/", $url);
-        // foreach ($urlParts as $urlPart) {
-        //     $id = intval($urlPart);
-        //     var_dump($id > 0);
-        //     echo '<br>';
-        // }
-        // die;
-        // var_dump($urlParts[3] === (int)$urlParts[3]);die;
+
+        // Проверка наличия url
         if (!empty($urlParts[2])) {
-            $url = '/' . $urlParts[2];//Часть имени класса контроллера
-            if (isset($urlParts[3])) {
-                if ((int)$urlParts[3] > 0) {
-                    $url .= '/{id}';
-                    Requester::getInstance()->setId((int)$urlParts[3]);
+            $url = '/' . $urlParts[2]; // 1-я часть url - обязательно строка
+            if (isset($urlParts[3])) { // 2-я часть url может быть строкой или цифрой
+                if ((int)$urlParts[3] > 0) { // проверка, является ли 2-я часть цифрой
+                    $url .= '/{id}'; // если это цифра, то во 2-ю часть url вставляется болванка
+                    Requester::getInstance()->setId((int)$urlParts[3]); // переданный id сохраняется в классе Requester
                 } else {
-                    $url .= '/' . $urlParts[3];//часть имени метода
+                    $url .= '/' . $urlParts[3]; // если это строка, она добавляется во 2-ю часть url
                 }
-                if (isset($urlParts[4])) {//формальный параметр для метода контроллера
+                if (isset($urlParts[4])) { // 3-я часть url - тоже обязательно строка
                     $url .= '/' . $urlParts[4];
                 }
             }
         } else {
-            $url = '/';
+            $url = '/'; // если url пустой
         }
 
         // var_dump($url);die;
+
+        // поиск созданного запроса url в массиве рутов
         if (array_key_exists($url, self::$routes)) {
             return self::$routes[$url];
         }
 
+        // если запрос url не найден, отправляются данные последней записи массива рутов (ошибка 404)
         return self::$routes[array_key_last(self::$routes)];
 
-        // if (isset($_GET['page'])) {
-        //     $controllerName = ucfirst($_GET['page']) . 'Controller';//IndexController
-        //     $methodName = isset($_GET['action']) ? $_GET['action'] : 'index';
-        //     $controller = new $controllerName();
-
-        //     //Ключи данного массива доступны в любой вьюшке
-        //     //Массив data - это массив для использования в любой вьюшке
-        //     $data = [
-        //         'content_data' => $controller->$methodName($_GET),
-        //         'title' => $controller->title,
-        //         'categories' => Category::getCategories(0)
-        //     ];
-
-        //     $view = $controller->view . '/' . $methodName . '.html';
-        //     if (!isset($_GET['asAjax'])) {
-        //         $loader = new Twig_Loader_Filesystem(Config::get('path_templates'));
-        //         $twig = new Twig_Environment($loader);
-        //         $template = $twig->loadTemplate($view);
-
-
-        //         echo $template->render($data);
-        //     } else {
-        //         echo json_encode($data);
-        //     }
-        // }
     }
 }

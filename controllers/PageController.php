@@ -23,18 +23,21 @@ class PageController extends BaseController
 		$this->page = new PageModel();
 	}
 
+	//
 	// главная страница сайта '/'
+	//
 	public function index()
 	{
 		$this->active = 'index';
 
-		// var_dump($GLOBALS);die;
 		echo $this->blade->render('pages/index', [
 			'active' => $this->active
 		]);
 	}
 
+	//
 	// страница каталога телефонов '/phones'
+	//
 	public function catalog()
 	{
 		$this->active = 'catalog';
@@ -50,8 +53,12 @@ class PageController extends BaseController
 		]);
 	}
 
+	//
+	// страница показа определенной модели телефона '/phones/{id}'
+	//
 	public function show()
 	{
+		// получение id определенной модели телефона
 		$id = Requester::getInstance()->id();
 
 		$phone = $this->page->one($id);
@@ -63,6 +70,9 @@ class PageController extends BaseController
 		]);
 	}
 
+	//
+	// страница показа контактов '/contacts'
+	//
 	public function contacts()
 	{
 		$active = 'contacts';
@@ -72,48 +82,23 @@ class PageController extends BaseController
 		]);
 	}
 
+	//
+	// функция показа дополнительных товаров при клике на кнопку "Показать еще" '/getPhones'
+	// (с использованием ajax)
+	//
 	public function getPhones()
 	{
+		// получение id последнего телефона на странице
 		$lastId = (int)($_POST['lastId'] ?? null);
 
-		$phones = $this->page->part(self::TABLES[0], $lastId, self::TOTAL_ON_PAGE);
+		$phones = $this->page->part($lastId, self::TOTAL_ON_PAGE);
 
 		echo json_encode($phones);
 	}
 
-	public function tobasket()
-	{
-		// var_dump($_POST);die;
-		$userId = (int)($_POST['user_id'] ?? null);
-		$phoneId = (int)($_POST['phone_id'] ?? null);
-		$amount = (int)($_POST['amount'] ?? null);
-		$messId = ($_POST['message_id'] ?? null);
-
-		if (!$userId) {
-			$user = new UserModel();
-			$userId = $user->insert(['name' => 'temp_shmemp_user_puser']);
-			$this->session('userId', $userId);
-		}
-		// var_dump($userId);die;
-
-		if ($amount < 1) {
-			echo "Введите корректное количество!";
-		} else {
-			$basket = new BasketModel();
-			$phone = $basket->isPhoneExists(['user_id' => $userId, 'good_id' => $phoneId]);
-			if ($phone) {
-				if ($basket->updateBasket(['id' => $phone['id'], 'amount' => $amount])) {
-					echo 'Товар добавлен в корзину';
-				}
-			} elseif ($basket->insert(['user_id' => $userId, 'good_id' => $phoneId, 'amount' => $amount])) {
-				echo 'Товар добавлен в корзину';
-			} else {
-				echo 'Товар не был добавлен по техническим причинам!';
-			}
-		}
-		exit();
-	}
-
+	//
+	// страница показа ошибки при неправильном вводе URL-адреса
+	//
 	public function error404()
 	{
 		$this->title = 'Заблудились?';

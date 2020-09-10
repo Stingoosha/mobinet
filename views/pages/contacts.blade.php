@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="row">
-        <div class="col-12 text-left">
+        <div class="col-6 text-left mx-auto">
             <h1 class="display-1 text-info">Наши контакты</h1>
             <h4 class="display-4">Адрес</h4>
             <ul class="list-unstyled">
@@ -32,8 +32,8 @@
                         <input class="form-check-input" type="checkbox">Эзотерика<br>
                         <p class="lead">* - поля, обязательные для заполнения</p>
                         <div class="btns text-center">
-                            <input type="submit" class="btn btn-outline-success" value="Отправить">
-                            <input type="reset" class="btn btn-outline-danger" value="Очистить">
+                            <input type="submit" class="btn btn-outline-success col-5" value="Отправить">
+                            <input type="reset" class="btn btn-outline-danger col-5" value="Очистить">
                         </div>
                 </fieldset>
             </form>

@@ -10,7 +10,7 @@
             <div class="col-2 mb-3">
                 <div class="card-deck">
                     <div class="card border-info text-info mb-3 h-100">
-                      <a class="link" href="phones/{{ $phone['id'] }}"><img src="{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}" class="card-img-top" alt="Мобила"></a>
+                      <a class="link stretched-link" href="phones/{{ $phone['id'] }}"><img src="{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}" class="card-img-top" alt="Мобила"></a>
                       <div class="card-body">
                         <h5 class="card-title">{{ $phone['name'] }}</h5>
                         <p class="card-text text-success font-weight-bold">{{ $phone['price'] }} &#8381;</p>
@@ -22,8 +22,8 @@
         @endforeach
 
     </div>
-    <div class="row">
-        <button class="col-2 mx-auto btn btn-outline-info p-3" id="getPhones-btn" onclick="loadMore(<?= $phone['id'] ?>,<?= $total ?>)">Загрузить еще...</button>
+    <div class="btns text-center">
+        <button class="mx-auto btn btn-outline-info col-5" id="getPhones-btn" onclick="loadMore(<?= $phone['id'] ?>,<?= $total ?>)">Показать еще...</button>
     </div>
 
 

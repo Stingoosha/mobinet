@@ -13,56 +13,6 @@ h4 {
 	font-style: italic;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="textarea"] {
-	width: 200px;
-	height: 20px;
-	color: #484343;
-	font-size: 12px;
-	font-weight: 600;
-}
-
-input[type="text"],
-input[type="textarea"] {
-	color: #484343;
-}
-
-input[type="email"]:focus {
-	color: green;
-	background-color: orange;
-}
-
-input[type="textarea"] {
-	height: 150px;
-}
-
-input[type="button"]:hover {
-	color: orange;
-}
-
-input[type="button"]:active {
-	color: red;
-}
-
-input[type="button"] {
-	width: 100%;
-    padding: 10px;
-    align-self: center;
-    font-size: 25px;
-    font-weight: 700;
-    color: orange;
-}
-
-input[type="number"] {
-	width: 100%;
-    padding: 10px;
-    text-align: center;
-    font-size: 25px;
-    font-weight: 700;
-    color: orange;
-}
-
 a {
 	text-decoration: none;
 	color: #707070;

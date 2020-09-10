@@ -3,78 +3,47 @@ namespace controllers;
 
 use models\UserModel;
 //
-// Контроллер действий пользователя.
+// Контроллер действий пользователя
 //
 class UserController extends BaseController
 {
-	private $user;
+	private $user; // модель пользователя
+
 	//
-	// Конструктор.
+	// Конструктор
 	//
 	public function __construct()
 	{
+		// создается экземпляр модели пользователя
 		$this->user = new UserModel();
 	}
 
-	// public function action_auth()
-	// {
-	// 	$this->title .= '::Авторизация';
-
-    //     if($this->IsPost()){
-	// 		$userData['login'] = $_POST['login'] ?? '';
-	// 		$userData['pass'] = $_POST['pass'] ?? '';
-	// 		// var_dump($this->user->auth($userData));die;
-	// 		if($this->user->auth($userData)) {
-	// 			$_SESSION['isLogged'] = true;
-	// 			$this->flashSet('Авторизация прошла успешно!');
-	// 			header('Location: index.php');
-	// 		} else {
-	// 			$this->content = $this->Template('v/v_auth.php', [
-	// 				'login' => $userData['login'],
-	// 				'announce' => 'Некорректный ввод данных!'
-	// 			]);
-	// 		}
-	// 	}
-	// 	else{
-	// 	   $this->content = $this->Template('v/v_auth.php');
-	// 	}
-	// }
-
-	// public function action_reg()
-	// {
-	// 	$this->title .= '::Регистрация';
-
-	// 	if ($this->IsPost()) {
-	// 		$userData['name'] = $_POST['name'] ?? '';
-	// 		$userData['login'] = $_POST['login'] ?? '';
-	// 		$userData['pass'] = $_POST['pass'] ?? '';
-	// 		if ($this->user->reg($userData)) {
-	// 			$_SESSION['isLogged'] = true;
-	// 			$this->flashSet('Регистрация прошла успешно!');
-	// 			header('Location: index.php');
-	// 		} else {
-	// 			$this->content = $this->Template('v/v_reg.php', [
-	// 				'userData' => $userData,
-	// 				'announce' => 'Пользователь с таким логином уже существует!'
-	// 			]);
-	// 		}
-	// 	} else {
-	// 		$this->content = $this->Template('v/v_reg.php');
-	// 	}
-	// }
-
-	public function action_cab()
+	/**
+	 * страница входа на сайт '/auth'
+	 */
+	public function auth()
 	{
-		$this->title .= '::Кабинет';
+		$this->active = 'auth';
 
-		$this->content = $this->Template('v/v_cab.php');
+		// TODO: сделать обработку формы входа на сайт
+
+		echo $this->blade->render('pages/auth', [
+			'active' => $this->active
+		]);
 	}
 
-	public function action_out()
+	/**
+	 * страница регистрации нового пользоватея '/registry'
+	 */
+	public function reg()
 	{
-		unset($_SESSION['isLogged']);
+		$this->active = 'reg';
 
-		$this->flashSet('Вы успешно вышли из кабинета!');
-		header('Location: index.php');
+		// TODO: сделать обработку формы регистрации нового пользователя
+
+		echo $this->blade->render('pages/registry', [
+			'active' => $this->active
+		]);
 	}
+
 }

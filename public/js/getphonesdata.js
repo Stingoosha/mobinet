@@ -38,7 +38,7 @@ function render(element) {
         class: 'card border-info text-info mb-3 h-100'
     });
     var $link = $('<a />', {
-        class: 'link',
+        class: 'link stretched-link',
         href: '/phones/' + element.id
     });
     var $img = $('<img />', {
@@ -54,7 +54,7 @@ function render(element) {
     });
     var $cardText = $('<p />', {
         class: 'card-text text-success font-weight-bold',
-        text: element.price
+        text: element.price + ' ₽'
     });
 
     $img.appendTo($link);

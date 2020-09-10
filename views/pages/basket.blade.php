@@ -4,7 +4,7 @@
 
     <p style="color: red">{{ $message ?? '' }}</p>
     <div class="row">
-        <div class="col-12">
+        <div class="col-10 mx-auto">
             @if ($orders)
             <div class="orders-info">
                 <h1 class="display-1 text-info">Ваши заказы</h1>
@@ -108,7 +108,9 @@
                         {{ $summ }} &#8381;
                     @endif
                 </p>
-                <a href="/order" class="col-2 mx-auto"><button class="btn btn-outline-success px-5">Оформить заказ</button></a>
+                <div class="btns text-center">
+                    <a href="/order" class="mx-auto"><button class="btn btn-outline-success px-5 col-5">Оформить заказ</button></a>
+                </div>
                 @endif
             </div>
         </div>

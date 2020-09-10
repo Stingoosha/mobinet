@@ -16,33 +16,41 @@
 <body>
     <div class="row">
         <div class="col-12">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-bottom">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-bottom d-flex justify-content-between">
                 <a class="navbar-brand" href="/"><img src="../public/img/logo.jpg" alt="logo" class="logo"></a>
                 <div class="w-100 container collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="col-3 navbar-nav mr-auto">
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold {{ $active == 'index' ? 'active' : 'text-info'}}" href="/">Главная <span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold {{ $active == 'index' ? 'active' : 'text-info'}}" href="/">Главная<span class="sr-only"></span></a>
                         </li>
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold {{ $active == 'catalog' ? 'active' : 'text-info'}}" href="/phones">Каталог <span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold {{ $active == 'catalog' ? 'active' : 'text-info'}}" href="/phones">Каталог<span class="sr-only"></span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font-weight-bold {{ $active == 'contacts' ? 'active' : 'text-info'}}" href="/contacts">Контакты <span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold {{ $active == 'contacts' ? 'active' : 'text-info'}}" href="/contacts">Контакты<span class="sr-only"></span></a>
                         </li>
                     </ul>
-                    <form class="form-inline my-2 my-lg-0 mr-5" action="#">
-                    <input class="form-control mr-sm-2 text-info" name="search" type="search" placeholder="Найти модель..." aria-label="Search">
-                    <button class="btn btn-outline-info my-2 my-sm-0 font-weight-bold" type="submit">Поиск</button>
+                    <form class="form-inline my-2 my-lg-0 col-5 d-flex justify-content-end" action="#">
+                        <input class="form-control mr-sm-2 text-info" name="search" type="search" placeholder="Найти модель..." aria-label="Search">
+                        <button class="btn btn-outline-info my-2 my-sm-0 font-weight-bold" type="submit">Поиск</button>
                     </form>
-                    <ul class="col-3 navbar-nav ml-auto">
+                    <ul class="col-1 navbar-nav ml-auto">
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold {{ $active == 'basket' ? 'active' : 'text-info'}}" href="/basket">Корзина <span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold {{ $active == 'basket' ? 'active' : 'text-info'}}" href="/basket">Корзина<span class="sr-only"></span></a>
+                        </li>
+                    </ul>
+                    <ul class="col-3 navbar-nav mr-auto text-right">
+                        <li class="nav-item mr-3">
+                            <a class="nav-link font-weight-bold {{ $active == 'auth' ? 'active' : 'text-info'}}" href="/auth">Вход<span class="sr-only"></span></a>
+                        </li>
+                        <li class="nav-item mr-3">
+                            <a class="nav-link font-weight-bold {{ $active == 'reg' ? 'active' : 'text-info'}}" href="/registry">Регистрация<span class="sr-only"></span></a>
                         </li>
                     </ul>
                 </div>
             </nav>
         </div>
-        <div class="conteiner text-center mx-auto">
+        <div class="col-12 text-center mx-auto conteiner">
 
             @if (isset($_SESSION['flash']))
                 <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">

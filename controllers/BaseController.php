@@ -21,6 +21,7 @@ abstract class BaseController extends AbstractController
 	protected function before()
 	{
 		session_start();
+		// var_dump($_SESSION);die;
 		$this->blade = new Blade('views', 'cache'); // создаем экземпляр модели шаблонизатора Blade
 		$this->saveLogs();
 	}

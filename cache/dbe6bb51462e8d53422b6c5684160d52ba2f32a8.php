@@ -39,14 +39,29 @@
                             <a class="nav-link font-weight-bold <?php echo e($active == 'basket' ? 'active' : 'text-info'); ?>" href="/basket">Корзина<span class="sr-only"></span></a>
                         </li>
                     </ul>
-                    <ul class="col-3 navbar-nav mr-auto text-right">
-                        <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold <?php echo e($active == 'auth' ? 'active' : 'text-info'); ?>" href="/auth">Вход<span class="sr-only"></span></a>
-                        </li>
-                        <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold <?php echo e($active == 'reg' ? 'active' : 'text-info'); ?>" href="/registry">Регистрация<span class="sr-only"></span></a>
-                        </li>
-                    </ul>
+                    <?php if(!isset($_SESSION['userLogin'])): ?>
+                        <ul class="col-3 navbar-nav mr-auto text-right">
+                            <li class="nav-item mr-3">
+                                <a class="nav-link font-weight-bold <?php echo e($active == 'auth' ? 'active' : 'text-info'); ?>" href="/auth">Вход<span class="sr-only"></span></a>
+                            </li>
+                            <li class="nav-item mr-3">
+                                <a class="nav-link font-weight-bold <?php echo e($active == 'reg' ? 'active' : 'text-info'); ?>" href="/registry">Регистрация<span class="sr-only"></span></a>
+                            </li>
+                        </ul>
+                    <?php else: ?>
+                        <ul class="col-3 navbar-nav mr-auto text-right">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo e($_SESSION['userLogin']); ?></a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Cabinet</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a>
+                                </div>
+                            </li>
+                        </ul>
+                    <?php endif; ?>
                 </div>
             </nav>
         </div>

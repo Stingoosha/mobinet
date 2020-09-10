@@ -39,10 +39,28 @@ class UserController extends BaseController
 	{
 		$this->active = 'reg';
 
-		// TODO: сделать обработку формы регистрации нового пользователя
+		if ($this->isPost()) {
+			$login = $_POST['login'];
+			$pass = $_POST['pass'];
+			// var_dump($login);die;
+			if ($this->user->isUserExists($login)) {
+				$this->flash('Пользователь с таким логином уже зарегистрирован!');
+			} else {
+				$userId = $this->user->createUser($login, $pass);
+				if ($userId) {
+					$this->session('userId', $userId);
+					$this->session('userLogin', $login);
+					$this->redirect('Вы успешно зарегистрировались!', 'phones');
+				} else {
+					$this->flash('Извините, из-за технических проблем регистрация не удалась! Просьба, повторить чуть позже!');
+				}
+			}
+		}
 
 		echo $this->blade->render('pages/registry', [
-			'active' => $this->active
+			'active' => $this->active,
+			'login' => $login ?? '',
+			'pass' => $pass ?? ''
 		]);
 	}
 

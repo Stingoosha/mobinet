@@ -16,4 +16,14 @@ class PageModel extends BaseModel
         return $this->query($sql, 'fetchAll');
     }
 
+    /**
+     * функция поиска товаров
+     */
+    public function search(string $search)
+    {
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE name LIKE \'%' . $search . '%\' OR short_desc LIKE \'%' . $search . '%\'';
+
+        return $this->query($sql, 'fetchAll');
+    }
+
 }

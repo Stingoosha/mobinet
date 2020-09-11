@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-6 mx-auto">
             <h1 class="display-1 text-info">Авторизация</h1>
-            <form class="col-6 text-left mx-auto" action="#">
+            <form class="col-6 text-left mx-auto" method="post">
                 <div class="form-group">
                     <label for="login">Логин</label>
                     <input type="text" name="login" class="form-control p-3 text-black-50" placeholder="Введите логин" value="{{ $login ?? '' }}">

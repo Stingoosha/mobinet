@@ -70,6 +70,30 @@ class PageController extends BaseController
 		]);
 	}
 
+	/**
+	 * страница показа результатов поиска
+	 */
+	public function search()
+	{
+		$active = 'catalog';
+		$this->page->clear($_POST);
+		$search = $_POST['search'] ?? '';
+		// var_dump($search);die;
+		if (!$search) {
+			$this->redirect('Пожалуйста, введите данные для поиска!', 'phones');
+		} else {
+			$phones = $this->page->search($search);
+			$spoiler = $this->page->getSpoiler(count($phones), ['ь', 'и', 'ей']);
+			$this->flash('Результаты поиска по запросу "' . $search . '". Всего ' . count($phones) . ' модел' . $spoiler);
+		}
+
+		echo $this->blade->render('pages/catalog', [
+			'active' => $active,
+			'pathImgSmall' => self::PATH_IMG_SMALL,
+			'phones' => $phones
+		]);
+	}
+
 	//
 	// страница показа контактов '/contacts'
 	//

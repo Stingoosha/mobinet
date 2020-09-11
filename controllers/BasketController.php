@@ -4,6 +4,7 @@ namespace controllers;
 
 use models\BasketModel;
 use models\OrderModel;
+use models\UserModel;
 use resources\Requester;
 
 class BasketController extends BaseController
@@ -74,7 +75,7 @@ class BasketController extends BaseController
 		// если у пользователя еще нет id, то создание нового пользователя и сохранение его id
 		if (!$userId) {
 			$user = new UserModel();
-			$userId = $user->insert(['name' => 'temp_shmemp_user_puser']);
+			$userId = $user->createTempUser();
 			$this->session('userId', $userId);
 		}
 		// var_dump($userId);die;

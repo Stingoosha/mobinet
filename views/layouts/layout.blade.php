@@ -30,7 +30,7 @@
                             <a class="nav-link font-weight-bold {{ $active == 'contacts' ? 'active' : 'text-info'}}" href="/contacts">Контакты<span class="sr-only"></span></a>
                         </li>
                     </ul>
-                    <form class="form-inline my-2 my-lg-0 col-5 d-flex justify-content-end" action="#">
+                    <form class="form-inline my-2 my-lg-0 col-5 d-flex justify-content-end" action="/search" method='post'>
                         <input class="form-control mr-sm-2 text-info" name="search" type="search" placeholder="Найти модель..." aria-label="Search">
                         <button class="btn btn-outline-info my-2 my-sm-0 font-weight-bold" type="submit">Поиск</button>
                     </form>
@@ -42,7 +42,7 @@
                     @if (!isset($_SESSION['userLogin']))
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item mr-3">
-                                <a class="nav-link font-weight-bold {{ $active == 'auth' ? 'active' : 'text-info'}}" href="/auth">Вход<span class="sr-only"></span></a>
+                                <a class="nav-link font-weight-bold {{ $active == 'login' ? 'active' : 'text-info'}}" href="/login">Вход<span class="sr-only"></span></a>
                             </li>
                             <li class="nav-item mr-3">
                                 <a class="nav-link font-weight-bold {{ $active == 'reg' ? 'active' : 'text-info'}}" href="/registry">Регистрация<span class="sr-only"></span></a>
@@ -53,11 +53,9 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $_SESSION['userLogin'] }}</a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Cabinet</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    <a class="dropdown-item" href="/cabinet">Кабинет</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Separated link</a>
+                                    <a class="dropdown-item" href="/logout">Выход</a>
                                 </div>
                             </li>
                         </ul>

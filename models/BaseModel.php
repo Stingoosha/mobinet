@@ -149,4 +149,31 @@ class BaseModel extends AbstractModel
 
         return $this->query($sql, 'rowCount');
     }
+
+    /**
+     * функция очитски данных, вводимых пользователем
+     */
+    public function clear(array $post)
+	{
+        // var_dump($post);die;
+		foreach ($post as $key => $val) {
+			$_POST[$key] = htmlspecialchars(strip_tags(trim($val)));
+		}
+    }
+
+    /**
+     * функция возвращает нужный суффикс в зависимости от числа
+     * (например, 1 модел/ь, 2 модел/и, 5 модел/ей)
+     */
+    public function getSpoiler(int $amount, array $variants) :string
+    {
+        $remain = $amount % 10;
+        if ($remain == 1 && ($amount < 10 || $amount > 20)) {
+            return $variants[0];
+        } elseif (($remain > 1 && $remain < 5) && ($amount < 10 || $amount > 20)) {
+            return $variants[1];
+        } else {
+            return $variants[2];
+        }
+    }
 }

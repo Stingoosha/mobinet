@@ -8,6 +8,7 @@ use controllers\UserController;
 return [
     '/' => [new PageController(), 'index'],
     '/index.php' => [new PageController(), 'index'],
+    '/search' => [new PageController(), 'search'],
     '/phones' => [new PageController(), 'catalog'],
     '/phones/{id}' => [new PageController(), 'show'],
     '/getPhones' => [new PageController(), 'getPhones'],
@@ -17,7 +18,10 @@ return [
     '/basket/{id}/remove' => [new BasketController(), 'remove'],
     '/order' => [new OrderController(), 'index'],
     '/order/save' => [new OrderController(), 'save'],
-    '/auth' => [new UserController(), 'auth'],
+    '/login' => [new UserController(), 'login'],
     '/registry' => [new UserController(), 'reg'],
+    '/logout' => [new UserController(), 'logout'],
+    '/cabinet' => [new UserController(), 'cabinet'],
+    '/cabinet/change' => [new UserController(), 'change'],
     '/404' => [new PageController(), 'error404']
 ];

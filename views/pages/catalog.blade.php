@@ -22,9 +22,13 @@
         @endforeach
 
     </div>
-    <div class="btns text-center">
-        <button class="mx-auto btn btn-outline-info col-5" id="getPhones-btn" onclick="loadMore(<?= $phone['id'] ?>,<?= $total ?>)">Показать еще...</button>
-    </div>
 
+    @if (!isset($_POST['search']))
+
+        <div class="btns text-center">
+            <button class="mx-auto btn btn-outline-info col-5" id="getPhones-btn" onclick="loadMore(<?= $phone['id'] ?>,<?= $total ?>)">Показать еще...</button>
+        </div>
+
+    @endif
 
 @endsection

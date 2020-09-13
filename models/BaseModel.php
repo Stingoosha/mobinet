@@ -83,6 +83,16 @@ class BaseModel extends AbstractModel
         return $this->query($sql, 'fetch', ['id' => $id]);
     }
 
+    /**
+     * функция вывода всех данных таблицы
+     */
+    public function all()
+    {
+        $sql = "SELECT * FROM $this->table";
+
+        return $this->query($sql, 'fetchAll');
+    }
+
     //
     // функция вывода ограниченного количества данных таблицы
     //
@@ -114,7 +124,7 @@ class BaseModel extends AbstractModel
 
         $sql = "INSERT INTO $this->table ($columns_s) VALUES ($masks_s)";
 
-        $query = $this->query($sql, '', $object);
+        $this->query($sql, '', $object);
         return self::$db->lastInsertId();
     }
 

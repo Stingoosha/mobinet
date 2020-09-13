@@ -8,16 +8,15 @@ use models\UserModel;
 //
 class UserController extends BaseController
 {
-	private $user; // модель пользователя
 
-	//
-	// Конструктор
-	//
-	public function __construct()
-	{
-		// создается экземпляр модели пользователя
-		$this->user = new UserModel();
-	}
+	// //
+	// // Конструктор
+	// //
+	// public function __construct()
+	// {
+	// 	// создается экземпляр модели пользователя
+	// 	$this->user = new UserModel();
+	// }
 
 	/**
 	 * страница входа на сайт '/auth'
@@ -34,13 +33,18 @@ class UserController extends BaseController
 			$pass = $_POST['pass'];
 
 			if ($this->user->isUserExists($login)) {
-				$userId = $this->user->checkPass($login, $pass);
-				if ($userId) {
-					$this->session('userId', $userId);
+				$userData = $this->user->checkPass($login, $pass);
+				// var_dump($userData);die;
+				if ($userData['userId']) {
+					$this->session('userId', $userData['userId']);
 					$this->session('userLogin', $login);
-					$this->redirect(Str::of($login)->upper() . ', Вы успешно вошли!', 'phones');
+					if ($userData['userName']) {
+						$this->session('userName', $userData['userName']);
+						$login = $userData['userName'];
+					}
+					$this->redirect(Str::of($login)->upper() . ', добро пожаловать на сайт!', 'phones');
 				} else {
-					$this->flash('Извините, по техническим причинам вход на сайт не доступен! Просьба, повторить чуть позже!');
+					$this->flash('Пароль не верен!');
 				}
 			} else {
 				$this->flash('Нет такого пользователя!');

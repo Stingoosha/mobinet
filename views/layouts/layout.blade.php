@@ -10,8 +10,14 @@
     <link rel="shortcut icon" href="/public/img/favicon.ico">
 	<script src="../public/js/jquery.min.js"></script>
     <script src="../public/js/bootstrap.min.js"></script>
-    <script src="../public/js/getphonesdata.js"></script>
+    <script src="../public/js/showMore.js"></script>
     <script src="../public/js/addToBasket.js"></script>
+    <script src="../public/js/selectBrend.js"></script>
+    <script>
+        $(document).ready(function() {
+            selectBrend();
+        })
+    </script>
 </head>
 <body>
     <div class="row">
@@ -51,7 +57,7 @@
                     @else
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $_SESSION['userLogin'] }}</a>
+                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $_SESSION['userName'] ?? $_SESSION['userLogin'] }}</a>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="/cabinet">Кабинет</a>
                                     <div class="dropdown-divider"></div>

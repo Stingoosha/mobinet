@@ -1,27 +1,27 @@
-function loadMore(id, total) {
+function showMore(id, total) {
 
     $.ajax({
         type: "post",
-        url: "/getPhones",
+        url: "/showMore",
         data: "lastId=" + id,
         dataType: 'json',
         cache: false,
         success: function(answer) {
 
             if (answer.length === 0) {
-                $("#getPhones-btn").hide();
+                $("#showMore-btn").hide();
             }
 
             let lastId;
             for (let i = 0; i < answer.length; i++) {
                 let phoneCard = render(answer[i]);
-                $('#getPhones-container').append(phoneCard);
+                $('#showMore-container').append(phoneCard);
                 lastId = answer[i].id;
             }
             if (answer.length < total) {
-                $("#getPhones-btn").hide();
+                $("#showMore-btn").hide();
             } else {
-                $("#getPhones-btn").attr('onclick', 'loadMore(' + lastId + ', ' + total + ');');
+                $("#showMore-btn").attr('onclick', 'showMore(' + lastId + ', ' + total + ');');
             }
         }
     });

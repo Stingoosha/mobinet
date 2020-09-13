@@ -63,7 +63,7 @@ class OrderController extends BaseController
 
         // создание оформленного заказа
         if ($this->order->createOrder($user)) {
-            $this->redirect('Ваш заказ отправлен на обработку и будет выслан Вам в течении 12 часов!', 'phones');
+            $this->redirect('Ваш заказ отправлен на обработку и будет выслан Вам в течении 12 часов!', 'basket');
         }
 
         $this->redirect('По техническим причинам заказ не был обработан. Попробуйте позже!','basket');

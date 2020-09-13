@@ -29,12 +29,16 @@ class BasketController extends BaseController
     public function index()
     {
         $this->active = 'basket';
+        $phones = [];
+        $orders = [];
 
+        // var_dump($_SESSION);die;
         // проверка, есть ли у пользователя свой id
         if (isset($_SESSION['userId'])) {
-            $id = $_SESSION['userId'];
+            $id = (int)$_SESSION['userId'];
             // получение всех заказов пользователя
             $orders = $this->order->allOrders($id);
+            // var_dump($orders);die;
             // получение всех товаров корзины пользователя
             $phones = $this->basket->allFromBasket($id);
             // var_dump($phones);die;
@@ -65,9 +69,9 @@ class BasketController extends BaseController
 	//
 	public function tobasket()
 	{
-		// var_dump($_POST);die;
+		// var_dump($_SESSION);die;
 		// получение id пользователя, кликнувшего "Купить"
-		$userId = (int)($_POST['user_id'] ?? null);
+		$userId = (int)($_SESSION['userId'] ?? null);
 		$phoneId = (int)($_POST['phone_id'] ?? null);
 		$amount = (int)($_POST['amount'] ?? null);
 		$messId = ($_POST['message_id'] ?? null);
@@ -75,7 +79,7 @@ class BasketController extends BaseController
 		// если у пользователя еще нет id, то создание нового пользователя и сохранение его id
 		if (!$userId) {
 			$user = new UserModel();
-			$userId = $user->createTempUser();
+            $userId = $user->createTempUser();
 			$this->session('userId', $userId);
 		}
 		// var_dump($userId);die;

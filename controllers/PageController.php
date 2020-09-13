@@ -2,8 +2,7 @@
 namespace controllers;
 
 use models\PageModel;
-use models\UserModel;
-use models\BasketModel;
+use models\BrendModel;
 use resources\Requester;
 
 //
@@ -13,6 +12,7 @@ use resources\Requester;
 class PageController extends BaseController
 {
 	private $page; // модель страницы
+	private $brend; // модель бренда
 
 	/**
 	 * Конструктор
@@ -21,6 +21,8 @@ class PageController extends BaseController
 	{
 		// создается экземпляр модели страницы
 		$this->page = new PageModel();
+		// создается экземпляр бренда
+		$this->brend = new BrendModel();
 	}
 
 	//
@@ -41,6 +43,7 @@ class PageController extends BaseController
 	public function catalog()
 	{
 		$this->active = 'catalog';
+		$brends = $this->brend->all();
 		$phones = $this->page->some(self::TABLES[0], self::TOTAL_ON_PAGE);
 
 		// var_dump($phones);die;
@@ -49,6 +52,7 @@ class PageController extends BaseController
 		  'active' => $this->active,
 		  'pathImgSmall' => self::PATH_IMG_SMALL,
 		  'total' => self::TOTAL_ON_PAGE,
+		  'brends' => $brends,
 		  'phones' => $phones
 		]);
 	}
@@ -83,8 +87,13 @@ class PageController extends BaseController
 			$this->redirect('Пожалуйста, введите данные для поиска!', 'phones');
 		} else {
 			$phones = $this->page->search($search);
-			$spoiler = $this->page->getSpoiler(count($phones), ['ь', 'и', 'ей']);
-			$this->flash('Результаты поиска по запросу "' . $search . '". Всего ' . count($phones) . ' модел' . $spoiler);
+
+			if($phones) {
+				$spoiler = $this->page->getSpoiler(count($phones), ['ь', 'и', 'ей']);
+				$this->flash('Результаты поиска по запросу "' . $search . '". Всего ' . count($phones) . ' модел' . $spoiler);
+			} else {
+				$this->flash('Результаты поиска по запросу "' . $search . '". Не найдено ни одной модели');
+			}
 		}
 
 		echo $this->blade->render('pages/catalog', [
@@ -110,12 +119,24 @@ class PageController extends BaseController
 	// функция показа дополнительных товаров при клике на кнопку "Показать еще" '/getPhones'
 	// (с использованием ajax)
 	//
-	public function getPhones()
+	public function showMore()
 	{
 		// получение id последнего телефона на странице
 		$lastId = (int)($_POST['lastId'] ?? null);
 
 		$phones = $this->page->part($lastId, self::TOTAL_ON_PAGE);
+
+		echo json_encode($phones);
+	}
+
+	public function selectBrend()
+	{
+		// получение id всех отмеченных брендов
+		$checked = $_POST['checked'];
+		$checked = explode(',', $checked);
+		$where = ' id_brend=' . implode(' OR id_brend=', $checked);
+
+		$phones = $this->page->getBrends($where);
 
 		echo json_encode($phones);
 	}

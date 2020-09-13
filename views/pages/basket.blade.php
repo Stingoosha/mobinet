@@ -4,7 +4,7 @@
 
     <p style="color: red">{{ $message ?? '' }}</p>
     <div class="row">
-        <div class="col-10 mx-auto">
+        <div class="col-12 mx-auto">
             @if ($orders)
             <div class="orders-info">
                 <h1 class="display-1 text-info">Ваши заказы</h1>

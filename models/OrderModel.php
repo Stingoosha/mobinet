@@ -22,17 +22,14 @@ class OrderModel extends BaseModel
     public function createOrder($params)
     {
 
+        // var_dump($params);die;
         self::$db = $this->connect();
 
         try {
             self::$db->beginTransaction();
 
-            // INSERT INTO orders (delivery_method, first_name, phone, email, discount_card, addr, mailing, comment, user_id, order_date, order_state) VALUES ( 'самовывоз', '', '977130799', '', '', 'Куйлюк-7-7-77', 'off', '', '131', NOW(), 'в процессе')
-            $sql = "INSERT INTO orders (delivery_method, first_name, phone, email, discount_card, addr, mailing, comment, user_id, order_date, order_state) VALUES ( :delivery_method, :first_name, :phone, :email, :discount_card, :addr, :mailing, :comment, :user_id, NOW(), 'в процессе')";
-
-            $query = self::$db->prepare($sql);
-            $query->execute($params);
-            $orderId = self::$db->lastInsertId();
+            $orderId = $this->insert($params);
+            // var_dump($orderId);die;
 
             // UPDATE basket SET order_id=84 WHERE user_id=131 AND order_id IS NULL
             $sql = "UPDATE basket SET order_id=:order_id WHERE user_id=:user_id AND order_id IS NULL";
@@ -60,7 +57,7 @@ class OrderModel extends BaseModel
             self::$db->commit();
             return true;
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             self::$db->rollBack();
             echo "Ошибка: " . $e->getMessage();
         }

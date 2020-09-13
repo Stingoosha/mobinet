@@ -14,8 +14,12 @@
                         <input class="form-check-input checkbox" type="checkbox" value="{{ $brend['id_brend'] }}">
                         <label class="form-check-label" for="{{ $brend['id_brend'] }}">{{ $brend['name_brend'] }}</label>
                     </div>
+                    
+                    @endforeach
 
-                @endforeach
+                    <div class="btns text-center">
+                        <a href="/phones"><button class="mx-auto btn btn-outline-info col-10 mb-3">Сбросить</button></a>
+                    </div>
 
             </div>
         </div>

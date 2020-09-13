@@ -13,7 +13,8 @@ function showMore(id, total) {
             }
 
             let lastId;
-            for (let i = 0; i < answer.length; i++) {
+            let length = answer.length;
+            for (let i = 0; i < length; i++) {
                 let phoneCard = render(answer[i]);
                 $('#showMore-container').append(phoneCard);
                 lastId = answer[i].id;

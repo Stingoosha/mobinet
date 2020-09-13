@@ -2,7 +2,7 @@
 namespace controllers;
 
 use Illuminate\Support\Str;
-use models\UserModel;
+use resources\Validator;
 //
 // Контроллер действий пользователя
 //
@@ -84,7 +84,7 @@ class UserController extends BaseController
 				}
 			} else {
 				$flash = Validator::getErrors();
-				$this->flash($flash);
+				$this->flash(explode(', ', $flash));
 			}
 			// var_dump($login);die;
 		}

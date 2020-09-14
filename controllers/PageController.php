@@ -5,29 +5,30 @@ use models\PageModel;
 use models\BrendModel;
 use resources\Requester;
 
-//
-// Контроллер страницы чтения.
-//
-
+/**
+ * Контроллер показа страниц сайта
+ */
 class PageController extends BaseController
 {
-	private $page; // модель страницы
-	private $brend; // модель бренда
+	/**
+     * @var PageModel $page Модель страницы
+     * @var BrendModel $brend Модель бренда
+     */
+	private $page;
+	private $brend;
 
 	/**
 	 * Конструктор
 	 */
 	public function __construct()
 	{
-		// создается экземпляр модели страницы
-		$this->page = new PageModel();
-		// создается экземпляр бренда
-		$this->brend = new BrendModel();
+		$this->page = new PageModel(); // создается экземпляр модели страницы
+		$this->brend = new BrendModel(); // создается экземпляр бренда
 	}
 
-	//
-	// главная страница сайта '/'
-	//
+	/**
+	 * Главная страница сайта '/' или '/index.php'
+	 */
 	public function index()
 	{
 		$this->active = 'index';
@@ -37,14 +38,14 @@ class PageController extends BaseController
 		]);
 	}
 
-	//
-	// страница каталога телефонов '/phones'
-	//
+	/**
+	 * Страница каталога телефонов '/phones'
+	 */
 	public function catalog()
 	{
 		$this->active = 'catalog';
-		$brends = $this->brend->all();
-		$phones = $this->page->some(self::$constants['TOTAL_ON_PAGE']);
+		$this->brends = $this->brend->all(); // получение всех брендов
+		$this->phones = $this->page->some(self::$constants['TOTAL_ON_PAGE']); // получение определенного количества моделей
 
 		// var_dump($phones);die;
 
@@ -52,20 +53,19 @@ class PageController extends BaseController
 		  'active' => $this->active,
 		  'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
 		  'total' => self::$constants['TOTAL_ON_PAGE'],
-		  'brends' => $brends,
-		  'phones' => $phones
+		  'brends' => $this->brends,
+		  'phones' => $this->phones
 		]);
 	}
 
-	//
-	// страница показа определенной модели телефона '/phones/{id}'
-	//
+	/**
+	 * Страница показа определенной модели телефона '/phones/{id}'
+	 */
 	public function show()
 	{
-		// получение id определенной модели телефона
-		$id = Requester::getInstance()->id();
+		$id = Requester::getInstance()->id(); // получение id определенной модели телефона
 
-		$phone = $this->page->one($id);
+		$phone = $this->page->one($id); // получение данных по id телефона
 
 		echo $this->blade->render('pages/show', [
 			'pathImgLarge' => self::$constants['PATH_IMG_LARGE'],
@@ -75,7 +75,7 @@ class PageController extends BaseController
 	}
 
 	/**
-	 * страница показа результатов поиска
+	 * Страница показа результатов поиска
 	 */
 	public function search()
 	{
@@ -105,9 +105,9 @@ class PageController extends BaseController
 		]);
 	}
 
-	//
-	// страница показа контактов '/contacts'
-	//
+	/**
+	 * Страница показа контактов '/contacts'
+	 */
 	public function contacts()
 	{
 		$active = 'contacts';
@@ -117,36 +117,36 @@ class PageController extends BaseController
 		]);
 	}
 
-	//
-	// функция показа дополнительных товаров при клике на кнопку "Показать еще" '/getPhones'
-	// (с использованием ajax)
-	//
+	/**
+	 * Функция показа дополнительных моделей при клике на кнопку "Показать еще" '/getPhones' (с использованием ajax)
+	 */
 	public function showMore()
 	{
-		// получение id последнего телефона на странице
-		$lastId = (int)($_POST['lastId'] ?? null);
-
+		$lastId = (int)($_POST['lastId'] ?? null); // получение id последнего телефона на странице
+		// получение необходимого количества моделей, начиная с полученного id последней модели на странице
 		$phones = $this->page->part($lastId, self::$constants['TOTAL_ON_PAGE']);
 
 		echo json_encode($phones);
 	}
 
+	/**
+	 * Функция показа моделей, принадлежащих выделенному пользователем бренду (или группы брендов)
+	 */
 	public function selectBrend()
 	{
-		// получение id всех отмеченных брендов
-		$checked = $_POST['checked'];
-
+		$checked = $_POST['checked']; // получение id всех отмеченных брендов
+		// образование условия WHERE для SQL-запроса
 		$checked = explode(',', $checked);
 		$where = ' id_brend=' . implode(' OR id_brend=', $checked);
 
-		$phones = $this->page->getBrends($where);
+		$phones = $this->page->getBrends($where); // получение всех моделей по отмеченным брендам
 
 		echo json_encode($phones);
 	}
 
-	//
-	// страница показа ошибки при неправильном вводе URL-адреса
-	//
+	/**
+	 * Страница показа ошибки при неправильном вводе URL-адреса
+	 */
 	public function error404()
 	{
 		$this->title = 'Заблудились?';

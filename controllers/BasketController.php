@@ -1,5 +1,4 @@
 <?php
-
 namespace controllers;
 
 use models\BasketModel;
@@ -7,20 +6,25 @@ use models\OrderModel;
 use models\UserModel;
 use resources\Requester;
 
+/**
+ * Контроллер корзины
+ */
 class BasketController extends BaseController
 {
-    protected $basket; // модель корзины
-    protected $order; // модель заказа
+    /**
+     * @var BasketModel $basket Модель корзины
+     * @var OrderModel $order Модель заказа
+     */
+    protected $basket;
+    protected $order;
 
 	/**
 	 * Конструктор
 	 */
 	public function __construct()
 	{
-        // создается экземпляр модели корзины
-        $this->basket = new BasketModel();
-        // создается экземпляр модели заказа
-        $this->order = new OrderModel();
+        $this->basket = new BasketModel(); // создается экземпляр модели корзины
+        $this->order = new OrderModel(); // создается экземпляр модели заказа
     }
 
     /**
@@ -29,55 +33,47 @@ class BasketController extends BaseController
     public function index()
     {
         $this->active = 'basket';
-        $phones = [];
-        $orders = [];
 
         // var_dump($_SESSION);die;
-        // проверка, есть ли у пользователя свой id
-        if (isset($_SESSION['userId'])) {
+        if (isset($_SESSION['userId'])) { // проверка, есть ли у пользователя свой id
             $id = (int)$_SESSION['userId'];
-            // получение всех заказов пользователя
-            $orders = $this->order->allOrders($id);
+
+            $this->orders = $this->order->allOrders($id); // получение всех заказов пользователя
             // var_dump($orders);die;
-            // получение всех товаров корзины пользователя
-            $phones = $this->basket->allFromBasket($id);
+            $this->phones = $this->basket->allFromBasket($id); // получение всех товаров корзины пользователя
             // var_dump($phones);die;
-            // проверка на отсутствие данных по заказам и товарам корзины
-            if (!$orders && !$phones) {
+
+            if (!$this->orders && !$this->phones) { // проверка на отсутствие данных по заказам и товарам корзины
                 // запрет на вход в пустую корзину
                 $this->redirect('Извините, Вы не можете открыть пустую корзину!', 'phones');
             }
         } else {
-            // запрет на вход в пустую корзину
+            // запрет на вход в пустую корзину (если отсутствует userId)
             $this->redirect('Извините, Вы не можете открыть пустую корзину!', 'phones');
         }
 
         echo $this->blade->render('pages/basket', [
             'active' => $this->active,
-            'orders' => $orders,
-            'phones' => $phones,
-            'message' => $this->message,
+            'orders' => $this->orders,
+            'phones' => $this->phones,
             'summ' => null,
             'summFinal' => null,
             'pathImgSmall' => self::$constants['PATH_IMG_SMALL']
         ]);
     }
 
-    //
-	// функция добавления товаров в корзину '/tobasket'
-	// (с использованием ajax)
-	//
+    /**
+     * функция добавления товаров в корзину '/tobasket' (с использованием ajax)
+     */
 	public function tobasket()
 	{
 		// var_dump($_SESSION);die;
-		// получение id пользователя, кликнувшего "Купить"
-		$userId = (int)($_SESSION['userId'] ?? null);
+		$userId = (int)($_SESSION['userId'] ?? null); // получение id пользователя, кликнувшего "Купить"
 		$phoneId = (int)($_POST['phone_id'] ?? null);
 		$amount = (int)($_POST['amount'] ?? null);
 		$messId = ($_POST['message_id'] ?? null);
 
-		// если у пользователя еще нет id, то создание нового пользователя и сохранение его id
-		if (!$userId) {
+		if (!$userId) { // если у пользователя еще нет id, то создание нового пользователя и сохранение его id
 			$user = new UserModel();
             $userId = $user->createTempUser();
 			$this->session('userId', $userId);

@@ -1,51 +1,60 @@
 <?php
-
 namespace models;
-//
-// Модель формирования заказа
-//
+
+/**
+ * Модель заказа
+ */
 class OrderModel extends BaseModel
 {
+    /**
+     * @var string $table Наименование таблицы заказов
+     */
     protected $table = 'orders';
 
-    //
-    // функция вывода всех заказов пользователя по его id
-    //
-    public function allOrders($id)
+    /**
+     * Функция вывода всех заказов пользователя по его id
+     * @var int $id Идентификацционный номер пользователя id
+     * @return array
+     */
+    public function allOrders(int $id) :array
     {
         return $this->query("SELECT * FROM $this->table WHERE user_id=:user_id", 'fetchAll', ['user_id' => $id]);
     }
 
-    //
-    // функция формирования заказа с помощью транзакции
-    //
-    public function createOrder($params)
+    /**
+     * Функция формирования заказа с помощью транзакции
+     * @var array $params Массив данных заказа
+     */
+    public function createOrder(array $params)
     {
 
         // var_dump($params);die;
-        self::$db = $this->connect();
+        self::$db = $this->connect(); // подключение к БД
 
         try {
-            self::$db->beginTransaction();
+            self::$db->beginTransaction(); // начало транзакции
 
-            $orderId = $this->insert($params);
+            $orderId = $this->insert($params); // сохранение нового заказа и получение его id
             // var_dump($orderId);die;
 
+            // обновление в корзине order_id по всем моделям, присутствующим в заказе
             // UPDATE basket SET order_id=84 WHERE user_id=131 AND order_id IS NULL
             $sql = "UPDATE basket SET order_id=:order_id WHERE user_id=:user_id AND order_id IS NULL";
 
             $query = self::$db->prepare($sql);
             $query->execute(['order_id' => $orderId, 'user_id' => $params['user_id']]);
 
+            // создание промежуточной таблицы для расчета стоимости заказа
             // CREATE VIEW summ_calc AS SELECT basket.good_id, basket.order_id, basket.amount * goods.price as sum, basket.amount * goods.new_price as new_sum FROM basket INNER JOIN goods on basket.good_id=goods.id WHERE basket.order_id=84
             $sql = "CREATE VIEW summ_calc AS SELECT basket.good_id, basket.order_id, basket.amount * goods.price as sum, basket.amount * goods.new_price as new_sum FROM basket INNER JOIN goods on basket.good_id=goods.id WHERE basket.order_id=:order_id";
 
             $query = self::$db->prepare($sql);
             $query->execute(['order_id' => $orderId]);
 
-            $orderSumm = $this->getOrderSum();
+            $orderSumm = $this->getOrderSum(); // получение стоимости заказа
             // var_dump($orderSumm);
 
+            // указание стоимости заказа в таблице заказов по его id
             // UPDATE orders SET order_price=62400 WHERE order_id=84
             $sql = "UPDATE orders SET order_price=:order_summ WHERE order_id=:order_id";
 
@@ -54,7 +63,7 @@ class OrderModel extends BaseModel
 
             // $query->rowCount()
 
-            self::$db->commit();
+            self::$db->commit(); // подтверждение успешного завершения транзакции
             return true;
 
         } catch (\Exception $e) {
@@ -63,10 +72,11 @@ class OrderModel extends BaseModel
         }
     }
 
-    //
-    // функция подсчета стоимости заказа
-    //
-    public function getOrderSum()
+    /**
+     * Функция подсчета стоимости заказа
+     * @return ?int Возвращает либо null, либо int
+     */
+    public function getOrderSum() :?int
     {
         $sql = "SELECT sum, new_sum FROM summ_calc";
 
@@ -82,10 +92,11 @@ class OrderModel extends BaseModel
         return $sumTotal;
     }
 
-    //
-    // функция удаления промежуточной таблицы, служащей для расчета стоимости заказа
-    //
-    public function clearSum()
+    /**
+     * Функция удаления промежуточной таблицы, служащей для расчета стоимости заказа
+     * @return void
+     */
+    public function clearSum() :void
     {
         self::$db = $this->connect();
 

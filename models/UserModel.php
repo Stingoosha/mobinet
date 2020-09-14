@@ -1,14 +1,21 @@
 <?php
 namespace models;
+
 use PDO;
 
+/**
+ * Модель пользователя
+ */
 class UserModel extends BaseModel
 {
-
+	/**
+     * @var string $table Наименование таблицы пользователей
+     */
 	protected $table = 'users';
 
 	/**
-	 * функция проверки наличия логина пользователя
+	 * Функция проверки наличия логина пользователя
+	 * @var string $login Логин пользователя
 	 */
 	public function isUserExists(string $login)
 	{
@@ -18,9 +25,12 @@ class UserModel extends BaseModel
 	}
 
 	/**
-	 * функция создания нового пользователя
+	 * Функция создания нового пользователя
+	 * @var string $login Новый логин пользователя
+	 * @var string $pass Пароль пользователя
+	 * @return string
 	 */
-	public function createUser(string $login, string $pass)
+	public function createUser(string $login, string $pass) :string
 	{
 		$login = $this->hashLogin($login);
 		$pass = password_hash($pass, PASSWORD_BCRYPT);
@@ -29,23 +39,29 @@ class UserModel extends BaseModel
 	}
 
 	/**
-	 * функция создания временного пользователя
+	 * Функция создания временного пользователя
+	 * @return string
 	 */
-	public function createTempUser()
+	public function createTempUser() :string
 	{
 		return $this->insert(['first_name' => 'temp_shmemp_user_puser']);
 	}
 
 	/**
-	 * функция получения роли пользователя (admin, stockman, moderator или user)
+	 * Функция получения роли пользователя (admin, stockman, moderator или user)
+	 * @var int $userId ID пользователя
+	 * @var array
 	 */
-	public function getUserRole(int $userId)
+	public function getUserRole(int $userId) :array
 	{
 		return $this->query("SELECT id_role FROM $this->table WHERE id=:id", 'fetch', ['id' => $userId]);
 	}
 
 	/**
-	 * функция проверки введенного пароля
+	 * Функция проверки введенного пароля
+	 * @var string $login Логин пользователя
+	 * @var string $pass Пароль пользователя
+	 * @return array
 	 */
 	public function checkPass(string $login, string $pass) :array
 	{
@@ -60,7 +76,9 @@ class UserModel extends BaseModel
 	}
 
 	/**
-	 * функция шифрования логина
+	 * Функция шифрования логина с использованием соли
+	 * @var string $login Логин пользователя
+	 * @return string
 	 */
 	public function hashLogin(string $login) :string
 	{
@@ -68,26 +86,30 @@ class UserModel extends BaseModel
 	}
 
 	/**
-	 * функция валидации введенных пользователем данных
+	 * Функция валидации введенных пользователем данных
+	 * @var array $post Массив данных, введенных пользователем
 	 */
 	public function validating(array $post) :bool
 	{
 		// TODO: validation
-		$this->clear($post);
+		$this->clear($post); // очищение данных, введенных пользователем
 		// var_dump($_POST);die;
 		return true;
 	}
 
 	/**
-	 * функция получения данных о пользователе
+	 * Функция получения данных о пользователе
+	 * @var int $userId ID пользователя
+	 * @return array
 	 */
-	public function getUserData(int $id)
+	public function getUserData(int $userId) :array
 	{
-		return $this->query("SELECT first_name, last_name, email, male, birthday FROM $this->table WHERE id=:id", 'fetch', ['id' => $id]);
+		return $this->query("SELECT first_name, last_name, email, male, birthday FROM $this->table WHERE id=:id", 'fetch', ['id' => $userId]);
 	}
 
 	/**
-	 * функция изменения данных о пользователе
+	 * Функция изменения данных о пользователе
+	 * @var array $newUserData Массив новых данных о пользователе
 	 */
 	public function changeUserData(array $newUserData)
 	{
@@ -103,9 +125,10 @@ class UserModel extends BaseModel
 	}
 
 	/**
-	 * функция удаления данных из сессии при логауте пользователя
+	 * Функция удаления данных из сессии при логауте пользователя
+	 * @return void
 	 */
-	public function destroy()
+	public function destroy() :void
 	{
 		unset($_SESSION['userId']);
 		unset($_SESSION['userLogin']);

@@ -1,24 +1,28 @@
 <?php
-
 namespace controllers;
 
 use models\OrderModel;
 use models\BasketModel;
 
+/**
+ * Контроллер заказов
+ */
 class OrderController extends BaseController
 {
-    protected $order; // модель заказа
-    protected $basket; // модель корзины
+    /**
+     * @var BasketModel $basket Модель корзины
+     * @var OrderModel $order Модель заказа
+     */
+    protected $basket;
+    protected $order;
 
     /**
 	* Конструктор
 	*/
 	public function __construct()
 	{
-        // создается экземпляр модели заказа
-        $this->order = new OrderModel();
-        // создается экземпляр модели корзины
-        $this->basket = new BasketModel();
+        $this->order = new OrderModel(); // создается экземпляр модели заказа
+        $this->basket = new BasketModel(); // создается экземпляр модели корзины
     }
 
 	/**
@@ -28,11 +32,9 @@ class OrderController extends BaseController
     {
         $this->active = 'basket';
 
-        // проверка, есть ли у пользователя свой id
-        if (isset($_SESSION['userId'])) {
+        if (isset($_SESSION['userId'])) { // проверка, есть ли у пользователя свой id
             $id = $_SESSION['userId'];
-            // получение всех товаров корзины пользователя
-            $phones = $this->basket->allFromBasket($id);
+            $this->phones = $this->basket->allFromBasket($id); // получение всех товаров корзины пользователя
             // var_dump($phones);die;
         } else {
             // запрет на оформление заказа без наличия id пользователя
@@ -41,10 +43,9 @@ class OrderController extends BaseController
 
         echo $this->blade->render('pages/order', [
             'active' => $this->active,
-            'phones' => $phones,
+            'phones' => $this->phones,
             'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
-            'summ' => null,
-            'message' => $this->message
+            'summ' => null
         ]);
     }
 

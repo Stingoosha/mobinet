@@ -3,34 +3,35 @@ namespace controllers;
 
 use Illuminate\Support\Str;
 use resources\Validator;
-//
-// Контроллер действий пользователя
-//
+
+/**
+ * Контроллер действий пользователя
+ */
 class UserController extends BaseController
 {
 
 	/**
-	 * страница входа на сайт '/user'
+	 * Страница входа на сайт '/user'
 	 */
 	public function login()
 	{
 		$this->active = 'login';
 
-		if ($this->isPost()) {
+		if ($this->isPost()) { // проверка, вводил ли уже свои данные пользователь
 			$this->user->clear($_POST);
 
 			// var_dump($_POST);die;
 			$login = $_POST['login'];
 			$pass = $_POST['pass'];
 
-			if ($this->user->isUserExists($login)) {
-				$userData = $this->user->checkPass($login, $pass);
+			if ($this->user->isUserExists($login)) { // проверка, существует ли в базе данных этот логин
+				$userData = $this->user->checkPass($login, $pass); // проверка пароля, если успешно, то получение данных пользователя
 				// var_dump($userData);die;
 				if ($userData['userId']) {
-					$this->session('userId', $userData['userId']);
-					$this->session('userLogin', $login);
+					$this->session('userId', $userData['userId']); // сохраняем userId в сессии
+					$this->session('userLogin', $login); // сохраняем login в сессии
 					if ($userData['userName']) {
-						$this->session('userName', $userData['userName']);
+						$this->session('userName', $userData['userName']); // если у пользователя имеется userName, то сохраняем в сессии
 						$login = $userData['userName'];
 					}
 					$this->redirect(Str::of($login)->upper() . ', добро пожаловать на сайт!', 'phones');
@@ -49,32 +50,32 @@ class UserController extends BaseController
 	}
 
 	/**
-	 * страница регистрации нового пользоватея '/registry'
+	 * Страница регистрации нового пользоватея '/registry'
 	 */
 	public function reg()
 	{
 		$this->active = 'reg';
 
-		if ($this->isPost()) {
-			if($this->user->validating($_POST))
+		if ($this->isPost()) { // проверка, вводил ли уже свои данные пользователь
+			if($this->user->validating($_POST)) // валидация вводимых данных пользователем
 			{
 				// var_dump($_POST);die;
 				$login = $_POST['login'];
 				$pass = $_POST['pass'];
-				if ($this->user->isUserExists($login)) {
+				if ($this->user->isUserExists($login)) { // проверка, существует ли уже пользователь с таким логином
 					$this->flash('Пользователь с таким логином уже зарегистрирован!');
 				} else {
-					$userId = $this->user->createUser($login, $pass);
+					$userId = $this->user->createUser($login, $pass); // создание нового пользователя
 					if ($userId) {
-						$this->session('userId', $userId);
-						$this->session('userLogin', $login);
+						$this->session('userId', $userId); // сохраняем userId в сессии
+						$this->session('userLogin', $login); // сохраняем login в сессии
 						$this->redirect('Вы успешно зарегистрировались!', 'phones');
 					} else {
 						$this->flash('Извините, по техническим причинам регистрация не доступна! Просьба, повторить чуть позже!');
 					}
 				}
 			} else {
-				$flash = Validator::getErrors();
+				$flash = Validator::getErrors(); // получение сообщений об ошибках ввода данных пользователем
 				$this->flash(explode(', ', $flash));
 			}
 			// var_dump($login);die;
@@ -92,7 +93,7 @@ class UserController extends BaseController
 	 */
 	public function logout()
 	{
-		$this->user->destroy();
+		$this->user->destroy(); // удаление данных пользователя из сессии и куков
 
 		$this->redirect('Вы успешно вышли!', 'phones');
 	}
@@ -102,7 +103,7 @@ class UserController extends BaseController
 	 */
 	public function cabinet()
 	{
-		$userData = $this->user->getUserData($_SESSION['userId']);
+		$userData = $this->user->getUserData($_SESSION['userId']); // получение данных о пользователе
 
 		echo $this->blade->render('pages/user/cabinet', [
 			'userData' => $userData
@@ -114,13 +115,13 @@ class UserController extends BaseController
 	 */
 	public function change()
 	{
-		$userData = $this->user->getUserData($_SESSION['userId']);
+		$userData = $this->user->getUserData($_SESSION['userId']); // получение данных о пользователе
 
 		// var_dump($_POST);die;
-		if ($this->isPost()) {
-			$this->user->clear($_POST);
+		if ($this->isPost()) { // проверка, вводил ли уже пользователь новые данные о себе
+			$this->user->clear($_POST); // очищение вводимых пользователем данных
 			$userData = $_POST;
-			if ($this->user->changeUserData($userData)) {
+			if ($this->user->changeUserData($userData)) { // изменение данных пользователя в базе данных
 				$this->redirect('Ваши данные успешно изменились!', 'cabinet');
 			} else {
 				$this->flash('Извините, по техническим причинам изменение не доступно! Просьба, повторить чуть позже!');

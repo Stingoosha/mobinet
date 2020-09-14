@@ -1,28 +1,37 @@
 <?php
 namespace models;
+
 use PDO;
-//
-// Базовая модель сайта
-//
+
+/**
+ * Базовая модель сайта
+ */
 class BaseModel extends AbstractModel
 {
-
-    protected static $database = []; // массив настроек базы данных
-    protected static $db; // соединение с базой данных
-    protected $table; // таблица, используемая моделью
+    /**
+     * @var static array $database Массив настроек базы данных
+     * @var static PDO $db Экземляр класса для соединения с базой данных
+     * @var string $table Таблица, используемая моделью
+     */
+    protected static $database = [];
+    protected static $db;
+    protected $table;
 
     /**
-	 * функция инициализации базовой модели
+	 * Функция инициализации базовой модели (подключение настроек базы данных)
+     * @var string $databasePath Путь до массива с настройками
+     * @return void
 	 */
     public static function init(string $databasePath) :void
     {
         self::$database = include $databasePath;
     }
 
-    //
-    // функция подключения к БД (singleton)
-    //
-    protected function connect()
+    /**
+     * Функция подключения к БД (Singleton)
+     * @return PDO
+     */
+    protected function connect() :PDO
     {
         if (self::$db === null) {
             self::$db = new PDO(self::$database['DRIVER'] . ':host=' . self::$database['HOST'] .
@@ -38,21 +47,22 @@ class BaseModel extends AbstractModel
         return self::$db;
     }
 
-    //
-    // унифицированная функция запроса к БД через подготовленный запрос
-    // @sql - строка SQL-запроса
-    // @return - строка названия возвращаемой функции
-    // @params - параметры подготовленного запроса (по умолчанию отсутствуют)
-    //
+    /**
+     * Унифицированная функция запроса к БД через подготовленный запрос
+     * @var string $sql Строка SQL-запроса
+     * @var string $return Строка с названием возвращаемой функции
+     * @var array $params Массив параметров для подготовленного запроса (по умолчанию пустой)
+     * @return Может возвращать различные типы данных
+     */
     protected function query($sql, $return, $params = [])
     {
         // var_dump($sql);die;
-        self::$db = $this->connect();
+        self::$db = $this->connect(); // соединение с БД
 
-        $query = self::$db->prepare($sql);
-        $query->execute($params);
+        $query = self::$db->prepare($sql); // подготовка SQL-запроса
+        $query->execute($params); // выполнение SQL-запроса
 
-        $this->checkErrors($query);
+        $this->checkErrors($query); // проверка на ошибки SQL-запроса
         if (!$return) {
             return $query;
         } else {
@@ -60,11 +70,12 @@ class BaseModel extends AbstractModel
         }
     }
 
-    //
-    // проверка запроса на ошибку
-    // @query - запрос к БД
-    //
-    protected function checkErrors($query)
+    /**
+     * Функция проверки SQL-запроса на ошибки
+     * @var PDOStatement $query подготовленный SQL-запрос
+     * @return bool
+     */
+    protected function checkErrors(\PDOStatement $query) :bool
     {
         $errInfo = $query->errorInfo();
 
@@ -76,10 +87,12 @@ class BaseModel extends AbstractModel
         return true;
     }
 
-    //
-    // функция вывода всех данных таблицы по id
-    //
-    public function one(int $id)
+    /**
+     * Функция вывода данных модели по его id
+     * @var int $id Идентификационный номер id модели
+     * @return array
+     */
+    public function one(int $id) :array
     {
         $sql = "SELECT * FROM $this->table WHERE id=:id";
 
@@ -87,29 +100,34 @@ class BaseModel extends AbstractModel
     }
 
     /**
-     * функция вывода всех данных таблицы
+     * Функция вывода всех данных таблицы
+     * @return array
      */
-    public function all()
+    public function all() :array
     {
         $sql = "SELECT * FROM $this->table";
 
         return $this->query($sql, 'fetchAll');
     }
 
-    //
-    // функция вывода ограниченного количества данных таблицы
-    //
-    public function some(int $limit)
+    /**
+     * Функция вывода ограниченного количества данных таблицы
+     * @var int $limit Максимальное количество моделей
+     * @return array
+     */
+    public function some(int $limit) :array
     {
         $sql = "SELECT * FROM $this->table LIMIT $limit";
 
         return $this->query($sql, 'fetchAll');
     }
 
-    //
-    // функция добавления данных в таблицу
-    //
-    public function insert($object)
+    /**
+     * Функция добавления данных в таблицу
+     * @var array $object Массив данных для подготовленного SQL-запроса
+     * @return string
+     */
+    public function insert(array $object) :string
     {
         $columns = array();
 
@@ -131,10 +149,13 @@ class BaseModel extends AbstractModel
         return self::$db->lastInsertId();
     }
 
-    //
-    // функция обновления данных таблицы по условию
-    //
-    public function update($object, $where)
+    /**
+     * Функция обновления данных таблицы
+     * @var array $object Массив данных для подготовленного SQL-запроса
+     * @var string $where Условие, согласно которому будет произведено обновление
+     * @return string
+     */
+    public function update(array $object, string $where) :string
     {
         $sets = array();
 
@@ -153,10 +174,12 @@ class BaseModel extends AbstractModel
         return $this->query($sql, 'rowCount', $object);
     }
 
-    //
-    // функция удаления данных таблицы по условию
-    //
-    public function delete($where)
+    /**
+     * Функция удаления данных из таблицы
+     * @var string Условие, согласно которому будет произведено удаление
+     * @return string
+     */
+    public function delete(string $where) :string
     {
         $sql = "DELETE FROM $this->table WHERE $where";
 
@@ -164,9 +187,11 @@ class BaseModel extends AbstractModel
     }
 
     /**
-     * функция очитски данных, вводимых пользователем
+     * Функция очитски данных, вводимых пользователем и сохранение их в массиве POST
+     * @var array $post Массив данных, которые ввел пользователь
+     * @return void
      */
-    public function clear(array $post)
+    public function clear(array $post) :void
 	{
         // var_dump($post);die;
 		foreach ($post as $key => $val) {
@@ -175,8 +200,10 @@ class BaseModel extends AbstractModel
     }
 
     /**
-     * функция возвращает нужный суффикс в зависимости от числа
-     * (например, 1 модел/ь, 2 модел/и, 5 модел/ей)
+     * Функция возвращает нужный суффикс в зависимости от числа, (например, 1 модел/ь, 2 модел/и, 5 модел/ей)
+     * @var int $amount Количество, к которому необходимо подобрать суффикс
+     * @var array $variants Варианты суффиксов, из которых выбирается ответ
+     * @return string
      */
     public function getSpoiler(int $amount, array $variants) :string
     {

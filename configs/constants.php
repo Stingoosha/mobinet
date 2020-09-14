@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'TOTAL_ON_PAGE' => 12,
+	'TOTAL_ON_PAGE' => 12,
 	'PATH_IMG_SMALL' => 'public/img/small/',
-	'PATH_IMG_LARGE' => 'public/img/large/'
+	'PATH_IMG_LARGE' => 'public/img/large/',
+	'LOGS_AMOUNT' => 10
 ];

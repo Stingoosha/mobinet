@@ -9,17 +9,8 @@ use resources\Validator;
 class UserController extends BaseController
 {
 
-	// //
-	// // Конструктор
-	// //
-	// public function __construct()
-	// {
-	// 	// создается экземпляр модели пользователя
-	// 	$this->user = new UserModel();
-	// }
-
 	/**
-	 * страница входа на сайт '/auth'
+	 * страница входа на сайт '/user'
 	 */
 	public function login()
 	{
@@ -51,7 +42,7 @@ class UserController extends BaseController
 			}
 		}
 
-		echo $this->blade->render('pages/login', [
+		echo $this->blade->render('pages/user/login', [
 			'active' => $this->active,
 			'login' => $login ?? ''
 		]);
@@ -89,7 +80,7 @@ class UserController extends BaseController
 			// var_dump($login);die;
 		}
 
-		echo $this->blade->render('pages/registry', [
+		echo $this->blade->render('pages/user/registry', [
 			'active' => $this->active,
 			'login' => $login ?? '',
 			'pass' => $pass ?? ''
@@ -113,7 +104,7 @@ class UserController extends BaseController
 	{
 		$userData = $this->user->getUserData($_SESSION['userId']);
 
-		echo $this->blade->render('pages/cabinet', [
+		echo $this->blade->render('pages/user/cabinet', [
 			'userData' => $userData
 		]);
 	}
@@ -136,7 +127,7 @@ class UserController extends BaseController
 			}
 		}
 
-		echo $this->blade->render('pages/change', [
+		echo $this->blade->render('pages/user/change', [
 			'userData' => $userData
 		]);
 	}

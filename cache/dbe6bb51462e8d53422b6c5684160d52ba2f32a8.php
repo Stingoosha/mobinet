@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?php echo e($title); ?></title>
-    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/css/style.css">
     <link rel="shortcut icon" href="/public/img/favicon.ico">
-	<script src="../public/js/jquery.min.js"></script>
-    <script src="../public/js/bootstrap.min.js"></script>
-    <script src="../public/js/getphonesdata.js"></script>
-    <script src="../public/js/addToBasket.js"></script>
+	<script src="/public/js/jquery.min.js"></script>
+    <script src="/public/js/bootstrap.min.js"></script>
+    <script src="/public/js/showMore.js"></script>
+    <script src="/public/js/addToBasket.js"></script>
+    <script src="/public/js/selectBrend.js"></script>
+    <script>
+        $(document).ready(function() {
+            selectBrend();
+        })
+    </script>
 </head>
 <body>
     <div class="row">
         <div class="col-12">
             <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-bottom d-flex justify-content-between">
-                <a class="navbar-brand" href="/"><img src="../public/img/logo.jpg" alt="logo" class="logo"></a>
+                <a class="navbar-brand" href="/"><img src="/public/img/logo.jpg" alt="logo" class="logo"></a>
                 <div class="w-100 container collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="col-3 navbar-nav mr-auto">
                         <li class="nav-item mr-3">
@@ -51,7 +57,7 @@
                     <?php else: ?>
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo e($_SESSION['userLogin']); ?></a>
+                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo e($_SESSION['userName'] ?? $_SESSION['userLogin']); ?></a>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="/cabinet">Кабинет</a>
                                     <div class="dropdown-divider"></div>

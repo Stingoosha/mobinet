@@ -2,9 +2,9 @@
 namespace models;
 use PDO;
 
-class UserModel extends BaseModel {
+class UserModel extends BaseModel
+{
 
-	private const SALT = 'some_salt_to_encrypt_login_using_md5_function';
 	protected $table = 'users';
 
 	/**
@@ -64,7 +64,7 @@ class UserModel extends BaseModel {
 	 */
 	public function hashLogin(string $login) :string
 	{
-		return md5(md5($login) . self::SALT);
+		return md5(md5($login) . self::$database['SALT']);
 	}
 
 	/**

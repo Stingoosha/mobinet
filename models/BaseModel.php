@@ -6,16 +6,18 @@ use PDO;
 //
 class BaseModel extends AbstractModel
 {
-    protected const DRIVER = 'mysql';
-    protected const HOST = 'localhost';
-    protected const DBNAME = 'mobinet';
-    protected const LOGIN = 'root';
-    protected const PASS = '';
-    protected const ENCODE = 'UTF8';
-    protected const AS_ARRAY = PDO::FETCH_ASSOC;
-    protected const AS_OBJECT = PDO::FETCH_CLASS;
+
+    protected static $database = []; // массив настроек базы данных
     protected static $db; // соединение с базой данных
     protected $table; // таблица, используемая моделью
+
+    /**
+	 * функция инициализации базовой модели
+	 */
+    public static function init(string $databasePath) :void
+    {
+        self::$database = include $databasePath;
+    }
 
     //
     // функция подключения к БД (singleton)
@@ -23,13 +25,14 @@ class BaseModel extends AbstractModel
     protected function connect()
     {
         if (self::$db === null) {
-            self::$db = new PDO(self::DRIVER . ':host=' . self::HOST . ';dbname=' . self::DBNAME, self::LOGIN, self::PASS, [
+            self::$db = new PDO(self::$database['DRIVER'] . ':host=' . self::$database['HOST'] .
+            ';dbname=' . self::$database['DBNAME'], self::$database['LOGIN'], self::$database['PASS'], [
                 PDO::ATTR_ERRMODE,
                 PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => self::AS_ARRAY
+                PDO::ATTR_DEFAULT_FETCH_MODE => self::$database['AS_ARRAY']
             ]);
 
-            self::$db->exec('SET NAMES ' . self::ENCODE);
+            self::$db->exec('SET NAMES ' . self::$database['ENCODE']);
         }
 
         return self::$db;
@@ -96,9 +99,9 @@ class BaseModel extends AbstractModel
     //
     // функция вывода ограниченного количества данных таблицы
     //
-    public function some(string $table, int $limit)
+    public function some(int $limit)
     {
-        $sql = "SELECT * FROM $table LIMIT $limit";
+        $sql = "SELECT * FROM $this->table LIMIT $limit";
 
         return $this->query($sql, 'fetchAll');
     }

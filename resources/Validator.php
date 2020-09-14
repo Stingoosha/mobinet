@@ -4,10 +4,10 @@ namespace resources;
 
 class Validator
 {
-    private $rules;
+    private static $rules = []; // массив правил валидации
 
-    public static function getErrors()
+    public static function init(string $validationPath)
     {
-        return [];
+        self::$rules = include $validationPath;
     }
 }

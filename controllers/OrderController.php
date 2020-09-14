@@ -42,7 +42,7 @@ class OrderController extends BaseController
         echo $this->blade->render('pages/order', [
             'active' => $this->active,
             'phones' => $phones,
-            'pathImgSmall' => self::PATH_IMG_SMALL,
+            'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
             'summ' => null,
             'message' => $this->message
         ]);

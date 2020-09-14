@@ -44,14 +44,14 @@ class PageController extends BaseController
 	{
 		$this->active = 'catalog';
 		$brends = $this->brend->all();
-		$phones = $this->page->some(self::TABLES[0], self::TOTAL_ON_PAGE);
+		$phones = $this->page->some(self::$constants['TOTAL_ON_PAGE']);
 
 		// var_dump($phones);die;
 
 		echo $this->blade->render('pages/catalog', [
 		  'active' => $this->active,
-		  'pathImgSmall' => self::PATH_IMG_SMALL,
-		  'total' => self::TOTAL_ON_PAGE,
+		  'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
+		  'total' => self::$constants['TOTAL_ON_PAGE'],
 		  'brends' => $brends,
 		  'phones' => $phones
 		]);
@@ -68,7 +68,7 @@ class PageController extends BaseController
 		$phone = $this->page->one($id);
 
 		echo $this->blade->render('pages/show', [
-			'pathImgLarge' => self::PATH_IMG_LARGE,
+			'pathImgLarge' => self::$constants['PATH_IMG_LARGE'],
 			'phone' => $phone,
 			'userId' => $_SESSION['userId'] ?? ''
 		]);
@@ -87,6 +87,7 @@ class PageController extends BaseController
 			$this->redirect('Пожалуйста, введите данные для поиска!', 'phones');
 		} else {
 			$phones = $this->page->search($search);
+			$brends = $this->brend->all();
 
 			if($phones) {
 				$spoiler = $this->page->getSpoiler(count($phones), ['ь', 'и', 'ей']);
@@ -98,8 +99,9 @@ class PageController extends BaseController
 
 		echo $this->blade->render('pages/catalog', [
 			'active' => $active,
-			'pathImgSmall' => self::PATH_IMG_SMALL,
-			'phones' => $phones
+			'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
+			'phones' => $phones,
+			'brends' => $brends ?? ''
 		]);
 	}
 
@@ -124,7 +126,7 @@ class PageController extends BaseController
 		// получение id последнего телефона на странице
 		$lastId = (int)($_POST['lastId'] ?? null);
 
-		$phones = $this->page->part($lastId, self::TOTAL_ON_PAGE);
+		$phones = $this->page->part($lastId, self::$constants['TOTAL_ON_PAGE']);
 
 		echo json_encode($phones);
 	}
@@ -133,6 +135,7 @@ class PageController extends BaseController
 	{
 		// получение id всех отмеченных брендов
 		$checked = $_POST['checked'];
+
 		$checked = explode(',', $checked);
 		$where = ' id_brend=' . implode(' OR id_brend=', $checked);
 

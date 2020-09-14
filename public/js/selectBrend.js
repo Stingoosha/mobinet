@@ -4,7 +4,7 @@ function selectBrend() {
         $('input:checkbox:checked').each(function() {
             checked.push($(this).val());
         });
-        
+
         $.ajax({
             type: "post",
             url: "/selectBrend",
@@ -12,7 +12,7 @@ function selectBrend() {
             dataType: 'json',
             cache: false,
             success: function(answer) {
-
+                console.log(answer);
                 $('#showMore-container').empty();
                 $('#showMore-div').hide();
                 let length = answer.length;
@@ -20,7 +20,7 @@ function selectBrend() {
                     let phoneCard = render(answer[i]);
                     $('#showMore-container').append(phoneCard);
                 }
-    
+
             }
         });
     });

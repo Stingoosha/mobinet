@@ -8,10 +8,7 @@ use models\UserModel;
 //
 abstract class BaseController extends AbstractController
 {
-	protected const TOTAL_ON_PAGE = 12;
-	protected const PATH_IMG_SMALL = 'public/img/small/';
-	protected const PATH_IMG_LARGE = 'public/img/large/';
-    protected const TABLES = ['goods', 'params', 'users', 'basket', 'orders', 'discounts'];
+	protected static $constants = []; // массив констант
 	protected $title; // заголовок страницы
 	protected $content; // содержание страницы
 	protected $message = ''; // информативное сообщение на странице
@@ -20,12 +17,20 @@ abstract class BaseController extends AbstractController
 	protected $user; // модель пользователя
 	protected $userRole; // роль пользователя
 
+	/**
+	 * функция инициализации базового контроллера
+	 */
+    public static function init(string $constantsPath) :void
+    {
+        self::$constants = include $constantsPath;
+    }
+
 	// функция отрабатывается перед основным action
 	protected function before()
 	{
 		session_start(); // стартуем сессию
 
-		// var_dump($_SESSION);die;
+		// var_dump(self::$constants);die;
 		$this->blade = new Blade('views', 'cache'); // создаем экземпляр модели шаблонизатора Blade
 		$this->user = new UserModel(); // создаем экземпляр пользователя
 

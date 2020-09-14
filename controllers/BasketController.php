@@ -59,7 +59,7 @@ class BasketController extends BaseController
             'message' => $this->message,
             'summ' => null,
             'summFinal' => null,
-            'pathImgSmall' => self::PATH_IMG_SMALL
+            'pathImgSmall' => self::$constants['PATH_IMG_SMALL']
         ]);
     }
 

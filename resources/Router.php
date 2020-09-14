@@ -6,14 +6,14 @@ namespace resources;
 class Router
 {
     protected static $routes = [];
-    protected static $routePath;
 
 	/**
-	 * функция установки пути загрузки данных маршрутизации
+	 * функция инициализации роутера
 	 */
-    public static function setRoutePath(string $routePath) :void
+    public static function init(string $routePath) :void
     {
-        self::$routePath = $routePath;
+        // загрузка данных маршрутизации в массив
+        self::$routes = include $routePath;
     }
 
 	/**
@@ -21,11 +21,9 @@ class Router
 	 */
     public static function routing(string $url) :array
     {
-        // загрузка данных маршрутизации в массив
-        self::$routes = include self::$routePath;
-
         // разделение URL на части
         $urlParts = explode("/", $url);
+        // var_dump($urlParts);die;
 
         // Проверка наличия url
         if (!empty($urlParts[2])) {

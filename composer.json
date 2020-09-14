@@ -2,5 +2,8 @@
     "require": {
         "illuminate/view": "^7.26",
         "jenssegers/blade": "^1.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "8"
     }
 }

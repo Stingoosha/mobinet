@@ -1,9 +1,9 @@
 <?php
-
 namespace resources;
-//
-// Класс, отвечающий за сохранение данных URL-запросов
-//
+
+/**
+ * Класс, отвечающий за сохранение данных URL-запросов
+ */
 class Requester
 {
     private static $instance = null;
@@ -15,7 +15,7 @@ class Requester
     private function __clone() {}
 
 	/**
-	 * singleton
+	 * Singleton
 	 */
     public static function getInstance()
     {

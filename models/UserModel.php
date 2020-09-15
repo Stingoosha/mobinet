@@ -19,7 +19,7 @@ class UserModel extends BaseModel
 	 */
 	public function isUserExists(string $login)
 	{
-		$login = $this->hashLogin($login);
+		// $login = $this->hashLogin($login);
 
 		return $this->query("SELECT id FROM $this->table WHERE login=:login", 'fetch', ['login' => $login]);
 	}
@@ -32,7 +32,7 @@ class UserModel extends BaseModel
 	 */
 	public function createUser(string $login, string $pass) :string
 	{
-		$login = $this->hashLogin($login);
+		// $login = $this->hashLogin($login);
 		$pass = password_hash($pass, PASSWORD_BCRYPT);
 
 		return $this->insert(['login' => $login, 'pass' => $pass]);
@@ -65,7 +65,7 @@ class UserModel extends BaseModel
 	 */
 	public function checkPass(string $login, string $pass) :array
 	{
-		$login = $this->hashLogin($login);
+		// $login = $this->hashLogin($login);
 		$userData = $this->query("SELECT id, pass, first_name FROM $this->table WHERE login=:login", 'fetch', ['login' => $login]);
 
 		if (password_verify($pass, $userData['pass'])) {
@@ -80,10 +80,10 @@ class UserModel extends BaseModel
 	 * @var string $login Логин пользователя
 	 * @return string
 	 */
-	public function hashLogin(string $login) :string
-	{
-		return md5(md5($login) . self::$database['SALT']);
-	}
+	// public function hashLogin(string $login) :string
+	// {
+	// 	return md5(md5($login) . self::$database['SALT']);
+	// }
 
 	/**
 	 * Функция валидации введенных пользователем данных
@@ -99,12 +99,13 @@ class UserModel extends BaseModel
 
 	/**
 	 * Функция получения данных о пользователе
-	 * @var int $userId ID пользователя
+	 * @var int $userId id пользователя
 	 * @return array
 	 */
 	public function getUserData(int $userId) :array
 	{
-		return $this->query("SELECT first_name, last_name, email, male, birthday FROM $this->table WHERE id=:id", 'fetch', ['id' => $userId]);
+		return $this->query("SELECT login, first_name, last_name, email, male, birthday, id_role FROM $this->table WHERE id=:id",
+		 'fetch', ['id' => $userId]);
 	}
 
 	/**
@@ -122,19 +123,6 @@ class UserModel extends BaseModel
 
 		return $this->update(['first_name' => $newUserData['first_name'], 'last_name' => $newUserData['last_name'], 'email' => $newUserData['email'],
 		 'male' => $newUserData['male'], 'birthday' => $newUserData['birthday']], "id = $userId");
-	}
-
-	/**
-	 * Функция удаления данных из сессии при логауте пользователя
-	 * @return void
-	 */
-	public function destroy() :void
-	{
-		unset($_SESSION['userId']);
-		unset($_SESSION['userLogin']);
-		if (isset($_SESSION['userName'])) {
-			unset($_SESSION['userName']);
-		}
 	}
 
 }

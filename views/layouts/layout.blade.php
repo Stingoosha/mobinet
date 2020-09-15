@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ $description }}"
+    <meta name="keywords" content="{{ $keywords }}"
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title }}</title>
     <link rel="stylesheet" href="/public/css/bootstrap.min.css">
     <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="shortcut icon" href="/public/img/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="/public/img/favicon.ico">
 	<script src="/public/js/jquery.min.js"></script>
     <script src="/public/js/bootstrap.min.js"></script>
     <script src="/public/js/showMore.js"></script>
@@ -45,7 +47,7 @@
                             <a class="nav-link font-weight-bold {{ $active == 'basket' ? 'active' : 'text-info'}}" href="/basket">Корзина<span class="sr-only"></span></a>
                         </li>
                     </ul>
-                    @if (!isset($_SESSION['userLogin']))
+                    @if (!isset($_SESSION['userId']))
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item mr-3">
                                 <a class="nav-link font-weight-bold {{ $active == 'login' ? 'active' : 'text-info'}}" href="/login">Вход<span class="sr-only"></span></a>
@@ -57,7 +59,7 @@
                     @else
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $_SESSION['userName'] ?? $_SESSION['userLogin'] }}</a>
+                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $userData['first_name'] ?? $userData['login'] }}</a>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="/cabinet">Кабинет</a>
                                     <div class="dropdown-divider"></div>

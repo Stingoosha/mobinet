@@ -29,42 +29,75 @@ function showMore(id, total) {
 }
 
 function render(element) {
-    var $container = $('<div />', {
+    var container = $('<div />', {
         class: 'col-2 mb-3'
     });
-    var $cardDeck = $('<div />', {
+    var cardDeck = $('<div />', {
         class: 'card-deck'
     });
-    var $card = $('<div />', {
+    var card = $('<div />', {
         class: 'card border-info text-info mb-3 h-100'
     });
-    var $link = $('<a />', {
+    var link = $('<a />', {
         class: 'link stretched-link',
         href: '/phones/' + element.id
     });
-    var $img = $('<img />', {
+    var img = $('<img />', {
         class: 'card-img-top',
         src: 'public/img/small/' + (element.photo ? element.photo : 'default.jpg')
     });
-    var $cardBody = $('<div />', {
+    var cardBody = $('<div />', {
         class: 'card-body'
     });
-    var $cardTitle = $('<h5 />', {
+    var cardTitle = $('<h5 />', {
         class: 'card-title',
         text: element.name
     });
-    var $cardText = $('<p />', {
+    var cardText = $('<p />', {
         class: 'card-text text-success font-weight-bold',
         text: element.price + ' ₽'
     });
+    var blockBuy = $('<div />', {
+        class: 'block_buy'
+    });
+    var phoneId = $('<input>', {
+        type: 'text',
+        id: 'phone_id',
+        value: element.id,
+        hidden: true
+    });
+    var amount = $('<input>', {
+        class: 'form-control text-center text-success font-weight-bold',
+        type: 'number',
+        id: 'amount_' + element.id,
+        value: 1
+    });
+    var btnBuy = $('<input>', {
+        class: 'btn btn-success',
+        type: 'button',
+        value: 'Купить',
+        onclick: 'addToBasket(' + element.id + ')'
+    });
+    var message = $('<span />', {
+        class: 'msg',
+        style: 'color: orange; font-size: 20px',
+        id: 'message_' + element.id
+    });
+    var br = $('<br>');
 
-    $img.appendTo($link);
-    $cardTitle.appendTo($cardBody);
-    $cardText.appendTo($cardBody);
-    $link.appendTo($card);
-    $cardBody.appendTo($card);
-    $card.appendTo($cardDeck);
-    $cardDeck.appendTo($container);
+    img.appendTo(link);
+    cardTitle.appendTo(cardBody);
+    cardText.appendTo(cardBody);
+    link.appendTo(card);
+    cardBody.appendTo(card);
+    card.appendTo(cardDeck);
+    cardDeck.appendTo(container);
+    phoneId.appendTo(blockBuy);
+    amount.appendTo(blockBuy);
+    br.appendTo(blockBuy);
+    btnBuy.appendTo(blockBuy);
+    message.appendTo(blockBuy);
+    blockBuy.appendTo(container);
 
-    return $container;
+    return container;
 }

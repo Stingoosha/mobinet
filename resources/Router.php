@@ -1,14 +1,20 @@
 <?php
 namespace resources;
+
 /**
- * класс, отвечающий за маршрутизацию URL-запросов
+ * Класс, отвечающий за маршрутизацию URL-запросов
  */
 class Router
 {
+    /**
+     * @var array $routes Массив для хранения всех рутов
+     */
     protected static $routes = [];
 
 	/**
-	 * функция инициализации роутера
+	 * Функция инициализации роутера
+     * @var string $routePath Путь к файлу со всему рутами
+     * @return void
 	 */
     public static function init(string $routePath) :void
     {
@@ -17,7 +23,9 @@ class Router
     }
 
 	/**
-	 * функция - роутер
+	 * Функция - роутер
+     * @var string $url Строка URL-запроса
+     * @return array
 	 */
     public static function routing(string $url) :array
     {
@@ -31,7 +39,7 @@ class Router
             if (isset($urlParts[3])) { // 2-я часть url может быть строкой или цифрой
                 if ((int)$urlParts[3] > 0) { // проверка, является ли 2-я часть цифрой
                     $url .= '/{id}'; // если это цифра, то во 2-ю часть url вставляется болванка
-                    Requester::getInstance()->setId((int)$urlParts[3]); // переданный id сохраняется в классе Requester
+                    Requester::setId((int)$urlParts[3]); // переданный id сохраняется в классе Requester
                 } else {
                     $url .= '/' . $urlParts[3]; // если это строка, она добавляется во 2-ю часть url
                 }

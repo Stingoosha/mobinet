@@ -1,11 +1,9 @@
-@extends('layouts.layout', ['title' => 'Корзина'])
+@extends('layouts.layout', ['title' => 'Корзина', 'userData' => $userData])
 
 @section('content')
 
-    <p style="color: red">{{ $message ?? '' }}</p>
     <div class="row">
         <div class="col-12 mx-auto">
-            @if ($orders)
             <div class="orders-info">
                 <h1 class="display-1 text-info">Ваши заказы</h1>
                 <div class="table-responsive">
@@ -45,12 +43,12 @@
                             <td></td>
                             <td></td>
                             <td></td>
+                            <td></td>
                         </tr>
                     @endif
                     </table>
                 </div>
             </div>
-            @endif
             <div class="basket-info">
                 <h1 class="display-1 text-info">Ваша корзина</h1>
                 <div class="table-responsive">

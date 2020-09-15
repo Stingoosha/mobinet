@@ -7,7 +7,7 @@ namespace controllers;
 abstract class AbstractController
 {
 	/**
-	 * массив констант
+	 * Массив констант
 	 */
 	protected static $constants = [];
 
@@ -25,6 +25,14 @@ abstract class AbstractController
 	{
 		$this->before();//метод вызывается до формирования данных для шаблона
 		$this->$action();   //$this->action_index
+	}
+
+	/**
+	 * Функция возврата массива констант
+	 */
+	public static function getConstants()
+	{
+		return self::$constants;
 	}
 
 	/**
@@ -67,10 +75,22 @@ abstract class AbstractController
 		$_SESSION[$param] = $val;
 	}
 
-	//
-	// Сохраняем просмотренные страницы в логи
-	//
-	protected function saveLogs()
+	/**
+	 * Функция установки переменной куки
+	 * @var string $param Название переменной куки
+	 * @var $val Значение, сохраняемое в переменной куки (может быть любого типа)
+	 * @return void
+	 */
+	protected function coockie(string $param, $val, int $period ) :void
+	{
+		setcookie($param, $val, time() + $period);
+	}
+
+	/**
+	 * Сохраняем просмотренные страницы в логи
+	 * @return void
+	 */
+	protected function saveLogs() :void
 	{
 		$_SESSION['logs'][] = $_SERVER['REQUEST_URI'];
 		if(count($_SESSION['logs']) > self::$constants['LOGS_AMOUNT']) {
@@ -79,19 +99,24 @@ abstract class AbstractController
 	}
 
 	/**
-	 * функция запрета входа на страницу с установкой нужного сообщения и страницы редиректа
+	 * Функция перехода на другую страницу с каким-либо сообщением
+	 * @var string $message Сообщение, выводимое под менюшкой
+	 * @var string $redirect Страница, куда произойдет редирект
+	 * @return void
 	 */
-    public function redirect(string $message, string $redirect)
+    public function redirect(string $message, string $redirect) :void
     {
         $this->flash($message);
         header("Location: /$redirect");
         exit;
     }
 
-	//
-	// Если вызвали метод, которого нет - завершаем работу
-	//
-	public function __call($name, $params){
+	/**
+	 * Если вызвали метод, которого нет - завершаем работу (оставил, чтоб видеть когда роутер поломается)
+	 * @var string $name Название метода, которого нет
+	 * @var array $params Массив параметров, переданных в метод, которого нет
+	 */
+	public function __call(string $name, array $params = []){
         die('Не пишите фигню в url-адресе!!!');
 	}
 }

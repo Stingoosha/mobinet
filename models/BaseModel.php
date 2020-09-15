@@ -90,9 +90,8 @@ class BaseModel extends AbstractModel
     /**
      * Функция вывода данных модели по его id
      * @var int $id Идентификационный номер id модели
-     * @return array
      */
-    public function one(int $id) :array
+    public function one(int $id)
     {
         $sql = "SELECT * FROM $this->table WHERE id=:id";
 

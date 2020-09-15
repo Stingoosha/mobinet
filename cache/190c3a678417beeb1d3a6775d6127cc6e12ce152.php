@@ -21,6 +21,7 @@
             </ul>
         </div>
     </div>
-    
+
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts/layout', ['title' => 'Главная'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Study\PHP\Projects\repositories\mobinet\views/pages/index.blade.php ENDPATH**/ ?>
+
+<?php echo $__env->make('layouts/layout', ['title' => 'Главная', 'userData' => $userData], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Study\PHP\Projects\repositories\mobinet\views/pages/index.blade.php ENDPATH**/ ?>

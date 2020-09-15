@@ -19,6 +19,8 @@ class App
      */
     public static function init(string $routePath, string $constantsPath, string $databasePath, string $validationPath) :void
     {
+        date_default_timezone_set('Asia/Samarkand');
+
         Router::init($routePath);
         BaseController::init($constantsPath);
         BaseModel::init($databasePath);

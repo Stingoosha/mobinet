@@ -42,6 +42,7 @@ class OrderController extends BaseController
         }
 
         echo $this->blade->render('pages/order', [
+            'userData' => $this->userData,
             'active' => $this->active,
             'phones' => $this->phones,
             'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
@@ -64,7 +65,7 @@ class OrderController extends BaseController
 
         // создание оформленного заказа
         if ($this->order->createOrder($user)) {
-            $this->redirect('Ваш заказ отправлен на обработку и будет выслан Вам в течении 12 часов!', 'basket');
+            $this->redirect('Ваш заказ отправлен на обработку! Наш менеджер свяжется с Вами в течение 5 минут!', 'basket');
         }
 
         $this->redirect('По техническим причинам заказ не был обработан. Попробуйте позже!','basket');

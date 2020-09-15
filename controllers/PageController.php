@@ -34,6 +34,7 @@ class PageController extends BaseController
 		$this->active = 'index';
 
 		echo $this->blade->render('pages/index', [
+			'userData' => $this->userData,
 			'active' => $this->active
 		]);
 	}
@@ -50,6 +51,7 @@ class PageController extends BaseController
 		// var_dump($phones);die;
 
 		echo $this->blade->render('pages/catalog', [
+			'userData' => $this->userData,
 		  'active' => $this->active,
 		  'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
 		  'total' => self::$constants['TOTAL_ON_PAGE'],
@@ -63,11 +65,12 @@ class PageController extends BaseController
 	 */
 	public function show()
 	{
-		$id = Requester::getInstance()->id(); // получение id определенной модели телефона
+		$id = Requester::id(); // получение id определенной модели телефона
 
 		$phone = $this->page->one($id); // получение данных по id телефона
 
 		echo $this->blade->render('pages/show', [
+			'userData' => $this->userData,
 			'pathImgLarge' => self::$constants['PATH_IMG_LARGE'],
 			'phone' => $phone,
 			'userId' => $_SESSION['userId'] ?? ''
@@ -98,6 +101,7 @@ class PageController extends BaseController
 		}
 
 		echo $this->blade->render('pages/catalog', [
+			'userData' => $this->userData,
 			'active' => $active,
 			'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
 			'phones' => $phones,
@@ -113,6 +117,7 @@ class PageController extends BaseController
 		$active = 'contacts';
 
 		echo $this->blade->render('pages/contacts', [
+			'userData' => $this->userData,
 			'active' => $this->active
 		]);
 	}

@@ -4,6 +4,7 @@ use controllers\PageController;
 use controllers\BasketController;
 use controllers\OrderController;
 use controllers\UserController;
+use controllers\admin\AdminBrandController;
 
 return [
     '/' => [new PageController(), 'index'],
@@ -12,7 +13,7 @@ return [
     '/phones' => [new PageController(), 'catalog'],
     '/phones/{id}' => [new PageController(), 'show'],
     '/showMore' => [new PageController(), 'showMore'],
-    '/selectBrend' => [new PageController(), 'selectBrend'],
+    '/selectBrand' => [new PageController(), 'selectBrand'],
     '/contacts' => [new PageController(), 'contacts'],
     '/tobasket' => [new BasketController(), 'tobasket'],
     '/basket' => [new BasketController(), 'index'],
@@ -23,6 +24,14 @@ return [
     '/registry' => [new UserController(), 'reg'],
     '/logout' => [new UserController(), 'logout'],
     '/cabinet' => [new UserController(), 'cabinet'],
-    '/cabinet/change' => [new UserController(), 'change'],
+    '/cabinet/edit' => [new UserController(), 'edit'],
+    '/brands' => [new AdminBrandController(), 'index'],
+    '/brands/create' => [new AdminBrandController(), 'create'],
+    '/brands/{id}/edit' => [new AdminBrandController(), 'edit'],
+    '/brands/{id}/remove' => [new AdminBrandController(), 'remove'],
+    // '/models' => [new AdminController(), 'models'],
+    // '/orders' => [new AdminController(), 'orders'],
+    // '/roles' => [new AdminController(), 'roles'],
+    // '/users' => [new AdminController(), 'users'],
     '/404' => [new PageController(), 'error404']
 ];

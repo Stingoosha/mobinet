@@ -22,7 +22,7 @@ abstract class BaseController extends AbstractController
 	 * @var array $userData Данные пользователя
 	 * @var array $keywords Массив ключевых слов и их значений для поисковых систем
 	 * @var array $phones Массив телефонов
-	 * @var array $brends Массив брендов
+	 * @var array $brands Массив брендов
 	 * @var array $orders Массив заказов
 	 */
 	protected $blade;
@@ -35,7 +35,7 @@ abstract class BaseController extends AbstractController
 	protected $userData = [];
 	protected $keywords = [];
 	protected $phones = [];
-	protected $brends = [];
+	protected $brands = [];
 	protected $orders = [];
 
 	/**
@@ -55,35 +55,20 @@ abstract class BaseController extends AbstractController
 	{
 		session_start(); // стартуем сессию
 
-		// var_dump($_COOKIE);die;
+		// var_dump($GLOBALS);die;
 		$this->blade = new Blade('views', 'cache'); // создаем экземпляр модели шаблонизатора Blade
 		$this->user = new UserModel(); // создаем экземпляр пользователя
+		$this->basket = new BasketModel(); // создаем экземпляр пользователя
 
 		$this->saveLogs(); // сохраняем открытую страницу в логах
 
 		// проверяем пользователя
-		if ($this->checkUser()) {
-			$this->userData = $this->user->getUserData($_SESSION['userId']);
-			// var_dump($this->userData);die;
+		$this->userData = $this->user->userProfile();
+		// var_dump($_SESSION['userId']);die;
+		// определяем количество товара в корзине
+		if ($_SESSION['userId']) {
+			$this->userData['basket_size'] = $this->basket->getBasketSize($_SESSION['userId']);
 		}
 	}
-
-	/**
-	 * Функция проверки пользователя
-	 */
-	public function checkUser()
-	{
-		// проверяем, сохранились ли в куках что-то
-		// если одного чего-то нет, все удаляем и направляем на регистрацию
-		// если все есть, но токен устарел, обновляем токен
-		// проверяем, есть ли сессия
-		// если есть и она не совпадают с кукой, все удаляем и направляем на регистрацию
-		// если сессии нет, создаем
-		// если совпадают, выдаем данные о пользователе
-		if (isset($_SESSION['userId'])) {
-			return true;
-		}
-		return false;
-    }
 
 }

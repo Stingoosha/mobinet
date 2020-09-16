@@ -26,10 +26,14 @@ class UserController extends BaseController
 
 			if ($this->user->isUserExists($login)) { // проверка, существует ли в базе данных этот логин
 				$userData = $this->user->checkPass($login, $pass); // проверка пароля, если успешно, то получение данных пользователя
-				// var_dump($userData);die;
 				if ($userData['userId']) {
 					if ($_POST['remember']) { // если отмечен checkbox "Запомнить на 1 год"
-						$this->coockie('userId', $userData['userId'], self::$constants['YEAR']); // сохраняем userId в куках на 1 год
+						$pcName = php_uname('n');
+						$pcType = php_uname('m');
+						$wName = php_uname('v');
+						$coockiData = $userData['userId'] . ':' . password_hash($login . $pcName . $pcType . $wName, PASSWORD_BCRYPT);
+						// var_dump($coockiData);die;
+						$this->cookie('remember', $coockiData, self::$constants['YEAR']); // сохраняем userId в куках на 1 год
 					}
 					$this->session('userId', $userData['userId']); // сохраняем userId в сессии
 					if ($userData['userName']) {
@@ -112,7 +116,7 @@ class UserController extends BaseController
 	/**
 	 * функция изменения личных данных пользователя
 	 */
-	public function change()
+	public function edit()
 	{
 		$userData = $this->user->getUserData($_SESSION['userId']); // получение данных о пользователе
 
@@ -139,8 +143,8 @@ class UserController extends BaseController
 	public function destroy() :void
 	{
 		unset($_SESSION['userId']);
-		$this->coockie('userId', '123', -3600);
 
+		$this->cookie('remember', '123', -3600);
 	}
 
 }

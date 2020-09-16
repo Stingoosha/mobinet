@@ -2,7 +2,7 @@
 namespace controllers;
 
 use models\PageModel;
-use models\BrendModel;
+use models\BrandModel;
 use resources\Requester;
 
 /**
@@ -12,10 +12,10 @@ class PageController extends BaseController
 {
 	/**
      * @var PageModel $page Модель страницы
-     * @var BrendModel $brend Модель бренда
+     * @var BrandModel $brand Модель бренда
      */
 	private $page;
-	private $brend;
+	private $brand;
 
 	/**
 	 * Конструктор
@@ -23,7 +23,7 @@ class PageController extends BaseController
 	public function __construct()
 	{
 		$this->page = new PageModel(); // создается экземпляр модели страницы
-		$this->brend = new BrendModel(); // создается экземпляр бренда
+		$this->brand = new BrandModel(); // создается экземпляр бренда
 	}
 
 	/**
@@ -45,7 +45,7 @@ class PageController extends BaseController
 	public function catalog()
 	{
 		$this->active = 'catalog';
-		$this->brends = $this->brend->all(); // получение всех брендов
+		$this->brands = $this->brand->all(); // получение всех брендов
 		$this->phones = $this->page->some(self::$constants['TOTAL_ON_PAGE']); // получение определенного количества моделей
 
 		// var_dump($phones);die;
@@ -55,7 +55,7 @@ class PageController extends BaseController
 		  'active' => $this->active,
 		  'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
 		  'total' => self::$constants['TOTAL_ON_PAGE'],
-		  'brends' => $this->brends,
+		  'brands' => $this->brands,
 		  'phones' => $this->phones
 		]);
 	}
@@ -90,7 +90,7 @@ class PageController extends BaseController
 			$this->redirect('Пожалуйста, введите данные для поиска!', 'phones');
 		} else {
 			$phones = $this->page->search($search);
-			$brends = $this->brend->all();
+			$brands = $this->brand->all();
 
 			if($phones) {
 				$spoiler = $this->page->getSpoiler(count($phones), ['ь', 'и', 'ей']);
@@ -105,7 +105,7 @@ class PageController extends BaseController
 			'active' => $active,
 			'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
 			'phones' => $phones,
-			'brends' => $brends ?? ''
+			'brands' => $brands ?? ''
 		]);
 	}
 
@@ -137,14 +137,14 @@ class PageController extends BaseController
 	/**
 	 * Функция показа моделей, принадлежащих выделенному пользователем бренду (или группы брендов)
 	 */
-	public function selectBrend()
+	public function selectBrand()
 	{
 		$checked = $_POST['checked']; // получение id всех отмеченных брендов
 		// образование условия WHERE для SQL-запроса
 		$checked = explode(',', $checked);
-		$where = ' id_brend=' . implode(' OR id_brend=', $checked);
+		$where = ' id_brand=' . implode(' OR id_brand=', $checked);
 
-		$phones = $this->page->getBrends($where); // получение всех моделей по отмеченным брендам
+		$phones = $this->page->getBrands($where); // получение всех моделей по отмеченным брендам
 
 		echo json_encode($phones);
 	}

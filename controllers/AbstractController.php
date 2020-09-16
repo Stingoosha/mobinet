@@ -81,7 +81,7 @@ abstract class AbstractController
 	 * @var $val Значение, сохраняемое в переменной куки (может быть любого типа)
 	 * @return void
 	 */
-	protected function coockie(string $param, $val, int $period ) :void
+	protected function cookie(string $param, $val, int $period ) :void
 	{
 		setcookie($param, $val, time() + $period);
 	}

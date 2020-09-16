@@ -6,13 +6,13 @@
     <div class="row">
         <div class="col-2 card border-info h-200">
             <h5 class="text-info">Бренды</h5>
-            <div class="col-12 d-flex flex-column" id="brends">
+            <div class="col-12 d-flex flex-column" id="brands">
 
-                @foreach ($brends as $brend)
+                @foreach ($brands as $brand)
 
                     <div class="form-check form-check-inline text-info">
-                        <input class="form-check-input checkbox" type="checkbox" value="{{ $brend['id_brend'] }}">
-                        <label class="form-check-label" for="{{ $brend['id_brend'] }}">{{ $brend['name_brend'] }}</label>
+                        <input class="form-check-input checkbox brand" type="checkbox" value="{{ $brand['id_brand'] }}">
+                        <label class="form-check-label" for="{{ $brand['id_brand'] }}">{{ $brand['name_brand'] }}</label>
                     </div>
 
                     @endforeach

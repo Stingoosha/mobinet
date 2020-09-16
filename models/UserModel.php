@@ -14,13 +14,40 @@ class UserModel extends BaseModel
 	protected $table = 'users';
 
 	/**
+	 * Функция проверки пользователя
+	 * @return array
+	 */
+	public function userProfile() :array
+	{
+		// проверяем сессию $_SESSION['userId'])
+		// если есть, даем запрос в БД по id и возвращаем данные пользователя
+		// если ее нет, ищем куку $_COOCKIE['remember']
+		// если она есть, проверяем ее на валидность ($userId:$login . $_SERVER["HTTP_USER_AGENT"])
+		// если нормально, даем запрос в БД по id и возвращаем данные пользователя и сохраняем $_SESSION['userId'])
+		// если не нормально, удаляем куку, возвращаем role=1 и редиректим на каталог товаров
+		// если куки тоже нет, возвращаем role=1
+		// if (isset($_SESSION['userId'])) {
+		// 	return $this->getUserData($_SESSION['userId']);
+		// } else {
+			if (isset($_COOKIE['remember'])) {
+				$userId = $this->checkCookie($_COOKIE['remember']);
+				if ($userId) {
+					// var_dump($this->getUserData($userId));die;
+					return $this->getUserData($userId);
+				} else {
+					setcookie('remember', '123', time() - 3600);
+				}
+			}
+		// }
+		return ['id_role' => 1];
+    }
+
+	/**
 	 * Функция проверки наличия логина пользователя
 	 * @var string $login Логин пользователя
 	 */
 	public function isUserExists(string $login)
 	{
-		// $login = $this->hashLogin($login);
-
 		return $this->query("SELECT id FROM $this->table WHERE login=:login", 'fetch', ['login' => $login]);
 	}
 
@@ -32,7 +59,6 @@ class UserModel extends BaseModel
 	 */
 	public function createUser(string $login, string $pass) :string
 	{
-		// $login = $this->hashLogin($login);
 		$pass = password_hash($pass, PASSWORD_BCRYPT);
 
 		return $this->insert(['login' => $login, 'pass' => $pass]);
@@ -65,7 +91,6 @@ class UserModel extends BaseModel
 	 */
 	public function checkPass(string $login, string $pass) :array
 	{
-		// $login = $this->hashLogin($login);
 		$userData = $this->query("SELECT id, pass, first_name FROM $this->table WHERE login=:login", 'fetch', ['login' => $login]);
 
 		if (password_verify($pass, $userData['pass'])) {
@@ -76,14 +101,25 @@ class UserModel extends BaseModel
 	}
 
 	/**
-	 * Функция шифрования логина с использованием соли
-	 * @var string $login Логин пользователя
-	 * @return string
+	 * Функция проверки $_COOKIE['remember']
+	 * @var string $cookie
+	 * @return ?int
 	 */
-	// public function hashLogin(string $login) :string
-	// {
-	// 	return md5(md5($login) . self::$database['SALT']);
-	// }
+	public function checkCookie(string $cookie) :?int
+	{
+		$cookieParts = explode(':', $cookie);
+		$userId = (int)$cookieParts[0];
+		$login = $this->query("SELECT login FROM $this->table WHERE id=:id", 'fetch', ['id' => $userId]);
+		if ($login) {
+			$pcName = php_uname('n');
+			$pcType = php_uname('m');
+			$wName = php_uname('v');
+			if (password_verify($login['login'] . $pcName . $pcType . $wName, $cookieParts[1])) {
+				return $userId;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Функция валидации введенных пользователем данных

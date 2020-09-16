@@ -14,10 +14,10 @@
     <script src="/public/js/bootstrap.min.js"></script>
     <script src="/public/js/showMore.js"></script>
     <script src="/public/js/addToBasket.js"></script>
-    <script src="/public/js/selectBrend.js"></script>
+    <script src="/public/js/selectBrand.js"></script>
     <script>
         $(document).ready(function() {
-            selectBrend();
+            selectBrand();
         })
     </script>
 </head>
@@ -44,7 +44,9 @@
                     </form>
                     <ul class="col-1 navbar-nav ml-auto">
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold <?php echo e($active == 'basket' ? 'active' : 'text-info'); ?>" href="/basket">Корзина<span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold d-flex <?php echo e($active == 'basket' ? 'active' : 'text-info'); ?>" href="/basket">
+                            <img src="/public/img/basket.png" style="background-color: transparent" alt="Корзина"></img>
+                            <span class="badge text-light badge-info float-right h-50 ml-1" id="basket"><?php echo e($userData['basket_size'] ?? 0); ?></span></a>
                         </li>
                     </ul>
                     <?php if(!isset($_SESSION['userId'])): ?>
@@ -61,6 +63,11 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo e($userData['first_name'] ?? $userData['login']); ?></a>
                                 <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/brands">Бренды</a>
+                                    <a class="dropdown-item" href="/cabinet">Модели</a>
+                                    <a class="dropdown-item" href="/cabinet">Заказы</a>
+                                    <a class="dropdown-item" href="/cabinet">Роли</a>
+                                    <a class="dropdown-item" href="/cabinet">Пользователи</a>
                                     <a class="dropdown-item" href="/cabinet">Кабинет</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="/logout">Выход</a>

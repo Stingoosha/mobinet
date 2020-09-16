@@ -1,9 +1,7 @@
 <?php
 namespace controllers;
 
-use models\BasketModel;
 use models\OrderModel;
-use models\UserModel;
 use resources\Requester;
 
 /**
@@ -12,10 +10,8 @@ use resources\Requester;
 class BasketController extends BaseController
 {
     /**
-     * @var BasketModel $basket Модель корзины
      * @var OrderModel $order Модель заказа
      */
-    protected $basket;
     protected $order;
 
 	/**
@@ -23,7 +19,6 @@ class BasketController extends BaseController
 	 */
 	public function __construct()
 	{
-        $this->basket = new BasketModel(); // создается экземпляр модели корзины
         $this->order = new OrderModel(); // создается экземпляр модели заказа
     }
 

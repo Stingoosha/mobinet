@@ -40,4 +40,22 @@ class BasketModel extends BaseModel
     {
         return $this->query("SELECT goods.id as good_id, goods.photo, goods.name, goods.price, goods.new_price, basket.amount, basket.id FROM goods RIGHT JOIN basket on goods.id=basket.good_id WHERE basket.user_id=:user_id AND basket.order_id IS NULL", 'fetchAll', ['user_id' => $id]);
     }
+
+    /**
+     * Функция подсчета количества моделей в корзине пользователя
+     * @var int $id Идентификацционный номер пользователя id
+     * @return ?int
+     */
+    public function getBasketSize(int $id) :?int
+    {
+        $basketSize = 0;
+        $basket = $this->allFromBasket((int)$_SESSION['userId']);
+
+        if ($basket) {
+            foreach ($basket as $model) {
+                $basketSize += $model['amount'];
+            }
+        }
+        return $basketSize;
+    }
 }

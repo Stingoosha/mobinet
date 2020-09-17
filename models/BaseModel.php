@@ -25,6 +25,7 @@ class BaseModel extends AbstractModel
     public static function init(string $databasePath) :void
     {
         self::$database = include $databasePath;
+        // var_dump(self::$database);die;
     }
 
     /**
@@ -88,14 +89,14 @@ class BaseModel extends AbstractModel
     }
 
     /**
-     * Функция вывода данных модели по его id
-     * @var int $id Идентификационный номер id модели
+     * Фукнция запроса на вывод одной записи
+     * @var string $selects все столбцы через запятую, необходимые для вывода
+     * @var string $where условие запроса
+     * @return array/bool
      */
-    public function one(int $id)
+    public function one(string $selects, string $where)
     {
-        $sql = "SELECT * FROM $this->table WHERE id=:id";
-
-        return $this->query($sql, 'fetch', ['id' => $id]);
+        return $this->query("SELECT $selects FROM $this->table WHERE $where", 'fetch');
     }
 
     /**
@@ -105,6 +106,18 @@ class BaseModel extends AbstractModel
     public function all() :array
     {
         $sql = "SELECT * FROM $this->table";
+
+        return $this->query($sql, 'fetchAll');
+    }
+
+    /**
+     * Функция вывода всех данных таблицы согласно условию
+     * @var string $where условие запроса
+     * @return array
+     */
+    public function allWhere(string $where) :array
+    {
+        $sql = "SELECT * FROM $this->table WHERE $where";
 
         return $this->query($sql, 'fetchAll');
     }
@@ -215,4 +228,5 @@ class BaseModel extends AbstractModel
             return $variants[2];
         }
     }
+
 }

@@ -15,6 +15,7 @@
     <script src="/public/js/showMore.js"></script>
     <script src="/public/js/addToBasket.js"></script>
     <script src="/public/js/selectBrand.js"></script>
+    <script src="/public/js/showModalConfirmation.js"></script>
     <script>
         $(document).ready(function() {
             selectBrand();
@@ -65,9 +66,9 @@
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="/brands">Бренды</a>
                                     <a class="dropdown-item" href="/cabinet">Модели</a>
-                                    <a class="dropdown-item" href="/cabinet">Заказы</a>
-                                    <a class="dropdown-item" href="/cabinet">Роли</a>
-                                    <a class="dropdown-item" href="/cabinet">Пользователи</a>
+                                    <a class="dropdown-item" href="/orders">Заказы</a>
+                                    <a class="dropdown-item" href="/roles">Роли</a>
+                                    <a class="dropdown-item" href="/users">Пользователи</a>
                                     <a class="dropdown-item" href="/cabinet">Кабинет</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="/logout">Выход</a>

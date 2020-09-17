@@ -1,5 +1,5 @@
 <?php
-
+// echo 'configs/database';die;
 return [
     'DRIVER' => 'mysql', // драйвер БД
     'HOST' => 'localhost', // адрес хоста БД

@@ -19,7 +19,9 @@
                                 <td><input type="text" class="form-control {{ $brand['id_brand'] == $newBrandId ? 'bg-success text-light' : '' }}" name="newBrand" value="{{ $brand['name_brand'] }}" required></td>
                                 <td><input type="submit" value="Изменить" class="btn btn-outline-warning"></td>
                             </form>
-                            <td><a class="btn btn-outline-danger" href="/brands/{{ $brand['id_brand'] }}/remove">Удалить</a></td>
+                            <!-- Button trigger modal -->
+                            <td><button type="button" class="btn btn-outline-danger" onclick="showModalConfirmation('brands', {{ $brand['id_brand'] }}, 'бренда', 'этот бренд')" data-toggle="modal" data-target="#confirmation">
+                            Удалить</button></td>
                         </tr>
                     @endforeach
                 @else
@@ -40,6 +42,25 @@
                 </div>
                 <button type="submit" class="col-6 btn btn-outline-info">Добавить</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmationTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <a class="col" id="confirm-href" href=""><button type="button" class="col btn btn-outline-success">Да</button></a>
+                <button type="button" class="col btn btn-outline-danger" data-dismiss="modal">Нет</button>
+            </div>
+            </div>
         </div>
     </div>
 

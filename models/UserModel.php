@@ -26,9 +26,9 @@ class UserModel extends BaseModel
 		// если нормально, даем запрос в БД по id и возвращаем данные пользователя и сохраняем $_SESSION['userId'])
 		// если не нормально, удаляем куку, возвращаем role=1 и редиректим на каталог товаров
 		// если куки тоже нет, возвращаем role=1
-		// if (isset($_SESSION['userId'])) {
-		// 	return $this->getUserData($_SESSION['userId']);
-		// } else {
+		if (isset($_SESSION['userId'])) {
+			return $this->getUserData($_SESSION['userId']);
+		} else {
 			if (isset($_COOKIE['remember'])) {
 				$userId = $this->checkCookie($_COOKIE['remember']);
 				if ($userId) {
@@ -38,7 +38,7 @@ class UserModel extends BaseModel
 					setcookie('remember', '123', time() - 3600);
 				}
 			}
-		// }
+		}
 		return ['id_role' => 1];
     }
 

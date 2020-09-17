@@ -156,6 +156,8 @@ class PageController extends BaseController
 	{
 		$this->title = 'Заблудились?';
 
-		echo $this->blade->render('errors/404');
+		echo $this->blade->render('errors/404', [
+			'userData' => $this->userData
+		]);
 	}
 }

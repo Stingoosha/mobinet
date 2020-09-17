@@ -5,6 +5,10 @@ use controllers\BasketController;
 use controllers\OrderController;
 use controllers\UserController;
 use controllers\admin\AdminBrandController;
+use controllers\admin\AdminRoleController;
+use controllers\admin\AdminModelController;
+use controllers\admin\AdminOrderController;
+use controllers\admin\AdminUserController;
 
 return [
     '/' => [new PageController(), 'index'],
@@ -29,9 +33,15 @@ return [
     '/brands/create' => [new AdminBrandController(), 'create'],
     '/brands/{id}/edit' => [new AdminBrandController(), 'edit'],
     '/brands/{id}/remove' => [new AdminBrandController(), 'remove'],
-    // '/models' => [new AdminController(), 'models'],
-    // '/orders' => [new AdminController(), 'orders'],
-    // '/roles' => [new AdminController(), 'roles'],
-    // '/users' => [new AdminController(), 'users'],
+    '/models' => [new AdminModelController(), 'models'],
+    '/orders' => [new AdminOrderController(), 'index'],
+    '/orders/{id}' => [new AdminOrderController(), 'show'],
+    '/orders/{id}/edit' => [new AdminOrderController(), 'edit'],
+    '/roles' => [new AdminRoleController(), 'index'],
+    '/roles/create' => [new AdminRoleController(), 'create'],
+    '/roles/{id}/edit' => [new AdminRoleController(), 'edit'],
+    '/roles/{id}/remove' => [new AdminRoleController(), 'remove'],
+    '/users' => [new AdminUserController(), 'index'],
+    '/users/{id}' => [new AdminUserController(), 'show'],
     '/404' => [new PageController(), 'error404']
 ];

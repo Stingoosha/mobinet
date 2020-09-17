@@ -39,7 +39,7 @@ abstract class BaseController extends AbstractController
 	protected $orders = [];
 
 	/**
-	 * функция инициализации базового контроллера (подключает массив с константами)
+	 * Функция инициализации базового контроллера (подключает массив с константами)
 	 * @var string $constantsPath Путь до массива с константами
 	 * @return void
 	 */
@@ -49,13 +49,13 @@ abstract class BaseController extends AbstractController
     }
 
 	/**
-	 * функция отрабатывается перед основным action
+	 * Функция отрабатывается перед основным action
 	 */
 	protected function before()
 	{
 		session_start(); // стартуем сессию
 
-		// var_dump($GLOBALS);die;
+		// var_dump($_SESSION);die;
 		$this->blade = new Blade('views', 'cache'); // создаем экземпляр модели шаблонизатора Blade
 		$this->user = new UserModel(); // создаем экземпляр пользователя
 		$this->basket = new BasketModel(); // создаем экземпляр пользователя
@@ -64,9 +64,9 @@ abstract class BaseController extends AbstractController
 
 		// проверяем пользователя
 		$this->userData = $this->user->userProfile();
-		// var_dump($_SESSION['userId']);die;
+		// var_dump($this->userData);die;
 		// определяем количество товара в корзине
-		if ($_SESSION['userId']) {
+		if (isset($_SESSION['userId'])) {
 			$this->userData['basket_size'] = $this->basket->getBasketSize($_SESSION['userId']);
 		}
 	}

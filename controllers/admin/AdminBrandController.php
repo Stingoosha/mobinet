@@ -4,22 +4,25 @@ namespace controllers\admin;
 use controllers\BaseController;
 use models\BrandModel;
 use resources\Requester;
+
 /**
- * Контроллер администратора сайта
+ * Контроллер администратора брендов
  */
 class AdminBrandController extends BaseController
 {
     /**
      * @var BrandModel $brand Модель бренда
+     * @var array $this->brands Массив брендов
      */
 	private $brand;
+	protected $brands = [];
 
-	/**
-	 * Конструктор
-	 */
-	public function __construct()
+    /**
+     * Конструктор
+     */
+    public function __construct()
 	{
-		$this->brand = new BrandModel(); // создается экземпляр бренда
+        $this->brand = new BrandModel(); // создается экземпляр бренда
     }
 
     /**
@@ -27,12 +30,11 @@ class AdminBrandController extends BaseController
      */
     protected function index()
     {
-        $brands = $this->brand->all();
-
-        // var_dump($brands);die;
+        $this->brands = $this->brand->all();
+        // var_dump($this->brands);die;
         echo $this->blade->render('pages/admin/brands', [
             'userData' => $this->userData,
-            'brands' => $brands
+            'brands' => $this->brands
         ]);
     }
 
@@ -43,7 +45,7 @@ class AdminBrandController extends BaseController
     {
         if ($this->isPost()) {
             $this->brand->clear($_POST);
-            $newBrandId = $this->brand->createBrand($_POST['newBrand']);
+            $newBrandId = $this->brand->insert(['name_brand' => $_POST['newBrand']]);
             // var_dump($newBrandId);die;
             if ($newBrandId) {
                 $this->flash('Новый бренд "' . $_POST['newBrand'] . '" успешно добавлен!');
@@ -51,13 +53,13 @@ class AdminBrandController extends BaseController
                 $this->flash('По техническим причинам новый бренд добавить не удалось! Поробуйте позже!');
             }
         } else {
-            $this->flash('Пожалуйста, введите название бренда!');
+            $this->flash('Пожалуйста, введите наименование бренда!');
         }
-        $brands = $this->brand->all();
+        $this->brands = $this->brand->all();
 
         echo $this->blade->render('pages/admin/brands', [
             'userData' => $this->userData,
-            'brands' => $brands,
+            'brands' => $this->brands,
             'newBrandId' => $newBrandId
         ]);
     }
@@ -72,19 +74,19 @@ class AdminBrandController extends BaseController
         if ($this->isPost()) {
             $this->brand->clear($_POST);
 
-            if ($this->brand->editBrand($brandId, $_POST['newBrand'])) {
+            if ($this->brand->update(['name_brand' => $_POST['newBrand']], 'id_brand=' . (int)$brandId)) {
                 $this->flash('Наименование бренда успешно изменено на "' . $_POST['newBrand'] . '"!');
             } else {
                 $this->flash('По техническим причинам изменить наименование бренда на "' . $_POST['newBrand'] . '" не удалось! Поробуйте позже!');
             }
         } else {
-            $this->flash('Пожалуйста, введите название бренда!');
+            $this->flash('Пожалуйста, введите наименование бренда!');
         }
-        $brands = $this->brand->all();
+        $this->brands = $this->brand->all();
 
         echo $this->blade->render('pages/admin/brands', [
             'userData' => $this->userData,
-            'brands' => $brands,
+            'brands' => $this->brands,
             'newBrandId' => $brandId
         ]);
     }
@@ -96,18 +98,18 @@ class AdminBrandController extends BaseController
     {
         $brandId = Requester::id(); // получение id удаляемого бренда
 
-        $brandName = $this->brand->removeBrand($brandId);
+        $brandName = $this->brand->one('name_brand', 'id_brand=' . (int)$brandId);;
         // var_dump($brandName);die;
-        if ($brandName) {
-            $this->flash('Бренд "' . $brandName . '" успешно удален!');
+        if ($this->brand->delete('id_brand=' . (int)$brandId)) {
+            $this->flash('Бренд "' . $brandName['name_brand'] . '" успешно удален!');
         } else {
-            $this->flash('По техническим причинам удаление бренда "' . $brandName . '" не удалось! Поробуйте позже!');
+            $this->flash('По техническим причинам удаление бренда "' . $brandName['name_brand'] . '" не удалось! Поробуйте позже!');
         }
-        $brands = $this->brand->all();
+        $this->brands = $this->brand->all();
 
         echo $this->blade->render('pages/admin/brands', [
             'userData' => $this->userData,
-            'brands' => $brands
+            'brands' => $this->brands
         ]);
     }
 }

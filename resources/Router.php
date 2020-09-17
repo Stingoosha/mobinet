@@ -20,6 +20,7 @@ class Router
     {
         // загрузка данных маршрутизации в массив
         self::$routes = include $routePath;
+        // var_dump($adminRoutePath);die;
     }
 
 	/**

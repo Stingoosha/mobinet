@@ -18,7 +18,7 @@
                     @foreach ($users as $user)
                         <tr>
                             <td class="{{ $user['id'] == $newUserId ? 'bg-success text-light' : '' }}">{{ $user['id'] }}</td>
-                            <td><a class="btn btn-outline-info" href="/users/{{ $user['id'] }}">Информация о пользователе</a></td>
+                            <td><a class="btn btn-outline-info" href="/users/{{ $user['id'] }}">Подробнее</a></td>
                             <td class="{{ $user['id'] == $newUserId ? 'bg-success text-light' : '' }}">{{ $user['login'] }}</td>
                             <form action="/users/{{ $user['id'] }}/edit" method="post">
                             <td><select class="form-control w-100" name="newRole">

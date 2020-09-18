@@ -33,7 +33,12 @@ return [
     '/brands/create' => [new AdminBrandController(), 'create'],
     '/brands/{id}/edit' => [new AdminBrandController(), 'edit'],
     '/brands/{id}/remove' => [new AdminBrandController(), 'remove'],
-    '/models' => [new AdminModelController(), 'models'],
+    '/tels' => [new AdminModelController(), 'index'],
+    '/tels/create' => [new AdminModelController(), 'create'],
+    '/tels/{id}' => [new AdminModelController(), 'show'],
+    '/tels/{id}/save' => [new AdminModelController(), 'save'],
+    '/tels/{id}/edit' => [new AdminModelController(), 'edit'],
+    '/tels/{id}/remove' => [new AdminModelController(), 'remove'],
     '/orders' => [new AdminOrderController(), 'index'],
     '/orders/{id}' => [new AdminOrderController(), 'show'],
     '/orders/{id}/edit' => [new AdminOrderController(), 'edit'],
@@ -43,5 +48,6 @@ return [
     '/roles/{id}/remove' => [new AdminRoleController(), 'remove'],
     '/users' => [new AdminUserController(), 'index'],
     '/users/{id}' => [new AdminUserController(), 'show'],
+    '/users/{id}/edit' => [new AdminUserController(), 'edit'],
     '/404' => [new PageController(), 'error404']
 ];

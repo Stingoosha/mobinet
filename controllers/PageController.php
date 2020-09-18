@@ -18,10 +18,11 @@ class PageController extends BaseController
 	private $brand;
 
 	/**
-	 * Конструктор
+	 * Функция отрабатывается перед основным action
 	 */
-	public function __construct()
+	public function before()
 	{
+		parent::before();
 		$this->page = new PageModel(); // создается экземпляр модели страницы
 		$this->brand = new BrandModel(); // создается экземпляр бренда
 	}
@@ -65,9 +66,9 @@ class PageController extends BaseController
 	 */
 	public function show()
 	{
-		$id = Requester::id(); // получение id определенной модели телефона
+		$phoneId = (int)Requester::id(); // получение id определенной модели телефона
 
-		$phone = $this->page->one($id); // получение данных по id телефона
+		$phone = $this->page->one('*', 'id=' . $phoneId); // получение данных по id телефона
 
 		echo $this->blade->render('pages/show', [
 			'userData' => $this->userData,

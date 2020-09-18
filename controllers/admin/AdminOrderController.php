@@ -19,11 +19,12 @@ class AdminOrderController extends BaseController
     protected $orders = [];
 
 	/**
-	 * Конструктор
+	 * Функция отрабатывается перед основным action
 	 */
-    public function __construct()
+    public function before()
 	{
-        $this->order = new OrderModel(); // создается экземпляр заказа
+        parent::before();
+        $this->order = new OrderModel(); // создается экземпляр модели заказа
     }
 
     /**

@@ -32,7 +32,7 @@ try {
 	/**
 	 * инициализируем приложение (указываем пути до данных с маршрутизацией, константами, по базе данных, с правилами валидации)
 	 */
-	App::init('configs/routes.php', 'configs/constants.php', 'configs/database.php', 'configs/validation.php');
+	App::init('configs/routes.php', 'configs/constants.php', 'configs/verification.php', 'configs/database.php', 'configs/validation.php');
 	/**
 	 * по заданному URL находим массив с контроллером и его методом
 	 */

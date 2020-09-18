@@ -18,11 +18,12 @@ class AdminRoleController extends BaseController
     protected $roles = [];
 
 	/**
-	 * Конструктор
+	 * Функция отрабатывается перед основным action
 	 */
-    public function __construct()
+    public function before()
 	{
-        $this->role = new RoleModel(); // создается экземпляр бренда
+        parent::before();
+        $this->role = new RoleModel(); // создается экземпляр модели роли
     }
 
     /**

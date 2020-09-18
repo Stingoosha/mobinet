@@ -1,8 +1,8 @@
-@extends('layouts.layout', ['title' => 'Пользователь ID' . $user['id'], 'userData' => $userData])
+@extends('layouts.layout', ['title' => 'Пользователь ID-' . $user['id'], 'userData' => $userData])
 
 @section('content')
 
-    <h1 class="display-1 text-info">Данные пользователя ID{{ $user['id'] }}</h1>
+    <h1 class="display-1 text-info">Данные пользователя ID-{{ $user['id'] }}</h1>
     <div class="row">
         <div class="col-7 mx-auto">
             <div class="table-responsive">
@@ -21,7 +21,7 @@
                 </tr>
                 <tr>
                     <td>Пароль</td>
-                    <td>{{ $user['pass'] }}  &#8381;</td>
+                    <td>{{ $user['pass'] }}</td>
                 </tr>
                 <tr>
                     <td>Имя</td>

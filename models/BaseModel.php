@@ -105,9 +105,7 @@ class BaseModel extends AbstractModel
      */
     public function all() :array
     {
-        $sql = "SELECT * FROM $this->table";
-
-        return $this->query($sql, 'fetchAll');
+        return $this->query("SELECT * FROM $this->table", 'fetchAll');
     }
 
     /**
@@ -117,9 +115,7 @@ class BaseModel extends AbstractModel
      */
     public function allWhere(string $where) :array
     {
-        $sql = "SELECT * FROM $this->table WHERE $where";
-
-        return $this->query($sql, 'fetchAll');
+        return $this->query("SELECT * FROM $this->table WHERE $where", 'fetchAll');
     }
 
     /**
@@ -129,9 +125,18 @@ class BaseModel extends AbstractModel
      */
     public function some(int $limit) :array
     {
-        $sql = "SELECT * FROM $this->table LIMIT $limit";
+        return $this->query("SELECT * FROM $this->table LIMIT $limit", 'fetchAll');
+    }
 
-        return $this->query($sql, 'fetchAll');
+    /**
+     * Функция нативного присоединения двух таблиц
+     * @var string $selects все столбцы через запятую, необходимые для вывода
+     * @var string $tables все присоединяющиеся таблицы через запятую
+     * @var string $where условие запроса
+     */
+    public function selfJoin(string $selects, string $tables, string $where)
+    {
+        return $this->query("SELECT $selects FROM $tables WHERE $where", 'fetchAll');
     }
 
     /**
@@ -199,7 +204,7 @@ class BaseModel extends AbstractModel
     }
 
     /**
-     * Функция очитски данных, вводимых пользователем и сохранение их в массиве POST
+     * Функция очитски данных массива POST, вводимых пользователем
      * @var array $post Массив данных, которые ввел пользователь
      * @return void
      */

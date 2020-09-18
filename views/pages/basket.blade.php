@@ -30,7 +30,7 @@
                                 <td>{{ $order['delivery_method'] }}</td>
                                 <td>{{ $order['addr'] }}</td>
                                 <td>{{ $order['comment'] }}</td>
-                                <td>{{ $order['order_state'] }}</td>
+                                <td>{{ $order['status'] }}</td>
                             </tr>
                         @endforeach
                     @else

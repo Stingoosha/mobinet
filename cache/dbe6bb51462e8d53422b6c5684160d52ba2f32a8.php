@@ -65,7 +65,7 @@
                                 <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo e($userData['first_name'] ?? $userData['login']); ?></a>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="/brands">Бренды</a>
-                                    <a class="dropdown-item" href="/cabinet">Модели</a>
+                                    <a class="dropdown-item" href="/tels">Модели</a>
                                     <a class="dropdown-item" href="/orders">Заказы</a>
                                     <a class="dropdown-item" href="/roles">Роли</a>
                                     <a class="dropdown-item" href="/users">Пользователи</a>

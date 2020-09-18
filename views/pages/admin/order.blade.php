@@ -54,7 +54,11 @@
                 </tr>
                 <tr>
                     <td>ID клиента</td>
-                    <td><a class="btn btn-outline-info col-6" href="#">{{ $order['user_id'] }}</a></td>
+                    <td><a class="btn btn-outline-info col-6" href="/users/{{ $order['user_id'] }}">{{ $order['user_id'] }}</a></td>
+                </tr>
+                <tr>
+                    <td>Имя клиента</td>
+                    <td>{{ $order['first_name'] }}</td>
                 </tr>
                 <tr>
                     <td>Номер телефона клиента</td>

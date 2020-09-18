@@ -7,9 +7,11 @@ namespace controllers;
 abstract class AbstractController
 {
 	/**
-	 * Массив констант
+	 * @var array Массив констант
+	 * @var array Массив доступа к страницам
 	 */
 	protected static $constants = [];
+	protected static $verificators = [];
 
 	/**
 	 * Абстрактная функция, отрабатывающая до основного метода
@@ -109,7 +111,24 @@ abstract class AbstractController
         $this->flash($message);
         header("Location: /$redirect");
         exit;
-    }
+	}
+
+	/**
+	 * Функция проверки доступа пользователя на страницу
+	 * @var array $userData Данные пользователя
+	 * @return bool
+	 */
+	protected function access(array $userData) :bool
+	{
+		$routingClass = get_class($GLOBALS['routingData'][0]);
+		$className = explode('\\', $routingClass);
+		$className = $className[array_key_last($className)];
+
+		if (array_key_exists($className, self::$verificators)) {
+			return $userData['id_role'] >= self::$verificators[$className];
+		}
+		return true;
+	}
 
 	/**
 	 * Если вызвали метод, которого нет - завершаем работу (оставил, чтоб видеть когда роутер поломается)

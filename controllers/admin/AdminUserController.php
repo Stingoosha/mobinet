@@ -12,17 +12,21 @@ class AdminUserController extends BaseController
 {
     /**
      * @var UserModel $user Модель пользователя
+     * @var RoleModel $role Модель ролей
      * @var $users Массив всех пользователей
      */
     protected $user;
+    protected $role;
     protected $users = [];
 
 	/**
-	 * Конструктор
+	 * Функция отрабатывается перед основным action
 	 */
-    public function __construct()
+    public function before()
 	{
-        $this->user = new UserModel(); // создается экземпляр пользователя
+        parent::before();
+        $this->user = new UserModel(); // создается экземпляр модели пользователя
+        $this->role = new RoleModel(); // создается экземпляр модели роли
     }
 
     /**
@@ -31,9 +35,7 @@ class AdminUserController extends BaseController
     protected function index()
     {
         $this->users = $this->user->all();
-
-        $role = new RoleModel();
-        $roles = $role->all();
+        $roles = $this->role->all();
 
         echo $this->blade->render('pages/admin/users', [
             'userData' => $this->userData,
@@ -47,16 +49,45 @@ class AdminUserController extends BaseController
      */
     protected function show()
     {
-        $orderId = (int)Requester::id(); // получение id просматриваемого заказа
-        $phones = $this->order->getOrderData($orderId);
-        $order = $this->order->one('*', 'order_id=' . $orderId);
-        // var_dump($order);die;
+        $userId = (int)Requester::id(); // получение id пользователя
+        $user = $this->user->one('*', 'id=' . $userId);
+        $role = $this->role->one('*', 'id_role=' . $user['id_role']);
+        // var_dump($role['name_role']);die;
 
-        echo $this->blade->render('pages/admin/order', [
+        echo $this->blade->render('pages/admin/user', [
             'userData' => $this->userData,
-            'phones' => $phones,
-			'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
-            'order' => $order
+            'user' => $user,
+            'roleName' => $role['name_role']
+        ]);
+    }
+
+    /**
+     * Функция изменения роли пользователя
+     */
+    protected function edit()
+    {
+        $userId = (int)Requester::id(); // получение id пользователя
+
+        if ($this->isPost()) {
+            $this->user->clear($_POST);
+            // var_dump($_POST);die;
+            $role = $this->role->one('*', 'name_role="' . $_POST['newRole'] . '"');
+            // var_dump($role);die;
+
+            if ($this->user->update(['id_role' => (int)$role['id_role']], 'id=' . $userId)) {
+                $this->flash('Роль пользователя ID-' . $userId . ' успешно изменена на "' . $_POST['newRole'] . '"!');
+            } else {
+                $this->flash('По техническим причинам изменить роль пользователя ID-' . $userId . ' на "' . $_POST['newRole'] . '" не удалось! Поробуйте позже!');
+            }
+        }
+        $this->users = $this->user->all();
+        $roles = $this->role->all();
+
+        echo $this->blade->render('pages/admin/users', [
+            'userData' => $this->userData,
+            'users' => $this->users,
+            'newUserId' => $userId,
+            'roles' => $roles
         ]);
     }
 }

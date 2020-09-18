@@ -41,11 +41,13 @@ abstract class BaseController extends AbstractController
 	/**
 	 * Функция инициализации базового контроллера (подключает массив с константами)
 	 * @var string $constantsPath Путь до массива с константами
+	 * @var string $verificationPath Путь к файлу с верификацией страниц
 	 * @return void
 	 */
-    public static function init(string $constantsPath) :void
+    public static function init(string $constantsPath, string $verificationPath) :void
     {
         self::$constants = include $constantsPath;
+        self::$verificators = include $verificationPath;
     }
 
 	/**
@@ -55,7 +57,7 @@ abstract class BaseController extends AbstractController
 	{
 		session_start(); // стартуем сессию
 
-		// var_dump($_SESSION);die;
+		// var_dump(get_class($GLOBALS['routingData'][0]));die;
 		$this->blade = new Blade('views', 'cache'); // создаем экземпляр модели шаблонизатора Blade
 		$this->user = new UserModel(); // создаем экземпляр пользователя
 		$this->basket = new BasketModel(); // создаем экземпляр пользователя
@@ -64,6 +66,10 @@ abstract class BaseController extends AbstractController
 
 		// проверяем пользователя
 		$this->userData = $this->user->userProfile();
+		// проверяем доступна ли страница
+		if (!$this->access($this->userData)) {
+			$this->redirect('', '404');
+		}
 		// var_dump($this->userData);die;
 		// определяем количество товара в корзине
 		if (isset($_SESSION['userId'])) {

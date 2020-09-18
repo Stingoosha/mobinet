@@ -14,10 +14,11 @@ class OrderController extends BaseController
     protected $order;
 
     /**
-	* Конструктор
+	* Функция отрабатывается перед основным action
 	*/
-	public function __construct()
+	public function before()
 	{
+        parent::before();
         $this->order = new OrderModel(); // создается экземпляр модели заказа
     }
 

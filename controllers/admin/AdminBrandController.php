@@ -18,11 +18,12 @@ class AdminBrandController extends BaseController
 	protected $brands = [];
 
     /**
-     * Конструктор
+     * Функция отрабатывается перед основным action
      */
-    public function __construct()
+    public function before()
 	{
-        $this->brand = new BrandModel(); // создается экземпляр бренда
+        parent::before();
+        $this->brand = new BrandModel(); // создается экземпляр модели бренда
     }
 
     /**

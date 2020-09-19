@@ -10,6 +10,11 @@ function addToBasket(id) {
         success: function(answer) {
             clearText(msgs);
             $("#" + message_id).text(answer);
+            if (answer == 'Товар добавлен в корзину') {
+                let basketSize = $("#basket").html();
+                // console.log(basketSize);
+                $("#basket").html(+basketSize + +amount);
+            }
         }
     });
 }

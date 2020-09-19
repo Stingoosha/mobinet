@@ -1,4 +1,4 @@
-@extends('layouts.layout', ['title' => 'Каталог'])
+@extends('layouts.layout', ['title' => 'Каталог', 'userData' => $userData])
 
 @section('content')
 
@@ -6,15 +6,15 @@
     <div class="row">
         <div class="col-2 card border-info h-200">
             <h5 class="text-info">Бренды</h5>
-            <div class="col-12 d-flex flex-column" id="brends">
+            <div class="col-12 d-flex flex-column" id="brands">
 
-                @foreach ($brends as $brend)
+                @foreach ($brands as $brand)
 
                     <div class="form-check form-check-inline text-info">
-                        <input class="form-check-input checkbox" type="checkbox" value="{{ $brend['id_brend'] }}">
-                        <label class="form-check-label" for="{{ $brend['id_brend'] }}">{{ $brend['name_brend'] }}</label>
+                        <input class="form-check-input checkbox brand" type="checkbox" value="{{ $brand['id_brand'] }}">
+                        <label class="form-check-label" for="{{ $brand['id_brand'] }}">{{ $brand['name_brand'] }}</label>
                     </div>
-                    
+
                     @endforeach
 
                     <div class="btns text-center">
@@ -25,9 +25,9 @@
         </div>
         <div class="col-10">
             <div class="row row-cols-1 row-cols-md-3" id="showMore-container">
-                    
+
                 @foreach ($phones as $phone)
-        
+
                     <div class="col-2 mb-3">
                         <div class="card-deck">
                             <div class="card border-info text-info mb-3 h-100">
@@ -38,8 +38,9 @@
                             </div>
                             </div>
                         </div>
+                        @include('partials/buy')
                     </div>
-        
+
                 @endforeach
 
             </div>

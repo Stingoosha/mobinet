@@ -26,13 +26,18 @@ class UserController extends BaseController
 
 			if ($this->user->isUserExists($login)) { // проверка, существует ли в базе данных этот логин
 				$userData = $this->user->checkPass($login, $pass); // проверка пароля, если успешно, то получение данных пользователя
-				// var_dump($userData);die;
 				if ($userData['userId']) {
+					if ($_POST['remember']) { // если отмечен checkbox "Запомнить на 1 год"
+						$pcName = php_uname('n');
+						$pcType = php_uname('m');
+						$wName = php_uname('v');
+						$coockiData = $userData['userId'] . ':' . password_hash($login . $pcName . $pcType . $wName, PASSWORD_BCRYPT);
+						// var_dump($coockiData);die;
+						$this->cookie('remember', $coockiData, self::$constants['YEAR']); // сохраняем userId в куках на 1 год
+					}
 					$this->session('userId', $userData['userId']); // сохраняем userId в сессии
-					$this->session('userLogin', $login); // сохраняем login в сессии
 					if ($userData['userName']) {
-						$this->session('userName', $userData['userName']); // если у пользователя имеется userName, то сохраняем в сессии
-						$login = $userData['userName'];
+						$login = $userData['userName']; // если у пользователя указано имя, то будем приветствовать его по имени
 					}
 					$this->redirect(Str::of($login)->upper() . ', добро пожаловать на сайт!', 'phones');
 				} else {
@@ -44,6 +49,7 @@ class UserController extends BaseController
 		}
 
 		echo $this->blade->render('pages/user/login', [
+			'userData' => $this->userData,
 			'active' => $this->active,
 			'login' => $login ?? ''
 		]);
@@ -67,9 +73,7 @@ class UserController extends BaseController
 				} else {
 					$userId = $this->user->createUser($login, $pass); // создание нового пользователя
 					if ($userId) {
-						$this->session('userId', $userId); // сохраняем userId в сессии
-						$this->session('userLogin', $login); // сохраняем login в сессии
-						$this->redirect('Вы успешно зарегистрировались!', 'phones');
+						$this->redirect($login . ', Вы успешно зарегистрировались!', 'login');
 					} else {
 						$this->flash('Извините, по техническим причинам регистрация не доступна! Просьба, повторить чуть позже!');
 					}
@@ -82,6 +86,7 @@ class UserController extends BaseController
 		}
 
 		echo $this->blade->render('pages/user/registry', [
+			'userData' => $this->userData,
 			'active' => $this->active,
 			'login' => $login ?? '',
 			'pass' => $pass ?? ''
@@ -93,7 +98,7 @@ class UserController extends BaseController
 	 */
 	public function logout()
 	{
-		$this->user->destroy(); // удаление данных пользователя из сессии и куков
+		$this->destroy(); // удаление данных пользователя из сессии и кук
 
 		$this->redirect('Вы успешно вышли!', 'phones');
 	}
@@ -103,17 +108,15 @@ class UserController extends BaseController
 	 */
 	public function cabinet()
 	{
-		$userData = $this->user->getUserData($_SESSION['userId']); // получение данных о пользователе
-
 		echo $this->blade->render('pages/user/cabinet', [
-			'userData' => $userData
+			'userData' => $this->userData
 		]);
 	}
 
 	/**
 	 * функция изменения личных данных пользователя
 	 */
-	public function change()
+	public function edit()
 	{
 		$userData = $this->user->getUserData($_SESSION['userId']); // получение данных о пользователе
 
@@ -129,8 +132,19 @@ class UserController extends BaseController
 		}
 
 		echo $this->blade->render('pages/user/change', [
-			'userData' => $userData
+			'userData' => $this->userData
 		]);
+	}
+
+	/**
+	 * Функция удаления данных из сессии при логауте пользователя
+	 * @return void
+	 */
+	public function destroy() :void
+	{
+		unset($_SESSION['userId']);
+
+		$this->cookie('remember', '123', -3600);
 	}
 
 }

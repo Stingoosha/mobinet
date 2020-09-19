@@ -1,11 +1,9 @@
-@extends('layouts.layout', ['title' => 'Корзина'])
+@extends('layouts.layout', ['title' => 'Корзина', 'userData' => $userData])
 
 @section('content')
 
-    <p style="color: red">{{ $message ?? '' }}</p>
     <div class="row">
         <div class="col-12 mx-auto">
-            @if ($orders)
             <div class="orders-info">
                 <h1 class="display-1 text-info">Ваши заказы</h1>
                 <div class="table-responsive">
@@ -32,11 +30,12 @@
                                 <td>{{ $order['delivery_method'] }}</td>
                                 <td>{{ $order['addr'] }}</td>
                                 <td>{{ $order['comment'] }}</td>
-                                <td>{{ $order['order_state'] }}</td>
+                                <td>{{ $order['status'] }}</td>
                             </tr>
                         @endforeach
                     @else
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -50,7 +49,6 @@
                     </table>
                 </div>
             </div>
-            @endif
             <div class="basket-info">
                 <h1 class="display-1 text-info">Ваша корзина</h1>
                 <div class="table-responsive">

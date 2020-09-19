@@ -1,4 +1,4 @@
-@extends('layouts.layout', ['title' => $phone['name']])
+@extends('layouts.layout', ['title' => $phone['name'], 'userData' => $userData])
 
 @section('content')
 
@@ -7,7 +7,7 @@
         <div class="col-6 mb-3 mx-auto">
             <div class="card-deck text-center">
                 <div class="card border-info text-info mb-3">
-                    <img class="w-25 card-img-top" src="../{{ $pathImgLarge }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}" alt="Мобила">
+                    <img class="w-25 card-img-top" src="../{{ $pathImgLarge }}{{ $phone['photo'] ?? 'default.jpg' }}" alt="Мобила">
                     <div class="card-body">
                     <h5 class="card-content">{{ $phone['short_desc'] }}</h5>
                     @if ($phone['new_price'])

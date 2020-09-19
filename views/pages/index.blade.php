@@ -1,4 +1,4 @@
-@extends('layouts/layout', ['title' => 'Главная'])
+@extends('layouts/layout', ['title' => 'Главная', 'userData' => $userData])
 
 @section('content')
 
@@ -21,5 +21,5 @@
             </ul>
         </div>
     </div>
-    
+
 @endsection

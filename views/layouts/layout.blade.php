@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ $description }}"
+    <meta name="keywords" content="{{ $keywords }}"
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title }}</title>
     <link rel="stylesheet" href="/public/css/bootstrap.min.css">
     <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="shortcut icon" href="/public/img/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="/public/img/favicon.ico">
 	<script src="/public/js/jquery.min.js"></script>
     <script src="/public/js/bootstrap.min.js"></script>
     <script src="/public/js/showMore.js"></script>
     <script src="/public/js/addToBasket.js"></script>
-    <script src="/public/js/selectBrend.js"></script>
+    <script src="/public/js/selectBrand.js"></script>
+    <script src="/public/js/showModalConfirmation.js"></script>
     <script>
         $(document).ready(function() {
-            selectBrend();
+            selectBrand();
         })
     </script>
 </head>
@@ -42,10 +45,12 @@
                     </form>
                     <ul class="col-1 navbar-nav ml-auto">
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold {{ $active == 'basket' ? 'active' : 'text-info'}}" href="/basket">Корзина<span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold d-flex {{ $active == 'basket' ? 'active' : 'text-info'}}" href="/basket">
+                            <img src="/public/img/basket.png" style="background-color: transparent" alt="Корзина"></img>
+                            <span class="badge text-light badge-info float-right h-50 ml-1" id="basket">{{ $userData['basket_size'] ?? 0 }}</span></a>
                         </li>
                     </ul>
-                    @if (!isset($_SESSION['userLogin']))
+                    @if (!isset($_SESSION['userId']))
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item mr-3">
                                 <a class="nav-link font-weight-bold {{ $active == 'login' ? 'active' : 'text-info'}}" href="/login">Вход<span class="sr-only"></span></a>
@@ -57,8 +62,13 @@
                     @else
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $_SESSION['userName'] ?? $_SESSION['userLogin'] }}</a>
+                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $userData['first_name'] ?? $userData['login'] }}</a>
                                 <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/brands">Бренды</a>
+                                    <a class="dropdown-item" href="/tels">Модели</a>
+                                    <a class="dropdown-item" href="/orders">Заказы</a>
+                                    <a class="dropdown-item" href="/roles">Роли</a>
+                                    <a class="dropdown-item" href="/users">Пользователи</a>
                                     <a class="dropdown-item" href="/cabinet">Кабинет</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="/logout">Выход</a>

@@ -36,12 +36,13 @@ class PageModel extends BaseModel
         return $this->query($sql, 'fetchAll');
     }
 
+
     /**
      * Функция получения моделей по всем отмеченным брендам
      * @var string $where Условие, содержащее id всех брендов
      * @return array
      */
-    public function getBrends(string $where) :array
+    public function getBrands(string $where) :array
     {
         $sql = "SELECT * FROM $this->table WHERE $where";
 

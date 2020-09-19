@@ -2,7 +2,7 @@
 namespace controllers;
 
 use models\PageModel;
-use models\BrendModel;
+use models\BrandModel;
 use resources\Requester;
 
 /**
@@ -12,18 +12,19 @@ class PageController extends BaseController
 {
 	/**
      * @var PageModel $page Модель страницы
-     * @var BrendModel $brend Модель бренда
+     * @var BrandModel $brand Модель бренда
      */
 	private $page;
-	private $brend;
+	private $brand;
 
 	/**
-	 * Конструктор
+	 * Функция отрабатывается перед основным action
 	 */
-	public function __construct()
+	public function before()
 	{
+		parent::before();
 		$this->page = new PageModel(); // создается экземпляр модели страницы
-		$this->brend = new BrendModel(); // создается экземпляр бренда
+		$this->brand = new BrandModel(); // создается экземпляр бренда
 	}
 
 	/**
@@ -34,6 +35,7 @@ class PageController extends BaseController
 		$this->active = 'index';
 
 		echo $this->blade->render('pages/index', [
+			'userData' => $this->userData,
 			'active' => $this->active
 		]);
 	}
@@ -44,16 +46,17 @@ class PageController extends BaseController
 	public function catalog()
 	{
 		$this->active = 'catalog';
-		$this->brends = $this->brend->all(); // получение всех брендов
+		$this->brands = $this->brand->all(); // получение всех брендов
 		$this->phones = $this->page->some(self::$constants['TOTAL_ON_PAGE']); // получение определенного количества моделей
 
 		// var_dump($phones);die;
 
 		echo $this->blade->render('pages/catalog', [
+			'userData' => $this->userData,
 		  'active' => $this->active,
 		  'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
 		  'total' => self::$constants['TOTAL_ON_PAGE'],
-		  'brends' => $this->brends,
+		  'brands' => $this->brands,
 		  'phones' => $this->phones
 		]);
 	}
@@ -63,11 +66,12 @@ class PageController extends BaseController
 	 */
 	public function show()
 	{
-		$id = Requester::getInstance()->id(); // получение id определенной модели телефона
+		$phoneId = (int)Requester::id(); // получение id определенной модели телефона
 
-		$phone = $this->page->one($id); // получение данных по id телефона
+		$phone = $this->page->one('*', 'id=' . $phoneId); // получение данных по id телефона
 
 		echo $this->blade->render('pages/show', [
+			'userData' => $this->userData,
 			'pathImgLarge' => self::$constants['PATH_IMG_LARGE'],
 			'phone' => $phone,
 			'userId' => $_SESSION['userId'] ?? ''
@@ -87,7 +91,7 @@ class PageController extends BaseController
 			$this->redirect('Пожалуйста, введите данные для поиска!', 'phones');
 		} else {
 			$phones = $this->page->search($search);
-			$brends = $this->brend->all();
+			$brands = $this->brand->all();
 
 			if($phones) {
 				$spoiler = $this->page->getSpoiler(count($phones), ['ь', 'и', 'ей']);
@@ -98,10 +102,11 @@ class PageController extends BaseController
 		}
 
 		echo $this->blade->render('pages/catalog', [
+			'userData' => $this->userData,
 			'active' => $active,
 			'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
 			'phones' => $phones,
-			'brends' => $brends ?? ''
+			'brands' => $brands ?? ''
 		]);
 	}
 
@@ -113,6 +118,7 @@ class PageController extends BaseController
 		$active = 'contacts';
 
 		echo $this->blade->render('pages/contacts', [
+			'userData' => $this->userData,
 			'active' => $this->active
 		]);
 	}
@@ -132,14 +138,14 @@ class PageController extends BaseController
 	/**
 	 * Функция показа моделей, принадлежащих выделенному пользователем бренду (или группы брендов)
 	 */
-	public function selectBrend()
+	public function selectBrand()
 	{
 		$checked = $_POST['checked']; // получение id всех отмеченных брендов
 		// образование условия WHERE для SQL-запроса
 		$checked = explode(',', $checked);
-		$where = ' id_brend=' . implode(' OR id_brend=', $checked);
+		$where = ' id_brand=' . implode(' OR id_brand=', $checked);
 
-		$phones = $this->page->getBrends($where); // получение всех моделей по отмеченным брендам
+		$phones = $this->page->getBrands($where); // получение всех моделей по отмеченным брендам
 
 		echo json_encode($phones);
 	}
@@ -151,6 +157,8 @@ class PageController extends BaseController
 	{
 		$this->title = 'Заблудились?';
 
-		echo $this->blade->render('errors/404');
+		echo $this->blade->render('errors/404', [
+			'userData' => $this->userData
+		]);
 	}
 }

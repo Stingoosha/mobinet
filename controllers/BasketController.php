@@ -1,9 +1,7 @@
 <?php
 namespace controllers;
 
-use models\BasketModel;
 use models\OrderModel;
-use models\UserModel;
 use resources\Requester;
 
 /**
@@ -12,18 +10,16 @@ use resources\Requester;
 class BasketController extends BaseController
 {
     /**
-     * @var BasketModel $basket Модель корзины
      * @var OrderModel $order Модель заказа
      */
-    protected $basket;
     protected $order;
 
 	/**
-	 * Конструктор
+	 * Функция отрабатывается перед основным action
 	 */
-	public function __construct()
+	public function before()
 	{
-        $this->basket = new BasketModel(); // создается экземпляр модели корзины
+        parent::before();
         $this->order = new OrderModel(); // создается экземпляр модели заказа
     }
 
@@ -43,16 +39,18 @@ class BasketController extends BaseController
             $this->phones = $this->basket->allFromBasket($id); // получение всех товаров корзины пользователя
             // var_dump($phones);die;
 
-            if (!$this->orders && !$this->phones) { // проверка на отсутствие данных по заказам и товарам корзины
-                // запрет на вход в пустую корзину
-                $this->redirect('Извините, Вы не можете открыть пустую корзину!', 'phones');
-            }
+            // if (!$this->orders && !$this->phones) { // проверка на отсутствие данных по заказам и товарам корзины
+            //     // запрет на вход в пустую корзину
+            //     $this->redirect('Извините, Вы не можете открыть пустую корзину!', 'phones');
+            // }
         } else {
-            // запрет на вход в пустую корзину (если отсутствует userId)
-            $this->redirect('Извините, Вы не можете открыть пустую корзину!', 'phones');
+            // отправляем пустые массивы
+            $this->orders = [];
+            $this->phones = [];
         }
 
         echo $this->blade->render('pages/basket', [
+            'userData' => $this->userData,
             'active' => $this->active,
             'orders' => $this->orders,
             'phones' => $this->phones,
@@ -106,7 +104,7 @@ class BasketController extends BaseController
     public function remove()
     {
         // получение id удаляемого товара
-        $id = Requester::getInstance()->id();
+        $id = Requester::id();
 
         // удаление товара
         $this->basket->delete("good_id = $id");

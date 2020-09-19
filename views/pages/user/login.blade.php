@@ -1,4 +1,4 @@
-@extends('layouts.layout', ['title' => 'Авторизация'])
+@extends('layouts.layout', ['title' => 'Авторизация', 'userData' => $userData])
 
 @section('content')
 
@@ -16,7 +16,7 @@
                 </div>
                 <div class="form-group form-check">
                     <input type="checkbox" name="remember" class="form-check-input">
-                    <label class="form-check-label" for="remember">Запомнить</label>
+                    <label class="form-check-label" for="remember">Запомнить на год</label>
                 </div>
                 <div class="btns text-center">
                     <button type="submit" class="btn btn-outline-info col-10">Войти</button>

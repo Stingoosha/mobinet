@@ -1,18 +1,21 @@
-function selectBrend() {
-    $('#brends').click(function() {
+function selectBrand() {
+    let brand = $(".brand");
+    // console.log(brand);
+    brand.click(function() {
         let checked = [];
         $('input:checkbox:checked').each(function() {
             checked.push($(this).val());
+            // console.log(checked);
         });
 
         $.ajax({
             type: "post",
-            url: "/selectBrend",
+            url: "/selectBrand",
             data: "checked=" + checked,
             dataType: 'json',
             cache: false,
             success: function(answer) {
-                console.log(answer);
+                // console.log(answer);
                 $('#showMore-container').empty();
                 $('#showMore-div').hide();
                 let length = answer.length;

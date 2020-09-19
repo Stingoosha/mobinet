@@ -25,6 +25,7 @@ class BaseModel extends AbstractModel
     public static function init(string $databasePath) :void
     {
         self::$database = include $databasePath;
+        // var_dump(self::$database);die;
     }
 
     /**
@@ -88,15 +89,14 @@ class BaseModel extends AbstractModel
     }
 
     /**
-     * Функция вывода данных модели по его id
-     * @var int $id Идентификационный номер id модели
-     * @return array
+     * Фукнция запроса на вывод одной записи
+     * @var string $selects все столбцы через запятую, необходимые для вывода
+     * @var string $where условие запроса
+     * @return array/bool
      */
-    public function one(int $id) :array
+    public function one(string $selects, string $where)
     {
-        $sql = "SELECT * FROM $this->table WHERE id=:id";
-
-        return $this->query($sql, 'fetch', ['id' => $id]);
+        return $this->query("SELECT $selects FROM $this->table WHERE $where", 'fetch');
     }
 
     /**
@@ -105,9 +105,17 @@ class BaseModel extends AbstractModel
      */
     public function all() :array
     {
-        $sql = "SELECT * FROM $this->table";
+        return $this->query("SELECT * FROM $this->table", 'fetchAll');
+    }
 
-        return $this->query($sql, 'fetchAll');
+    /**
+     * Функция вывода всех данных таблицы согласно условию
+     * @var string $where условие запроса
+     * @return array
+     */
+    public function allWhere(string $where) :array
+    {
+        return $this->query("SELECT * FROM $this->table WHERE $where", 'fetchAll');
     }
 
     /**
@@ -117,9 +125,18 @@ class BaseModel extends AbstractModel
      */
     public function some(int $limit) :array
     {
-        $sql = "SELECT * FROM $this->table LIMIT $limit";
+        return $this->query("SELECT * FROM $this->table LIMIT $limit", 'fetchAll');
+    }
 
-        return $this->query($sql, 'fetchAll');
+    /**
+     * Функция нативного присоединения двух таблиц
+     * @var string $selects все столбцы через запятую, необходимые для вывода
+     * @var string $tables все присоединяющиеся таблицы через запятую
+     * @var string $where условие запроса
+     */
+    public function selfJoin(string $selects, string $tables, string $where)
+    {
+        return $this->query("SELECT $selects FROM $tables WHERE $where", 'fetchAll');
     }
 
     /**
@@ -187,7 +204,7 @@ class BaseModel extends AbstractModel
     }
 
     /**
-     * Функция очитски данных, вводимых пользователем и сохранение их в массиве POST
+     * Функция очитски данных массива POST, вводимых пользователем
      * @var array $post Массив данных, которые ввел пользователь
      * @return void
      */
@@ -216,4 +233,5 @@ class BaseModel extends AbstractModel
             return $variants[2];
         }
     }
+
 }

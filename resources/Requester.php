@@ -6,38 +6,24 @@ namespace resources;
  */
 class Requester
 {
-    private static $instance = null;
-    private $id; // id, передающийся в URL
-
-    private function __construct() {}
-    private function __sleep() {}
-    private function __wakeup() {}
-    private function __clone() {}
+    /**
+     * @var int $id id, составляющая URL (например, '/phones/{id}')
+     */
+    private static $id;
 
 	/**
-	 * Singleton
+	 * Функция сохранения id
 	 */
-    public static function getInstance()
+    public static function setId(int $id)
     {
-        if (empty(self::$instance)) {
-            self::$instance = new Requester();
-        }
-        return self::$instance;
+        self::$id = $id;
     }
 
 	/**
-	 * функция сохранения id
+	 * Функция вывода id
 	 */
-    public function setId(int $id)
+    public static function id()
     {
-        $this->id = $id;
-    }
-
-	/**
-	 * функция вывода id
-	 */
-    public function id()
-    {
-        return $this->id;
+        return self::$id;
     }
 }

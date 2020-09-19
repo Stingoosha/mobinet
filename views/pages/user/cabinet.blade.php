@@ -1,11 +1,11 @@
-@extends('layouts.layout', ['title' => 'Кабинет'])
+@extends('layouts.layout', ['title' => 'Кабинет', 'userData' => $userData])
 
 @section('content')
 
     <div class="row">
         <div class="col-8 mx-auto text-left">
             <h1 class="display-1 text-info">Ваш кабинет</h1>
-            <h4 class="display-4 text-success font-weight-bold">Здравствуйте, {{ $userData['first_name'] ?? $_SESSION['userLogin'] }}!</h4>
+            <h4 class="display-4 text-success font-weight-bold">Здравствуйте, {{ $userData['first_name'] ?? $userData['login'] }}!</h4>
             <h4 class="display-4 text-info">Ваши персональные данные:</h4>
             <h4 class="display-4 text-danger">Имя:<span class="badge badge-success ml-3">{{ $userData['first_name'] }}</span></h4>
             <h4 class="display-4 text-warning">Фамилия:<span class="badge badge-info ml-3">{{ $userData['last_name'] }}</span></h4>

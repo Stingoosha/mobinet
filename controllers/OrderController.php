@@ -39,7 +39,7 @@ class OrderController extends BaseController
         }
 
         echo $this->blade->render('pages/order', [
-            'userData' => $this->userData,
+            'layout' => $this->layout,
             'active' => $this->active,
             'phones' => $this->phones,
             'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],

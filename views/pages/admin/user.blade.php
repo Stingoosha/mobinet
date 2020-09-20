@@ -1,4 +1,4 @@
-@extends('layouts.layout', ['title' => 'Пользователь ID-' . $user['id'], 'userData' => $userData])
+@extends('layouts.layout', ['title' => 'Пользователь ID-' . $user['id'], 'layout' => $layout])
 
 @section('content')
 

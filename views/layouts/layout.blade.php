@@ -30,13 +30,13 @@
                 <div class="w-100 container collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="col-3 navbar-nav mr-auto">
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold {{ $active == 'index' ? 'active' : 'text-info'}}" href="/">Главная<span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold {{ $layout['active'] == 'index' ? 'active' : 'text-info'}}" href="/">Главная<span class="sr-only"></span></a>
                         </li>
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold {{ $active == 'catalog' ? 'active' : 'text-info'}}" href="/phones">Каталог<span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold {{ $layout['active'] == 'catalog' ? 'active' : 'text-info'}}" href="/phones">Каталог<span class="sr-only"></span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font-weight-bold {{ $active == 'contacts' ? 'active' : 'text-info'}}" href="/contacts">Контакты<span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold {{ $layout['active'] == 'contacts' ? 'active' : 'text-info'}}" href="/contacts">Контакты<span class="sr-only"></span></a>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0 col-5 d-flex justify-content-end" action="/search" method='post'>
@@ -45,7 +45,7 @@
                     </form>
                     <ul class="col-1 navbar-nav ml-auto">
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold d-flex {{ $active == 'basket' ? 'active' : 'text-info'}}" href="/basket">
+                            <a class="nav-link font-weight-bold d-flex {{ $layout['active'] == 'basket' ? 'active' : 'text-info'}}" href="/basket">
                             <img src="/public/img/basket.png" style="background-color: transparent" alt="Корзина"></img>
                             <span class="badge text-light badge-info float-right h-50 ml-1" id="basket">{{ $userData['basket_size'] ?? 0 }}</span></a>
                         </li>
@@ -53,10 +53,10 @@
                     @if (!isset($_SESSION['userId']))
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item mr-3">
-                                <a class="nav-link font-weight-bold {{ $active == 'login' ? 'active' : 'text-info'}}" href="/login">Вход<span class="sr-only"></span></a>
+                                <a class="nav-link font-weight-bold {{ $layout['active'] == 'login' ? 'active' : 'text-info'}}" href="/login">Вход<span class="sr-only"></span></a>
                             </li>
                             <li class="nav-item mr-3">
-                                <a class="nav-link font-weight-bold {{ $active == 'reg' ? 'active' : 'text-info'}}" href="/registry">Регистрация<span class="sr-only"></span></a>
+                                <a class="nav-link font-weight-bold {{ $layout['active'] == 'reg' ? 'active' : 'text-info'}}" href="/registry">Регистрация<span class="sr-only"></span></a>
                             </li>
                         </ul>
                     @else

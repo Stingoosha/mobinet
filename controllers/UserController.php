@@ -49,7 +49,7 @@ class UserController extends BaseController
 		}
 
 		echo $this->blade->render('pages/user/login', [
-			'userData' => $this->userData,
+			'layout' => $this->layout,
 			'active' => $this->active,
 			'login' => $login ?? ''
 		]);
@@ -86,7 +86,7 @@ class UserController extends BaseController
 		}
 
 		echo $this->blade->render('pages/user/registry', [
-			'userData' => $this->userData,
+			'layout' => $this->layout,
 			'active' => $this->active,
 			'login' => $login ?? '',
 			'pass' => $pass ?? ''
@@ -109,7 +109,7 @@ class UserController extends BaseController
 	public function cabinet()
 	{
 		echo $this->blade->render('pages/user/cabinet', [
-			'userData' => $this->userData
+			'layout' => $this->layout
 		]);
 	}
 
@@ -132,7 +132,7 @@ class UserController extends BaseController
 		}
 
 		echo $this->blade->render('pages/user/change', [
-			'userData' => $this->userData
+			'layout' => $this->layout
 		]);
 	}
 

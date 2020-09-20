@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('content'); ?>
 
     <div class="col-8 mx-auto">
@@ -19,6 +21,7 @@
             </ul>
         </div>
     </div>
-    
+
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts/layout', ['title' => 'Главная'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Sergey\Study\Web\Repositories\mobinet\views/pages/index.blade.php ENDPATH**/ ?>
+
+<?php echo $__env->make('layouts/layout', ['title' => 'Главная', 'layout' => $layout], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Sergey\Study\Web\Repositories\mobinet\views/pages/index.blade.php ENDPATH**/ ?>

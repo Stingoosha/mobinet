@@ -50,7 +50,7 @@ class BasketController extends BaseController
         }
 
         echo $this->blade->render('pages/basket', [
-            'userData' => $this->userData,
+            'layout' => $this->layout,
             'active' => $this->active,
             'orders' => $this->orders,
             'phones' => $this->phones,

@@ -19,7 +19,9 @@ abstract class BaseController extends AbstractController
 	 * @var string $content Содержание страницы
 	 * @var string $active Маркер активности страницы
 	 * @var array $description Мета-описание страницы сайта для поисковых систем
-	 * @var array $userData Данные пользователя
+	 * @var array $layout Данные, передаваемые на страницу layout
+	 * @var array $user Данные пользователя
+	 * @var array $access Данные доступа страниц
 	 * @var array $keywords Массив ключевых слов и их значений для поисковых систем
 	 * @var array $phones Массив телефонов
 	 * @var array $brands Массив брендов
@@ -32,7 +34,10 @@ abstract class BaseController extends AbstractController
 	protected $content;
 	protected $active;
 	protected $description = '';
-	protected $userData = [];
+	protected $layout = [
+		'user' => [],
+		'access' => []
+	];
 	protected $keywords = [];
 	protected $phones = [];
 	protected $brands = [];
@@ -41,13 +46,13 @@ abstract class BaseController extends AbstractController
 	/**
 	 * Функция инициализации базового контроллера (подключает массив с константами)
 	 * @var string $constantsPath Путь до массива с константами
-	 * @var string $verificationPath Путь к файлу с верификацией страниц
+	 * @var string $accessPath Путь к файлу с верификацией страниц
 	 * @return void
 	 */
-    public static function init(string $constantsPath, string $verificationPath) :void
+    public static function init(string $constantsPath, string $accessPath) :void
     {
         self::$constants = include $constantsPath;
-        self::$verificators = include $verificationPath;
+        self::$access = include $accessPath;
     }
 
 	/**
@@ -65,15 +70,17 @@ abstract class BaseController extends AbstractController
 		$this->saveLogs(); // сохраняем открытую страницу в логах
 
 		// проверяем пользователя
-		$this->userData = $this->user->userProfile();
+		$this->layout['user'] = $this->user->userProfile();
 		// проверяем доступна ли страница
-		if (!$this->access($this->userData)) {
+		if (!$this->access($this->layout['user'])) {
 			$this->redirect('', '404');
 		}
+		// добавляем данные доступа к страницам
+		$this->layout['access'] = self::$access;
 		// var_dump($this->userData);die;
 		// определяем количество товара в корзине
 		if (isset($_SESSION['userId'])) {
-			$this->userData['basket_size'] = $this->basket->getBasketSize($_SESSION['userId']);
+			$this->layout['user']['basket_size'] = $this->basket->getBasketSize($_SESSION['userId']);
 		}
 	}
 

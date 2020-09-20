@@ -11,7 +11,7 @@ abstract class AbstractController
 	 * @var array Массив доступа к страницам
 	 */
 	protected static $constants = [];
-	protected static $verificators = [];
+	protected static $access = [];
 
 	/**
 	 * Абстрактная функция, отрабатывающая до основного метода
@@ -124,8 +124,8 @@ abstract class AbstractController
 		$className = explode('\\', $routingClass);
 		$className = $className[array_key_last($className)];
 
-		if (array_key_exists($className, self::$verificators)) {
-			return $userData['id_role'] >= self::$verificators[$className];
+		if (array_key_exists($className, self::$access)) {
+			return $userData['id_role'] >= self::$access[$className];
 		}
 		return true;
 	}

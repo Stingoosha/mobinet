@@ -9,14 +9,14 @@
                 <table class="table text-info">
                     <tr class="bg-info">
                         <th>Наименование модели</th>
-                        @if ($layout['user']['id_role'] != 3)
+                        @if ($layout['user']['id_role'] != $layout['access']['AdminBrandController'])
                         <th>Подробнее</th>
                         @endif
                         <th>Наименование бренда</th>
                         <th>Стоимость</th>
                         <th>Новая цена</th>
                         <th class="overflow-hidden">Фото</th>
-                        @if ($layout['user']['id_role'] > 2)
+                        @if ($layout['user']['id_role'] > $layout['access']['AdminModelController'])
                         <th></th>
                         <th></th>
                         @endif
@@ -28,9 +28,9 @@
                                 <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">
                                     <input type="text" class="form-control text-info w-100 {{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}" name="newPhoneName" value="{{ $phone['name_good'] }}" required>
                                 </td>
-                                @if ($layout['user']['id_role'] != 3)
+                                @if ($layout['user']['id_role'] != $layout['access']['AdminBrandController'])
                                 <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">
-                                    <a class="btn btn-outline-info {{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light border-light' : '' }} {{ $layout['user']['id_role'] == 3 ? 'disabled' : '' }}" href="/tels/{{ $phone['id_good'] }}">Подробнее</a>
+                                    <a class="btn btn-outline-info {{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light border-light' : '' }}" href="/tels/{{ $phone['id_good'] }}">Подробнее</a>
                                 </td>
                                 @endif
                                 <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">
@@ -47,11 +47,11 @@
                                 </td>
                                 <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">{{ $phone['new_price'] ?? '0' }} &#8381;</td>
                                 <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">{{ $phone['photo'] ? '+' : '-' }}</td>
-                                @if ($layout['user']['id_role'] > 2)
+                                @if ($layout['user']['id_role'] > $layout['access']['AdminModelController'])
                                 <td><input type="submit" value="Изменить" class="btn btn-outline-warning"></td>
                                 @endif
                             </form>
-                            @if ($layout['user']['id_role'] > 2)
+                            @if ($layout['user']['id_role'] > $layout['access']['AdminModelController'])
                             <!-- Button trigger modal -->
                             <td><button type="button" class="btn btn-outline-danger" onclick="showModalConfirmation('tels', {{ $phone['id_good'] }}, 'модели', 'эту модель')" data-toggle="modal" data-target="#confirmation">
                             Удалить</button></td>
@@ -68,7 +68,7 @@
                 </table>
             </div>
         </div>
-        @if ($layout['user']['id_role'] > 2)
+        @if ($layout['user']['id_role'] > $layout['access']['AdminModelController'])
         <div class="col-3">
             <form class="border border-info rounded p-3" action="/tels/create" method="post">
                 <div class="form-group">

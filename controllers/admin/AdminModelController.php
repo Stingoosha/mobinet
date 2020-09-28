@@ -110,7 +110,8 @@ class AdminModelController extends BaseController
      */
     protected function edit()
     {
-        if ($layout['user']['id_role'] < 3) {
+        // var_dump($this->layout);die;
+        if ($this->layout['user']['id_role'] < $this->layout['access']['AdminBrandController']) {
             $this->redirect('У Вас нет доступа к изменению данных моделей!', 'tels');
         }
         $phoneId = Requester::id(); // получение id модели

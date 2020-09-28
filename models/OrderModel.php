@@ -93,14 +93,4 @@ class OrderModel extends BaseModel
         $query->execute();
     }
 
-    /**
-     * Функция вывода данных одного заказа
-     * @var int $orderId Id заказа
-     * @return array
-     */
-    public function getOrderData(int $orderId) :array
-    {
-        return $this->selfJoin('goods.id_good, photo, name_good, price_good, new_price, basket.amount, id_basket', 'goods, basket', 'goods.id_good=basket.id_good AND id_order=' . $orderId);
-    }
-
 }

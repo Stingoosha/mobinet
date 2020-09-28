@@ -46,7 +46,7 @@ class AdminOrderController extends BaseController
     protected function show()
     {
         $orderId = Requester::id(); // получение id просматриваемого заказа
-        $this->phones = $this->order->getOrderData($orderId);
+        $this->phones = $this->order->selfJoin('goods.id_good, photo, name_good, price_good, new_price, basket.amount, id_basket', 'goods, basket', 'goods.id_good=basket.id_good AND id_order=' . $orderId);
         $order = $this->order->one('*', 'id_order=' . $orderId);
         // var_dump($order);die;
 

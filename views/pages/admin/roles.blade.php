@@ -17,8 +17,8 @@
                     @foreach ($roles as $role)
                         <tr>
                             <form action="/roles/{{ $role['id_role'] }}/edit" method="post">
-                            <td><input type="text" class="form-control {{ $role['id_role'] == $newRoleId ? 'bg-success text-light' : '' }}" name="newRoleId" value="{{ $role['id_role'] }}" required></td>
-                            <td><input type="text" class="form-control {{ $role['id_role'] == $newRoleId ? 'bg-success text-light' : '' }}" name="newRoleName" value="{{ $role['name_role'] }}" required></td>
+                            <td class="{{ $role['id_role'] == $newRoleId ? 'bg-success text-light' : '' }}"><input type="text" class="form-control {{ $role['id_role'] == $newRoleId ? 'bg-success text-light' : '' }}" name="newRoleId" value="{{ $role['id_role'] }}" required></td>
+                            <td class="{{ $role['id_role'] == $newRoleId ? 'bg-success text-light' : '' }}"><input type="text" class="form-control {{ $role['id_role'] == $newRoleId ? 'bg-success text-light' : '' }}" name="newRoleName" value="{{ $role['name_role'] }}" required></td>
                             <td><input type="submit" value="Изменить" class="btn btn-outline-warning"></td>
                             </form>
                             <!-- Button trigger modal -->

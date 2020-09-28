@@ -17,11 +17,11 @@ abstract class BaseController extends AbstractController
 	 * @var BasketModel $basket Модель корзины
 	 * @var string $title Заголовок страницы
 	 * @var string $content Содержание страницы
-	 * @var string $active Маркер активности страницы
 	 * @var array $description Мета-описание страницы сайта для поисковых систем
 	 * @var array $layout Данные, передаваемые на страницу layout
 	 * @var array $user Данные пользователя
 	 * @var array $access Данные доступа страниц
+	 * @var string $active Маркер активности страницы
 	 * @var array $keywords Массив ключевых слов и их значений для поисковых систем
 	 * @var array $phones Массив телефонов
 	 * @var array $brands Массив брендов
@@ -32,11 +32,11 @@ abstract class BaseController extends AbstractController
 	protected $basket;
 	protected $title;
 	protected $content;
-	protected $active;
 	protected $description = '';
 	protected $layout = [
 		'user' => [],
-		'access' => []
+		'access' => [],
+		'active' => ''
 	];
 	protected $keywords = [];
 	protected $phones = [];
@@ -73,15 +73,15 @@ abstract class BaseController extends AbstractController
 		$this->layout['user'] = $this->user->userProfile();
 		// проверяем доступна ли страница
 		if (!$this->access($this->layout['user'])) {
-			$this->redirect('', '404');
+			$this->redirect('Заблудились?', '404');
 		}
-		// добавляем данные доступа к страницам
+		// добавляем данные доступа к страницам для показа/скрытия ссылок
 		$this->layout['access'] = self::$access;
-		// var_dump($this->userData);die;
 		// определяем количество товара в корзине
 		if (isset($_SESSION['userId'])) {
 			$this->layout['user']['basket_size'] = $this->basket->getBasketSize($_SESSION['userId']);
 		}
+		// var_dump($_SESSION);die;
 	}
 
 }

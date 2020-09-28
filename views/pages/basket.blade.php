@@ -22,14 +22,14 @@
                     @if (!empty($orders))
                         @foreach ($orders as $order)
                             <tr>
-                                <td>{{ $order['order_date'] }}</td>
-                                <td>{{ $order['order_price'] }} &#8381;</td>
+                                <td>{{ $order['created_at'] }}</td>
+                                <td>{{ $order['price_order'] }} &#8381;</td>
                                 <td>{{ $order['first_name'] }}</td>
                                 <td>{{ $order['phone'] }}</td>
                                 <td>{{ $order['discount_card'] }}</td>
                                 <td>{{ $order['delivery_method'] }}</td>
-                                <td>{{ $order['addr'] }}</td>
-                                <td>{{ $order['comment'] }}</td>
+                                <td>{{ $order['addresses'] }}</td>
+                                <td>{{ $order['comments'] }}</td>
                                 <td>{{ $order['status'] }}</td>
                             </tr>
                         @endforeach
@@ -63,28 +63,28 @@
                         @if (!empty($phones))
                         @foreach ($phones as $phone)
                             <?php
-                                $phonePrice = $phone['new_price'] ?? $phone['price'];
-                                $summ += ($phone['price'] * $phone['amount']);
+                                $phonePrice = empty((int)$phone['new_price']) ? $phone['price_good'] : $phone['new_price'];
+                                $summ += ($phone['price_good'] * $phone['amount']);
                                 $summFinal += ($phonePrice * $phone['amount']);
                             ?>
                             <tr>
-                                <td><a href="/phones/{{ $phone['good_id'] }}"><img src="{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}">{{ $phone['name'] }}</img></a></td>
+                                <td><a href="/phones/{{ $phone['id_good'] }}"><img src="{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}">{{ $phone['name_good'] }}</img></a></td>
                                 <td>
                                     @if ($phone['new_price'])
-                                        <del>{{ $phone['price'] }} &#8381;</del>&emsp;{{ $phone['new_price'] }} &#8381;
+                                        <del>{{ $phone['price_good'] }} &#8381;</del>&emsp;{{ $phone['new_price'] }} &#8381;
                                     @else
-                                        {{ $phone['price'] }} &#8381;
+                                        {{ $phone['price_good'] }} &#8381;
                                     @endif
                                 </td>
                                 <td>{{ $phone['amount'] }}</td>
                                 <td>
                                     @if ($phone['new_price'])
-                                        <del><?=$phone['price'] * $phone['amount']?> &#8381;</del>&emsp;<?=$phone['new_price'] * $phone['amount']?> &#8381;
+                                        <del><?=$phone['price_good'] * $phone['amount']?> &#8381;</del>&emsp;<?=$phone['new_price'] * $phone['amount']?> &#8381;
                                     @else
-                                        {{ $phone['price'] * $phone['amount'] }} &#8381;
+                                        {{ $phone['price_good'] * $phone['amount'] }} &#8381;
                                     @endif
                                 </td>
-                                <td><a class="remove" href="/basket/{{ $phone['good_id'] }}/remove">&#10060;</a></td>
+                                <td><a class="remove" href="/basket/{{ $phone['id_good'] }}/remove">&#10060;</a></td>
                             </tr>
                         @endforeach
                         @else
@@ -100,7 +100,7 @@
                 </div>
                 @if (!empty($phones))
                 <p class="total lead">ИТОГО:&emsp;
-                    @if ($summFinal !== $summ)
+                    @if ($summFinal !== $summ && $summFinal)
                         <del><?=$summ?> &#8381;</del>&emsp;{{ $summFinal }} &#8381;
                     @else
                         {{ $summ }} &#8381;

@@ -12,16 +12,6 @@ class OrderModel extends BaseModel
     protected $table = 'orders';
 
     /**
-     * Функция вывода всех заказов пользователя по его id
-     * @var int $id Идентификацционный номер пользователя id
-     * @return array
-     */
-    public function allOrders(int $id) :array
-    {
-        return $this->query("SELECT * FROM $this->table WHERE user_id=:user_id", 'fetchAll', ['user_id' => $id]);
-    }
-
-    /**
      * Функция формирования заказа с помощью транзакции
      * @var array $params Массив данных заказа
      */
@@ -38,28 +28,25 @@ class OrderModel extends BaseModel
             // var_dump($orderId);die;
 
             // обновление в корзине order_id по всем моделям, присутствующим в заказе
-            // UPDATE basket SET order_id=84 WHERE user_id=131 AND order_id IS NULL
-            $sql = "UPDATE basket SET order_id=:order_id WHERE user_id=:user_id AND order_id IS NULL";
+            $sql = "UPDATE basket SET id_order=:id_order WHERE id_user=:id_user AND id_order IS NULL";
 
             $query = self::$db->prepare($sql);
-            $query->execute(['order_id' => $orderId, 'user_id' => $params['user_id']]);
+            $query->execute(['id_order' => $orderId, 'id_user' => $params['id_user']]);
 
             // создание промежуточной таблицы для расчета стоимости заказа
-            // CREATE VIEW summ_calc AS SELECT basket.good_id, basket.order_id, basket.amount * goods.price as sum, basket.amount * goods.new_price as new_sum FROM basket INNER JOIN goods on basket.good_id=goods.id WHERE basket.order_id=84
-            $sql = "CREATE VIEW summ_calc AS SELECT basket.good_id, basket.order_id, basket.amount * goods.price as sum, basket.amount * goods.new_price as new_sum FROM basket INNER JOIN goods on basket.good_id=goods.id WHERE basket.order_id=:order_id";
+            $sql = "CREATE VIEW summ_calc AS SELECT basket.id_good, basket.id_order, basket.amount * goods.price_good as sum, basket.amount * goods.new_price as new_sum FROM basket,goods WHERE basket.id_good=goods.id_good AND basket.id_order=:id_order";
 
             $query = self::$db->prepare($sql);
-            $query->execute(['order_id' => $orderId]);
+            $query->execute(['id_order' => $orderId]);
 
             $orderSumm = $this->getOrderSum(); // получение стоимости заказа
-            // var_dump($orderSumm);
+            // var_dump($orderSumm);die;
 
             // указание стоимости заказа в таблице заказов по его id
-            // UPDATE orders SET order_price=62400 WHERE order_id=84
-            $sql = "UPDATE orders SET order_price=:order_summ WHERE order_id=:order_id";
+            $sql = "UPDATE orders SET price_order=:price_order WHERE id_order=:id_order";
 
             $query = self::$db->prepare($sql);
-            $query->execute(['order_summ' => $orderSumm, 'order_id' => $orderId]);
+            $query->execute(['price_order' => $orderSumm, 'id_order' => $orderId]);
 
             // $query->rowCount()
 
@@ -85,10 +72,10 @@ class OrderModel extends BaseModel
         $sumTotal = 0;
 
         foreach ($res as $val) {
-            $sum = $val['new_sum'] ?? $val['sum'];
+            $sum = empty((int)$val['new_sum']) ? $val['sum'] : $val['new_sum'];
             $sumTotal += $sum;
         }
-
+        // var_dump($sumTotal);die;
         return $sumTotal;
     }
 
@@ -113,7 +100,7 @@ class OrderModel extends BaseModel
      */
     public function getOrderData(int $orderId) :array
     {
-        return $this->query("SELECT goods.id as good_id, goods.photo, goods.name, goods.price, goods.new_price, basket.amount, basket.id FROM goods RIGHT JOIN basket on goods.id=basket.good_id WHERE basket.order_id=:order_id", 'fetchAll', ['order_id' => $orderId]);
+        return $this->selfJoin('goods.id_good, photo, name_good, price_good, new_price, basket.amount, id_basket', 'goods, basket', 'goods.id_good=basket.id_good AND id_order=' . $orderId);
     }
 
 }

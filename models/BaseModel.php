@@ -58,11 +58,12 @@ class BaseModel extends AbstractModel
     protected function query($sql, $return, $params = [])
     {
         // var_dump($sql);die;
+
         self::$db = $this->connect(); // соединение с БД
 
         $query = self::$db->prepare($sql); // подготовка SQL-запроса
         $query->execute($params); // выполнение SQL-запроса
-
+        // var_dump($query);die;
         $this->checkErrors($query); // проверка на ошибки SQL-запроса
         if (!$return) {
             return $query;
@@ -146,23 +147,24 @@ class BaseModel extends AbstractModel
      */
     public function insert(array $object) :string
     {
-        $columns = array();
+        $columns = [];
 
         foreach ($object as $key => $value) {
             $columns[] = $key;
             $masks[] = "'$value'";
 
-            if ($value === null) {
+            if ($value === null || $value = '') {
                 $object[$key] = 'NULL';
             }
         }
 
-        $columns_s = implode(',', $columns);
-        $masks_s = implode(',', $masks);
+        $columns_s = implode(', ', $columns);
+        $masks_s = implode(', ', $masks);
 
         $sql = "INSERT INTO $this->table ($columns_s) VALUES ($masks_s)";
+        // var_dump($sql);die;
 
-        $this->query($sql, '', $object);
+        $this->query($sql, '');
         return self::$db->lastInsertId();
     }
 

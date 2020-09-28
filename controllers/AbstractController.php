@@ -120,7 +120,7 @@ abstract class AbstractController
 	 */
 	protected function access(array $userData) :bool
 	{
-		$routingClass = get_class($GLOBALS['routingData'][0]);
+		$routingClass = $GLOBALS['routingData'][0];
 		$className = explode('\\', $routingClass);
 		$className = $className[array_key_last($className)];
 

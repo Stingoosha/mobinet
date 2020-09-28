@@ -18,12 +18,12 @@
                 @if (!empty($orders))
                     @foreach ($orders as $order)
                     <tr>
-                            <form action="/orders/{{ $order['order_id'] }}/edit" method="post">
-                                <td class="{{ $order['order_id'] == $newOrderId ? 'bg-success text-light' : '' }}">{{ $order['order_id'] }}</td>
-                                <td><a class="btn btn-outline-info" href="/orders/{{ $order['order_id'] }}">Детали заказа</a></td>
-                                <td class="{{ $order['order_id'] == $newOrderId ? 'bg-success text-light' : '' }}">{{ $order['order_date'] }}</td>
-                                <td class="{{ $order['order_id'] == $newOrderId ? 'bg-success text-light' : '' }}">{{ $order['order_price'] }}  &#8381;</td>
-                                <td><select class="form-control w-100" name="newStatus">
+                            <form action="/orders/{{ $order['id_order'] }}/edit" method="post">
+                                <td class="{{ $order['id_order'] == $newOrderId ? 'bg-success text-light' : '' }}">{{ $order['id_order'] }}</td>
+                                <td class="{{ $order['id_order'] == $newOrderId ? 'bg-success text-light' : '' }}"><a class="{{ $order['id_order'] == $newOrderId ? 'bg-success text-light border-light' : '' }} btn btn-outline-info" href="/orders/{{ $order['id_order'] }}">Детали заказа</a></td>
+                                <td class="{{ $order['id_order'] == $newOrderId ? 'bg-success text-light' : '' }}">{{ $order['created_at'] }}</td>
+                                <td class="{{ $order['id_order'] == $newOrderId ? 'bg-success text-light' : '' }}">{{ $order['price_order'] }}  &#8381;</td>
+                                <td class="{{ $order['id_order'] == $newOrderId ? 'bg-success text-light' : '' }}"><select class="form-control w-100 {{ $order['id_order'] == $newOrderId ? 'bg-success text-light' : '' }}" name="newStatus">
                                 @foreach ($statuses as $status)
                                     <option {{ $order['status'] == $status ? 'selected' : '' }}>{{ $status }}</option>
                                 @endforeach

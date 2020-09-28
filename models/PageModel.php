@@ -19,7 +19,7 @@ class PageModel extends BaseModel
      */
     public function part(int $lastId, int $total) :array
     {
-        $sql = "SELECT * FROM $this->table WHERE id>$lastId LIMIT " . $total;
+        $sql = "SELECT * FROM $this->table WHERE id_good>$lastId LIMIT " . $total;
 
         return $this->query($sql, 'fetchAll');
     }
@@ -31,20 +31,7 @@ class PageModel extends BaseModel
      */
     public function search(string $search) :array
     {
-        $sql = 'SELECT * FROM ' . $this->table . ' WHERE name LIKE \'%' . $search . '%\' OR short_desc LIKE \'%' . $search . '%\'';
-
-        return $this->query($sql, 'fetchAll');
-    }
-
-
-    /**
-     * Функция получения моделей по всем отмеченным брендам
-     * @var string $where Условие, содержащее id всех брендов
-     * @return array
-     */
-    public function getBrands(string $where) :array
-    {
-        $sql = "SELECT * FROM $this->table WHERE $where";
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE name_good LIKE \'%' . $search . '%\' OR description LIKE \'%' . $search . '%\'';
 
         return $this->query($sql, 'fetchAll');
     }

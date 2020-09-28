@@ -35,8 +35,9 @@ class AdminRoleController extends BaseController
         $this->roles = $this->role->all();
 
         echo $this->blade->render('pages/admin/roles', [
-            'userData' => $this->userData,
-            'roles' => $this->roles
+            'layout' => $this->layout,
+            'roles' => $this->roles,
+            'newRoleId' => null
         ]);
     }
 
@@ -45,25 +46,37 @@ class AdminRoleController extends BaseController
      */
     protected function create()
     {
-        if ($this->isPost()) {
-            $this->role->clear($_POST);
+
+        $this->role->clear($_POST);
+
+        $roleId = $this->role->one('*', 'id_role="' . $_POST['newRoleId'] . '"');
+        $roleName = $this->role->one('*', 'name_role="' . $_POST['newRoleName'] . '"');
+        // var_dump($roleName);die;
+
+        if ($roleId) {
+            $newRole = $roleId;
+            $this->flash('Роль номер "' . $newRole['id_role'] . '" уже существует');
+        } elseif ($roleName) {
+            $newRole = $roleName;
+            $this->flash('Роль "' . $newRole['name_role'] . '" уже существует');
+        } else {
+
             $this->role->insert(['id_role' => (int)$_POST['newRoleId'], 'name_role' => $_POST['newRoleName']]);
 
-            $newRoleId = $this->role->one('id_role', 'id_role=' . (int)$_POST['newRoleId']);
-            if ($newRoleId) {
+            $newRole = $this->role->one('id_role', 'id_role=' . (int)$_POST['newRoleId']);
+            if ($newRole) {
                 $this->flash('Новая роль "' . $_POST['newRoleName'] . '" успешно добавлена под номером "' . $_POST['newRoleId'] . '"!');
             } else {
                 $this->flash('По техническим причинам новую роль добавить не удалось! Поробуйте позже!');
             }
-        } else {
-            $this->flash('Пожалуйста, введите наименование роли!');
         }
+
         $this->roles = $this->role->all();
 
         echo $this->blade->render('pages/admin/roles', [
-            'userData' => $this->userData,
+            'layout' => $this->layout,
             'roles' => $this->roles,
-            'newRoleId' => $newRoleId['id_role']
+            'newRoleId' => $newRole['id_role']
         ]);
     }
 
@@ -74,21 +87,18 @@ class AdminRoleController extends BaseController
     {
         $roleId = Requester::id(); // получение id изменяемой роли
 
-        if ($this->isPost()) {
-            $this->role->clear($_POST);
+        $this->role->clear($_POST);
 
-            if ($this->role->update(['name_role' => $_POST['newRoleName']], 'id_role=' . (int)$roleId)) {
-                $this->flash('Наименование роли под номером "' . (int)$roleId . '" успешно изменено на "' . $_POST['newRoleName'] . '"!');
-            } else {
-                $this->flash('По техническим причинам изменить наименование роли под номером "' . (int)$roleId . '" на "' . $_POST['newRoleName'] . '" не удалось! Поробуйте позже!');
-            }
+        if ($this->role->update(['name_role' => $_POST['newRoleName']], 'id_role=' . (int)$roleId)) {
+            $this->flash('Наименование роли под номером "' . (int)$roleId . '" успешно изменено на "' . $_POST['newRoleName'] . '"!');
         } else {
-            $this->flash('Пожалуйста, введите наименование роли!');
+            $this->flash('По техническим причинам изменить наименование роли под номером "' . (int)$roleId . '" на "' . $_POST['newRoleName'] . '" не удалось! Поробуйте позже!');
         }
+
         $this->roles = $this->role->all();
 
         echo $this->blade->render('pages/admin/roles', [
-            'userData' => $this->userData,
+            'layout' => $this->layout,
             'roles' => $this->roles,
             'newRoleId' => $roleId
         ]);
@@ -101,18 +111,21 @@ class AdminRoleController extends BaseController
     {
         $roleId = Requester::id(); // получение id удаляемой роли
 
-        $roleName = $this->role->one('name_role', 'id_role=' . (int)$roleId);
-        // var_dump($roleName);die;
-        if ($this->role->delete('id_role=' . (int)$roleId)) {
-            $this->flash('Роль "' . $roleName['name_role'] . '" под номером "' . (int)$roleId . '" успешно удалена!');
+        $users = $this->user->allWhere('id_role=' . $roleId);
+        // var_dump($users);die;
+        if ($users) {
+            $flash = 'Нельзя удалить роль, выполняемую пользователями!';
         } else {
-            $this->flash('По техническим причинам удаление роли "' . $roleName['name_role'] . '" не удалось! Поробуйте позже!');
-        }
-        $this->roles = $this->role->all();
 
-        echo $this->blade->render('pages/admin/roles', [
-            'userData' => $this->userData,
-            'roles' => $this->roles
-        ]);
+            $roleName = $this->role->one('name_role', 'id_role=' . $roleId);
+            // var_dump($roleName);die;
+            if ($this->role->delete('id_role=' . $roleId)) {
+                $flash = 'Роль "' . $roleName['name_role'] . '" под номером "' . $roleId . '" успешно удалена!';
+            } else {
+                $flash = 'По техническим причинам удаление роли "' . $roleName['name_role'] . '" не удалось! Поробуйте позже!';
+            }
+        }
+
+        $this->redirect($flash, 'roles');
     }
 }

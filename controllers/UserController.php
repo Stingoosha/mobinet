@@ -15,7 +15,7 @@ class UserController extends BaseController
 	 */
 	public function login()
 	{
-		$this->active = 'login';
+		$this->layout['active'] = 'login';
 
 		if ($this->isPost()) { // проверка, вводил ли уже свои данные пользователь
 			$this->user->clear($_POST);
@@ -26,6 +26,7 @@ class UserController extends BaseController
 
 			if ($this->user->isUserExists($login)) { // проверка, существует ли в базе данных этот логин
 				$userData = $this->user->checkPass($login, $pass); // проверка пароля, если успешно, то получение данных пользователя
+				// var_dump($userData);die;
 				if ($userData['userId']) {
 					if ($_POST['remember']) { // если отмечен checkbox "Запомнить на 1 год"
 						$pcName = php_uname('n');
@@ -36,6 +37,7 @@ class UserController extends BaseController
 						$this->cookie('remember', $coockiData, self::$constants['YEAR']); // сохраняем userId в куках на 1 год
 					}
 					$this->session('userId', $userData['userId']); // сохраняем userId в сессии
+					$this->session('authed', true); // сохраняем в сессии флаг, что пользователь зашел на сайт
 					if ($userData['userName']) {
 						$login = $userData['userName']; // если у пользователя указано имя, то будем приветствовать его по имени
 					}
@@ -50,7 +52,6 @@ class UserController extends BaseController
 
 		echo $this->blade->render('pages/user/login', [
 			'layout' => $this->layout,
-			'active' => $this->active,
 			'login' => $login ?? ''
 		]);
 	}
@@ -60,7 +61,7 @@ class UserController extends BaseController
 	 */
 	public function reg()
 	{
-		$this->active = 'reg';
+		$this->layout['active'] = 'reg';
 
 		if ($this->isPost()) { // проверка, вводил ли уже свои данные пользователь
 			if($this->user->validating($_POST)) // валидация вводимых данных пользователем
@@ -87,7 +88,6 @@ class UserController extends BaseController
 
 		echo $this->blade->render('pages/user/registry', [
 			'layout' => $this->layout,
-			'active' => $this->active,
 			'login' => $login ?? '',
 			'pass' => $pass ?? ''
 		]);
@@ -120,7 +120,7 @@ class UserController extends BaseController
 	{
 		$userData = $this->user->getUserData($_SESSION['userId']); // получение данных о пользователе
 
-		// var_dump($_POST);die;
+		// var_dump($userData);die;
 		if ($this->isPost()) { // проверка, вводил ли уже пользователь новые данные о себе
 			$this->user->clear($_POST); // очищение вводимых пользователем данных
 			$userData = $_POST;
@@ -131,8 +131,9 @@ class UserController extends BaseController
 			}
 		}
 
-		echo $this->blade->render('pages/user/change', [
-			'layout' => $this->layout
+		echo $this->blade->render('pages/user/edit', [
+			'layout' => $this->layout,
+			'userData' => $userData[0]
 		]);
 	}
 
@@ -143,6 +144,7 @@ class UserController extends BaseController
 	public function destroy() :void
 	{
 		unset($_SESSION['userId']);
+		unset($_SESSION['authed']);
 
 		$this->cookie('remember', '123', -3600);
 	}

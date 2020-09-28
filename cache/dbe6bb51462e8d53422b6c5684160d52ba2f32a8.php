@@ -30,13 +30,13 @@
                 <div class="w-100 container collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="col-3 navbar-nav mr-auto">
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold <?php echo e($active == 'index' ? 'active' : 'text-info'); ?>" href="/">Главная<span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold <?php echo e($layout['active'] == 'index' ? 'active' : 'text-info'); ?>" href="/">Главная<span class="sr-only"></span></a>
                         </li>
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold <?php echo e($active == 'catalog' ? 'active' : 'text-info'); ?>" href="/phones">Каталог<span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold <?php echo e($layout['active'] == 'catalog' ? 'active' : 'text-info'); ?>" href="/phones">Каталог<span class="sr-only"></span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font-weight-bold <?php echo e($active == 'contacts' ? 'active' : 'text-info'); ?>" href="/contacts">Контакты<span class="sr-only"></span></a>
+                            <a class="nav-link font-weight-bold <?php echo e($layout['active'] == 'contacts' ? 'active' : 'text-info'); ?>" href="/contacts">Контакты<span class="sr-only"></span></a>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0 col-5 d-flex justify-content-end" action="/search" method='post'>
@@ -45,33 +45,50 @@
                     </form>
                     <ul class="col-1 navbar-nav ml-auto">
                         <li class="nav-item mr-3">
-                            <a class="nav-link font-weight-bold d-flex <?php echo e($active == 'basket' ? 'active' : 'text-info'); ?>" href="/basket">
+                            <a class="nav-link font-weight-bold d-flex <?php echo e($layout['active'] == 'basket' ? 'active' : 'text-info'); ?>" href="/basket">
                             <img src="/public/img/basket.png" style="background-color: transparent" alt="Корзина"></img>
-                            <span class="badge text-light badge-info float-right h-50 ml-1" id="basket"><?php echo e($userData['basket_size'] ?? 0); ?></span></a>
+                            <span class="badge text-light badge-info float-right h-50 ml-1" id="basket"><?php echo e($layout['user']['basket_size'] ?? 0); ?></span></a>
                         </li>
                     </ul>
-                    <?php if(!isset($_SESSION['userId'])): ?>
+                    <?php if(!isset($_SESSION['authed'])): ?>
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item mr-3">
-                                <a class="nav-link font-weight-bold <?php echo e($active == 'login' ? 'active' : 'text-info'); ?>" href="/login">Вход<span class="sr-only"></span></a>
+                                <a class="nav-link font-weight-bold <?php echo e($layout['active'] == 'login' ? 'active' : 'text-info'); ?>" href="/login">Вход<span class="sr-only"></span></a>
                             </li>
                             <li class="nav-item mr-3">
-                                <a class="nav-link font-weight-bold <?php echo e($active == 'reg' ? 'active' : 'text-info'); ?>" href="/registry">Регистрация<span class="sr-only"></span></a>
+                                <a class="nav-link font-weight-bold <?php echo e($layout['active'] == 'reg' ? 'active' : 'text-info'); ?>" href="/registry">Регистрация<span class="sr-only"></span></a>
                             </li>
                         </ul>
                     <?php else: ?>
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo e($userData['first_name'] ?? $userData['login']); ?></a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/brands">Бренды</a>
-                                    <a class="dropdown-item" href="/tels">Модели</a>
-                                    <a class="dropdown-item" href="/orders">Заказы</a>
-                                    <a class="dropdown-item" href="/roles">Роли</a>
-                                    <a class="dropdown-item" href="/users">Пользователи</a>
-                                    <a class="dropdown-item" href="/cabinet">Кабинет</a>
+                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo e($layout['user']['first_name'] ?? $layout['user']['login']); ?></a>
+                                <div class="dropdown-menu text-left text-info">
+                                <?php if($layout['user']['id_role'] >= $layout['access']['AdminBrandController']): ?>
+                                    <span class="ml-4"><?php echo e($layout['user']['name_role']); ?></span>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="/logout">Выход</a>
+                                <?php endif; ?>
+                                <?php if($layout['user']['id_role'] >= $layout['access']['AdminBrandController']): ?>
+                                    <a class="dropdown-item text-info" href="/brands">Бренды</a>
+                                <?php endif; ?>
+                                <?php if($layout['user']['id_role'] >= $layout['access']['AdminModelController']): ?>
+                                    <a class="dropdown-item text-info" href="/tels">Модели</a>
+                                <?php endif; ?>
+                                <?php if($layout['user']['id_role'] >= $layout['access']['AdminDiscountController']): ?>
+                                    <a class="dropdown-item text-info" href="/discounts">Скидки</a>
+                                <?php endif; ?>
+                                <?php if($layout['user']['id_role'] >= $layout['access']['AdminOrderController']): ?>
+                                    <a class="dropdown-item text-info" href="/orders">Заказы</a>
+                                <?php endif; ?>
+                                <?php if($layout['user']['id_role'] >= $layout['access']['AdminRoleController']): ?>
+                                    <a class="dropdown-item text-info" href="/roles">Роли</a>
+                                <?php endif; ?>
+                                <?php if($layout['user']['id_role'] >= $layout['access']['AdminUserController']): ?>
+                                    <a class="dropdown-item text-info" href="/users">Пользователи</a>
+                                <?php endif; ?>
+                                    <a class="dropdown-item text-info" href="/cabinet">Кабинет</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-info" href="/logout">Выход</a>
                                 </div>
                             </li>
                         </ul>

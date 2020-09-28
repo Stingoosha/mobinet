@@ -47,10 +47,10 @@
                         <li class="nav-item mr-3">
                             <a class="nav-link font-weight-bold d-flex {{ $layout['active'] == 'basket' ? 'active' : 'text-info'}}" href="/basket">
                             <img src="/public/img/basket.png" style="background-color: transparent" alt="Корзина"></img>
-                            <span class="badge text-light badge-info float-right h-50 ml-1" id="basket">{{ $userData['basket_size'] ?? 0 }}</span></a>
+                            <span class="badge text-light badge-info float-right h-50 ml-1" id="basket">{{ $layout['user']['basket_size'] ?? 0 }}</span></a>
                         </li>
                     </ul>
-                    @if (!isset($_SESSION['userId']))
+                    @if (!isset($_SESSION['authed']))
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item mr-3">
                                 <a class="nav-link font-weight-bold {{ $layout['active'] == 'login' ? 'active' : 'text-info'}}" href="/login">Вход<span class="sr-only"></span></a>
@@ -62,16 +62,33 @@
                     @else
                         <ul class="col-3 navbar-nav mr-auto text-right">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $userData['first_name'] ?? $userData['login'] }}</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/brands">Бренды</a>
-                                    <a class="dropdown-item" href="/tels">Модели</a>
-                                    <a class="dropdown-item" href="/orders">Заказы</a>
-                                    <a class="dropdown-item" href="/roles">Роли</a>
-                                    <a class="dropdown-item" href="/users">Пользователи</a>
-                                    <a class="dropdown-item" href="/cabinet">Кабинет</a>
+                                <a class="nav-link dropdown-toggle font-weight-bold text-info" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $layout['user']['first_name'] ?? $layout['user']['login'] }}</a>
+                                <div class="dropdown-menu text-left text-info">
+                                @if ($layout['user']['id_role'] >= $layout['access']['AdminBrandController'])
+                                    <span class="ml-4">{{ $layout['user']['name_role'] }}</span>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="/logout">Выход</a>
+                                @endif
+                                @if ($layout['user']['id_role'] >= $layout['access']['AdminBrandController'])
+                                    <a class="dropdown-item text-info" href="/brands">Бренды</a>
+                                @endif
+                                @if ($layout['user']['id_role'] >= $layout['access']['AdminModelController'])
+                                    <a class="dropdown-item text-info" href="/tels">Модели</a>
+                                @endif
+                                @if ($layout['user']['id_role'] >= $layout['access']['AdminDiscountController'])
+                                    <a class="dropdown-item text-info" href="/discounts">Скидки</a>
+                                @endif
+                                @if ($layout['user']['id_role'] >= $layout['access']['AdminOrderController'])
+                                    <a class="dropdown-item text-info" href="/orders">Заказы</a>
+                                @endif
+                                @if ($layout['user']['id_role'] >= $layout['access']['AdminRoleController'])
+                                    <a class="dropdown-item text-info" href="/roles">Роли</a>
+                                @endif
+                                @if ($layout['user']['id_role'] >= $layout['access']['AdminUserController'])
+                                    <a class="dropdown-item text-info" href="/users">Пользователи</a>
+                                @endif
+                                    <a class="dropdown-item text-info" href="/cabinet">Кабинет</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-info" href="/logout">Выход</a>
                                 </div>
                             </li>
                         </ul>

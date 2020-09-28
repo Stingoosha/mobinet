@@ -13,6 +13,7 @@ class Requester
 
 	/**
 	 * Функция сохранения id
+     * @var int $id сохраняемый id
 	 */
     public static function setId(int $id)
     {
@@ -21,8 +22,9 @@ class Requester
 
 	/**
 	 * Функция вывода id
+     * @return int
 	 */
-    public static function id()
+    public static function id() :int
     {
         return self::$id;
     }

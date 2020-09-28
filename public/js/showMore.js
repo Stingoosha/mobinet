@@ -17,7 +17,7 @@ function showMore(id, total) {
             for (let i = 0; i < length; i++) {
                 let phoneCard = render(answer[i]);
                 $('#showMore-container').append(phoneCard);
-                lastId = answer[i].id;
+                lastId = answer[i].id_good;
             }
             if (answer.length < total) {
                 $("#showMore-btn").hide();
@@ -40,10 +40,11 @@ function render(element) {
     });
     var link = $('<a />', {
         class: 'link stretched-link',
-        href: '/phones/' + element.id
+        href: '/phones/' + element.id_good
     });
     var img = $('<img />', {
-        class: 'card-img-top',
+        class: 'card-img-top px-3 py-1',
+        style: 'height: 18rem',
         src: 'public/img/small/' + (element.photo ? element.photo : 'default.jpg')
     });
     var cardBody = $('<div />', {
@@ -51,11 +52,11 @@ function render(element) {
     });
     var cardTitle = $('<h5 />', {
         class: 'card-title',
-        text: element.name
+        text: element.name_good
     });
     var cardText = $('<p />', {
         class: 'card-text text-success font-weight-bold',
-        text: element.price + ' ₽'
+        text: element.price_good + ' ₽'
     });
     var blockBuy = $('<div />', {
         class: 'block_buy'
@@ -63,25 +64,25 @@ function render(element) {
     var phoneId = $('<input>', {
         type: 'text',
         id: 'phone_id',
-        value: element.id,
+        value: element.id_good,
         hidden: true
     });
     var amount = $('<input>', {
         class: 'form-control text-center text-success font-weight-bold',
         type: 'number',
-        id: 'amount_' + element.id,
+        id: 'amount_' + element.id_good,
         value: 1
     });
     var btnBuy = $('<input>', {
         class: 'btn btn-success',
         type: 'button',
         value: 'Купить',
-        onclick: 'addToBasket(' + element.id + ')'
+        onclick: 'addToBasket(' + element.id_good + ')'
     });
     var message = $('<span />', {
         class: 'msg',
         style: 'color: orange; font-size: 20px',
-        id: 'message_' + element.id
+        id: 'message_' + element.id_good
     });
     var br = $('<br>');
 

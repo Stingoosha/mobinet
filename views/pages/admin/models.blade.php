@@ -9,33 +9,53 @@
                 <table class="table text-info">
                     <tr class="bg-info">
                         <th>Наименование модели</th>
+                        @if ($layout['user']['id_role'] != 3)
                         <th>Подробнее</th>
+                        @endif
                         <th>Наименование бренда</th>
                         <th>Стоимость</th>
                         <th>Новая цена</th>
                         <th class="overflow-hidden">Фото</th>
+                        @if ($layout['user']['id_role'] > 2)
                         <th></th>
                         <th></th>
+                        @endif
                     </tr>
                 @if (!empty($phones))
                     @foreach ($phones as $phone)
                         <tr>
-                            <form action="/tels/{{ $phone['id'] }}/edit" method="post">
-                                <td class="{{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}"><input type="text" class="form-control text-info w-100 {{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}" name="newPhoneName" value="{{ $phone['name'] }}" required></td>
-                                <td class="{{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}"><a class="btn btn-outline-info {{ $phone['id'] == $newPhoneId ? 'bg-success text-light border-light' : '' }}" href="/tels/{{ $phone['id'] }}">Подробнее</a></td>
-                                <td class="{{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}"><select class="form-control text-info {{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}" name="newBrandName">
-                                @foreach ($brands as $brand)
-                                    <option {{ $brand['id_brand'] == $phone['id_brand'] ? 'selected' : '' }}>{{ $brand['name_brand'] }}</option>
-                                @endforeach
-                                </select></td>
-                                <td class="{{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}"><input type="text" class="form-control text-info {{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}" name="newPhonePrice" value="{{ $phone['price'] }} &#8381;" required></td>
-                                <td class="{{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}">{{ $phone['new_price'] ?? '0' }} &#8381;</td>
-                                <td class="{{ $phone['id'] == $newPhoneId ? 'bg-success text-light' : '' }}">{{ $phone['photo'] ? '+' : '-' }}</td>
+                            <form action="/tels/{{ $phone['id_good'] }}/edit" method="post">
+                                <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">
+                                    <input type="text" class="form-control text-info w-100 {{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}" name="newPhoneName" value="{{ $phone['name_good'] }}" required>
+                                </td>
+                                @if ($layout['user']['id_role'] != 3)
+                                <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">
+                                    <a class="btn btn-outline-info {{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light border-light' : '' }} {{ $layout['user']['id_role'] == 3 ? 'disabled' : '' }}" href="/tels/{{ $phone['id_good'] }}">Подробнее</a>
+                                </td>
+                                @endif
+                                <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">
+                                    <select class="form-control text-info {{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}" name="newBrandName">
+
+                                    @foreach ($brands as $brand)
+                                        <option {{ $brand['id_brand'] == $phone['id_brand'] ? 'selected' : '' }}>{{ $brand['name_brand'] }}</option>
+                                    @endforeach
+
+                                    </select>
+                                </td>
+                                <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">
+                                    <input type="text" class="form-control text-info {{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}" name="newPhonePrice" value="{{ $phone['price_good'] }} &#8381;" required>
+                                </td>
+                                <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">{{ $phone['new_price'] ?? '0' }} &#8381;</td>
+                                <td class="{{ $phone['id_good'] == $newPhoneId ? 'bg-success text-light' : '' }}">{{ $phone['photo'] ? '+' : '-' }}</td>
+                                @if ($layout['user']['id_role'] > 2)
                                 <td><input type="submit" value="Изменить" class="btn btn-outline-warning"></td>
+                                @endif
                             </form>
+                            @if ($layout['user']['id_role'] > 2)
                             <!-- Button trigger modal -->
-                            <td><button type="button" class="btn btn-outline-danger" onclick="showModalConfirmation('tels', {{ $phone['id'] }}, 'модели', 'эту модель')" data-toggle="modal" data-target="#confirmation">
+                            <td><button type="button" class="btn btn-outline-danger" onclick="showModalConfirmation('tels', {{ $phone['id_good'] }}, 'модели', 'эту модель')" data-toggle="modal" data-target="#confirmation">
                             Удалить</button></td>
+                            @endif
                         </tr>
                     @endforeach
                 @else
@@ -48,6 +68,7 @@
                 </table>
             </div>
         </div>
+        @if ($layout['user']['id_role'] > 2)
         <div class="col-3">
             <form class="border border-info rounded p-3" action="/tels/create" method="post">
                 <div class="form-group">
@@ -64,7 +85,7 @@
             </form>
         </div>
     </div>
-
+    @endif
     <!-- Modal -->
     <div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmationTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">

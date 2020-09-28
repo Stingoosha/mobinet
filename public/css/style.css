@@ -249,8 +249,9 @@ del:before {
 	content: "";
     border-bottom: 3px solid orange;
     position: absolute;
-    left: -10px;
-    width: 125%;
+    left: -2px;
+    top: 2px;
+    width: 105%;
     height: 45%;
     transform: rotate(-12deg);
 }

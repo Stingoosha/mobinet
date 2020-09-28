@@ -17,11 +17,11 @@
                 @if (!empty($users))
                     @foreach ($users as $user)
                         <tr>
-                            <td class="{{ $user['id'] == $newUserId ? 'bg-success text-light' : '' }}">{{ $user['id'] }}</td>
-                            <td><a class="btn btn-outline-info" href="/users/{{ $user['id'] }}">Подробнее</a></td>
-                            <td class="{{ $user['id'] == $newUserId ? 'bg-success text-light' : '' }}">{{ $user['login'] }}</td>
-                            <form action="/users/{{ $user['id'] }}/edit" method="post">
-                            <td><select class="form-control w-100" name="newRole">
+                            <td class="{{ $user['id_user'] == $newUserId ? 'bg-success text-light' : '' }}">{{ $user['id_user'] }}</td>
+                            <td class="{{ $user['id_user'] == $newUserId ? 'bg-success text-light' : '' }}"><a class="btn btn-outline-info {{ $user['id_user'] == $newUserId ? 'bg-success text-light border-light' : '' }}" href="/users/{{ $user['id_user'] }}">Подробнее</a></td>
+                            <td class="{{ $user['id_user'] == $newUserId ? 'bg-success text-light' : '' }}">{{ $user['login'] }}</td>
+                            <form action="/users/{{ $user['id_user'] }}/edit" method="post">
+                            <td class="{{ $user['id_user'] == $newUserId ? 'bg-success text-light' : '' }}"><select class="form-control w-100 {{ $user['id_user'] == $newUserId ? 'bg-success text-light border-light' : '' }}" name="newRole">
                             @foreach ($roles as $role)
                                 <option {{ $user['id_role'] == $role['id_role'] ? 'selected' : '' }}>{{ $role['name_role'] }}</option>
                             @endforeach

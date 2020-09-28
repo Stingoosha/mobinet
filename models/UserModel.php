@@ -22,18 +22,18 @@ class UserModel extends BaseModel
 		// проверяем сессию $_SESSION['userId'])
 		// если есть, даем запрос в БД по id и возвращаем данные пользователя
 		// если ее нет, ищем куку $_COOCKIE['remember']
-		// если она есть, проверяем ее на валидность ($userId:$login . $_SERVER["HTTP_USER_AGENT"])
+		// если она есть, проверяем ее на валидность ($userId:$login . $pcName . $pcType . $wName)
 		// если нормально, даем запрос в БД по id и возвращаем данные пользователя и сохраняем $_SESSION['userId'])
-		// если не нормально, удаляем куку, возвращаем role=1 и редиректим на каталог товаров
+		// если не нормально, удаляем куку, возвращаем role=1
 		// если куки тоже нет, возвращаем role=1
 		if (isset($_SESSION['userId'])) {
-			return $this->getUserData($_SESSION['userId']);
+			// var_dump($_SESSION);die;
+			return $this->getUserData($_SESSION['userId'])[0];
 		} else {
 			if (isset($_COOKIE['remember'])) {
 				$userId = $this->checkCookie($_COOKIE['remember']);
 				if ($userId) {
-					// var_dump($this->getUserData($userId));die;
-					return $this->getUserData($userId);
+					return $this->getUserData($userId)[0];
 				} else {
 					setcookie('remember', '123', time() - 3600);
 				}
@@ -48,7 +48,7 @@ class UserModel extends BaseModel
 	 */
 	public function isUserExists(string $login)
 	{
-		return $this->query("SELECT id FROM $this->table WHERE login=:login", 'fetch', ['login' => $login]);
+		return $this->query("SELECT id_user FROM $this->table WHERE login=:login", 'fetch', ['login' => $login]);
 	}
 
 	/**
@@ -80,7 +80,7 @@ class UserModel extends BaseModel
 	 */
 	public function getUserRole(int $userId) :array
 	{
-		return $this->query("SELECT id_role FROM $this->table WHERE id=:id", 'fetch', ['id' => $userId]);
+		return $this->query("SELECT id_role FROM $this->table WHERE id_user=:id_user", 'fetch', ['id_user' => $userId]);
 	}
 
 	/**
@@ -91,10 +91,10 @@ class UserModel extends BaseModel
 	 */
 	public function checkPass(string $login, string $pass) :array
 	{
-		$userData = $this->query("SELECT id, pass, first_name FROM $this->table WHERE login=:login", 'fetch', ['login' => $login]);
+		$userData = $this->query("SELECT id_user, pass, first_name FROM $this->table WHERE login=:login", 'fetch', ['login' => $login]);
 
 		if (password_verify($pass, $userData['pass'])) {
-			return ['userId' => $userData['id'], 'userName' => $userData['first_name']];
+			return ['userId' => $userData['id_user'], 'userName' => $userData['first_name']];
 		}
 
 		return ['userId' => null, 'userName' => ''];
@@ -109,7 +109,7 @@ class UserModel extends BaseModel
 	{
 		$cookieParts = explode(':', $cookie);
 		$userId = (int)$cookieParts[0];
-		$login = $this->query("SELECT login FROM $this->table WHERE id=:id", 'fetch', ['id' => $userId]);
+		$login = $this->query("SELECT login FROM $this->table WHERE id_user=:id_user", 'fetch', ['id_user' => $userId]);
 		if ($login) {
 			$pcName = php_uname('n');
 			$pcType = php_uname('m');
@@ -140,8 +140,7 @@ class UserModel extends BaseModel
 	 */
 	public function getUserData(int $userId) :array
 	{
-		return $this->query("SELECT login, first_name, last_name, email, male, birthday, id_role FROM $this->table WHERE id=:id",
-		 'fetch', ['id' => $userId]);
+		return $this->selfJoin('login, first_name, last_name, email, male, birthday, users.id_role, name_role', 'users, roles', 'users.id_role=roles.id_role AND id_user=' . $userId);
 	}
 
 	/**
@@ -158,7 +157,7 @@ class UserModel extends BaseModel
 		}
 
 		return $this->update(['first_name' => $newUserData['first_name'], 'last_name' => $newUserData['last_name'], 'email' => $newUserData['email'],
-		 'male' => $newUserData['male'], 'birthday' => $newUserData['birthday']], "id = $userId");
+		 'male' => $newUserData['male'], 'birthday' => $newUserData['birthday']], "id_user=$userId");
 	}
 
 }

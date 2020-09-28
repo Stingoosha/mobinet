@@ -31,10 +31,15 @@
                     <div class="col-2 mb-3">
                         <div class="card-deck">
                             <div class="card border-info text-info mb-3 h-100">
-                            <a class="link stretched-link" href="phones/{{ $phone['id'] }}"><img src="{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}" class="card-img-top" alt="Мобила"></a>
+                            <a class="link stretched-link" href="phones/{{ $phone['id_good'] }}"><img src="{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}" class="card-img-top px-3 py-1" alt="Мобила" style="height: 18rem"></a>
                             <div class="card-body">
-                                <h5 class="card-title">{{ $phone['name'] }}</h5>
-                                <p class="card-text text-success font-weight-bold">{{ $phone['price'] }} &#8381;</p>
+                                <h5 class="card-title">{{ $phone['name_good'] }}</h5>
+                                @if ($phone['new_price'])
+                                    <p class="lead text-success font-weight-bold">Цена: <del>{{ $phone['price_good'] }} &#8381;</del></p>
+                                    <p class="lead text-warning font-weight-bold">{{ $phone['new_price'] }} &#8381;</p>
+                                @else
+                                    <p class="lead text-success font-weight-bold">Цена: {{ $phone['price_good'] }} ₽</p>
+                                @endif
                             </div>
                             </div>
                         </div>
@@ -50,7 +55,7 @@
     @if (!isset($_POST['search']))
 
         <div class="btns text-center" id="showMore-div">
-            <button class="mx-auto btn btn-outline-info col-5" id="showMore-btn" onclick="showMore(<?= $phone['id'] ?>,<?= $total ?>)">Показать еще...</button>
+            <button class="mx-auto btn btn-outline-info col-5" id="showMore-btn" onclick="showMore(<?= $phone['id_good'] ?>,<?= $total ?>)">Показать еще...</button>
         </div>
 
     @endif

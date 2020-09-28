@@ -18,7 +18,7 @@ class BasketModel extends BaseModel
      */
     public function isPhoneExists(array $params)
     {
-        return $this->query("SELECT * FROM $this->table WHERE user_id=:user_id AND good_id=:good_id AND order_id IS NULL", 'fetch', $params);
+        return $this->query("SELECT * FROM $this->table WHERE id_user=:id_user AND id_good=:id_good AND id_order IS NULL", 'fetch', $params);
     }
 
     /**
@@ -28,7 +28,7 @@ class BasketModel extends BaseModel
      */
     public function updateBasket(array $params) :int
     {
-        return $this->query("UPDATE basket SET amount = amount + :amount WHERE id=:id", 'rowCount', $params);
+        return $this->query("UPDATE basket SET amount = amount + :amount WHERE id_user=:id_user", 'rowCount', $params);
     }
 
     /**
@@ -38,7 +38,7 @@ class BasketModel extends BaseModel
      */
     public function allFromBasket(int $id) :array
     {
-        return $this->query("SELECT goods.id as good_id, goods.photo, goods.name, goods.price, goods.new_price, basket.amount, basket.id FROM goods RIGHT JOIN basket on goods.id=basket.good_id WHERE basket.user_id=:user_id AND basket.order_id IS NULL", 'fetchAll', ['user_id' => $id]);
+        return $this->selfJoin('goods.id_good, photo, name_good, price_good, new_price, amount, id_basket', 'goods, basket', 'goods.id_good=basket.id_good AND basket.id_user=' . $id . ' AND basket.id_order IS NULL');
     }
 
     /**

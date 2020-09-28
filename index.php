@@ -41,7 +41,7 @@ try {
 	/**
 	 * вытаскиваем название контроллера из $routingData
 	 */
-	$controller = $routingData[0];
+	$controller = new $routingData[0];
 	/**
 	 * вытаскиваем название метода из $routingData
 	 */

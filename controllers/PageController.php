@@ -3,6 +3,7 @@ namespace controllers;
 
 use models\PageModel;
 use models\BrandModel;
+use models\ParameterModel;
 use resources\Requester;
 
 /**
@@ -32,11 +33,10 @@ class PageController extends BaseController
 	 */
 	public function index()
 	{
-		$this->active = 'index';
+		$this->layout['active'] = 'index';
 
 		echo $this->blade->render('pages/index', [
-			'layout' => $this->layout,
-			'active' => $this->active
+			'layout' => $this->layout
 		]);
 	}
 
@@ -45,7 +45,7 @@ class PageController extends BaseController
 	 */
 	public function catalog()
 	{
-		$this->active = 'catalog';
+		$this->layout['active'] = 'catalog';
 		$this->brands = $this->brand->all(); // получение всех брендов
 		$this->phones = $this->page->some(self::$constants['TOTAL_ON_PAGE']); // получение определенного количества моделей
 
@@ -53,7 +53,6 @@ class PageController extends BaseController
 
 		echo $this->blade->render('pages/catalog', [
 		  'layout' => $this->layout,
-		  'active' => $this->active,
 		  'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
 		  'total' => self::$constants['TOTAL_ON_PAGE'],
 		  'brands' => $this->brands,
@@ -66,14 +65,18 @@ class PageController extends BaseController
 	 */
 	public function show()
 	{
-		$phoneId = (int)Requester::id(); // получение id определенной модели телефона
+		$phoneId = Requester::id(); // получение id определенной модели телефона
 
-		$phone = $this->page->one('*', 'id=' . $phoneId); // получение данных по id телефона
+		$phone = $this->page->one('*', 'id_good=' . $phoneId); // получение данных по id телефона
+
+		$param = new ParameterModel();
+		$params = $param->one('*', 'id_good=' . $phoneId); // получение параметров телефона по его id
 
 		echo $this->blade->render('pages/show', [
 			'layout' => $this->layout,
 			'pathImgLarge' => self::$constants['PATH_IMG_LARGE'],
 			'phone' => $phone,
+			'params' => $params,
 			'userId' => $_SESSION['userId'] ?? ''
 		]);
 	}
@@ -83,19 +86,21 @@ class PageController extends BaseController
 	 */
 	public function search()
 	{
-		$active = 'catalog';
+		$this->layout['active'] = 'catalog';
+
 		$this->page->clear($_POST);
 		$search = $_POST['search'] ?? '';
+
+		$this->brands = $this->brand->all();
 		// var_dump($search);die;
 		if (!$search) {
 			$this->redirect('Пожалуйста, введите данные для поиска!', 'phones');
 		} else {
-			$phones = $this->page->search($search);
-			$brands = $this->brand->all();
+			$this->phones = $this->page->search($search);
 
-			if($phones) {
-				$spoiler = $this->page->getSpoiler(count($phones), ['ь', 'и', 'ей']);
-				$this->flash('Результаты поиска по запросу "' . $search . '". Всего ' . count($phones) . ' модел' . $spoiler);
+			if($this->phones) {
+				$spoiler = $this->page->getSpoiler(count($this->phones), ['ь', 'и', 'ей']);
+				$this->flash('Результаты поиска по запросу "' . $search . '". Всего ' . count($this->phones) . ' модел' . $spoiler);
 			} else {
 				$this->flash('Результаты поиска по запросу "' . $search . '". Не найдено ни одной модели');
 			}
@@ -103,10 +108,9 @@ class PageController extends BaseController
 
 		echo $this->blade->render('pages/catalog', [
 			'layout' => $this->layout,
-			'active' => $active,
 			'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
-			'phones' => $phones,
-			'brands' => $brands ?? ''
+			'phones' => $this->phones,
+			'brands' => $this->brands
 		]);
 	}
 
@@ -115,11 +119,10 @@ class PageController extends BaseController
 	 */
 	public function contacts()
 	{
-		$active = 'contacts';
+		$this->layout['active'] = 'contacts';
 
 		echo $this->blade->render('pages/contacts', [
-			'layout' => $this->layout,
-			'active' => $this->active
+			'layout' => $this->layout
 		]);
 	}
 
@@ -145,7 +148,7 @@ class PageController extends BaseController
 		$checked = explode(',', $checked);
 		$where = ' id_brand=' . implode(' OR id_brand=', $checked);
 
-		$phones = $this->page->getBrands($where); // получение всех моделей по отмеченным брендам
+		$phones = $this->page->allWhere($where); // получение всех моделей по отмеченным брендам
 
 		echo json_encode($phones);
 	}

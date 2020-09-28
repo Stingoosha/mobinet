@@ -1,8 +1,8 @@
-@extends('layouts.layout', ['title' => 'Заказ №' . $order['order_id'], 'layout' => $layout])
+@extends('layouts.layout', ['title' => 'Заказ №' . $order['id_order'], 'layout' => $layout])
 
 @section('content')
 
-    <h1 class="display-1 text-info">Детали заказа №{{ $order['order_id'] }}</h1>
+    <h1 class="display-1 text-info">Детали заказа №{{ $order['id_order'] }}</h1>
     <div class="row">
         <div class="col-7 mx-auto">
             <div class="table-responsive">
@@ -15,7 +15,7 @@
                 @if (!empty($phones))
                 @foreach ($phones as $phone)
                     <tr>
-                        <td><a href="/phones/{{ $phone['good_id'] }}"><img src="../{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}">{{ $phone['name'] }}</img></a></td>
+                        <td><a href="/phones/{{ $phone['id_good'] }}"><img src="../{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}">{{ $phone['name_good'] }}</img></a></td>
                         <td>{{ $phone['amount'] }}</td>
                     </tr>
                 @endforeach
@@ -34,15 +34,15 @@
                 </tr>
                 <tr>
                     <td>ID заказа</td>
-                    <td>{{ $order['order_id'] }}</td>
+                    <td>{{ $order['id_order'] }}</td>
                 </tr>
                 <tr>
                     <td>Время заказа</td>
-                    <td>{{ $order['order_date'] }}</td>
+                    <td>{{ $order['created_at'] }}</td>
                 </tr>
                 <tr>
                     <td>Стоимость заказа</td>
-                    <td>{{ $order['order_price'] }}  &#8381;</td>
+                    <td>{{ $order['price_order'] }}  &#8381;</td>
                 </tr>
                 <tr>
                     <td>Статус заказа</td>
@@ -52,10 +52,12 @@
                     <td>Способ доставки</td>
                     <td>{{ $order['delivery_method'] }}</td>
                 </tr>
+                @if ($layout['user']['id_role'] == 7)
                 <tr>
                     <td>ID клиента</td>
-                    <td><a class="btn btn-outline-info col-6" href="/users/{{ $order['user_id'] }}">{{ $order['user_id'] }}</a></td>
+                    <td><a class="btn btn-outline-info col-6" href="/users/{{ $order['id_user'] }}">{{ $order['id_user'] }}</a></td>
                 </tr>
+                @endif
                 <tr>
                     <td>Имя клиента</td>
                     <td>{{ $order['first_name'] }}</td>
@@ -66,7 +68,7 @@
                 </tr>
                 <tr>
                     <td>Адрес клиента</td>
-                    <td>{{ $order['addr'] }}</td>
+                    <td>{{ $order['addresses'] }}</td>
                 </tr>
                 <tr>
                     <td>Email клиента</td>
@@ -78,7 +80,7 @@
                 </tr>
                 <tr>
                     <td>Комментарий</td>
-                    <td>{{ $order['comment'] }}</td>
+                    <td>{{ $order['comments'] }}</td>
                 </tr>
             </table>
             </div>

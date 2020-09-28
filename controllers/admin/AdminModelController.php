@@ -4,6 +4,9 @@ namespace controllers\admin;
 use controllers\BaseController;
 use models\PageModel;
 use models\BrandModel;
+use models\ParameterModel;
+use models\DiscountModel;
+use models\GoodDiscountModel;
 use resources\Requester;
 
 /**
@@ -14,11 +17,11 @@ class AdminModelController extends BaseController
     /**
      * @var PageModel $phone Модель телефона
      * @var BrandModel $brand Модель бренда
-     * @var $phones Массив всех телефонов
+     * @var ParameterModel $param Модель бренда
      */
     protected $phone;
     protected $brand;
-    protected $phones = [];
+    protected $param;
 
 	/**
 	 * Функция отрабатывается перед основным action
@@ -28,6 +31,7 @@ class AdminModelController extends BaseController
         parent::before();
         $this->phone = new PageModel(); // создается экземпляр модели телефона
         $this->brand = new BrandModel(); // создается экземпляр модели бренда
+        $this->param = new ParameterModel(); // создается экземпляр параметра модели телефона
     }
 
     /**
@@ -36,14 +40,15 @@ class AdminModelController extends BaseController
     protected function index()
     {
         $this->phones = $this->phone->selfJoin('*', 'goods, brands', 'goods.id_brand=brands.id_brand');
-        $brands = $this->brand->all();
-        // var_dump($brands);die;
+        $this->brands = $this->brand->all();
+        // var_dump($this->layout);die;
 
         echo $this->blade->render('pages/admin/models', [
-            'userData' => $this->userData,
+            'layout' => $this->layout,
             'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
             'phones' => $this->phones,
-            'brands' => $brands
+            'brands' => $this->brands,
+            'newPhoneId' => null
         ]);
     }
 
@@ -52,27 +57,32 @@ class AdminModelController extends BaseController
      */
     protected function create()
     {
-        if ($this->isPost()) {
-            $this->phone->clear($_POST);
-            // var_dump($_POST);die;
+
+        $this->phone->clear($_POST);
+        // var_dump($_POST);die;
+        $phone = $this->phone->one('*', 'name_good="' . $_POST['newPhoneName'] . '"');
+
+        if ($phone) {
+            $newPhoneId = $phone['id_good'];
+            $this->flash('Модель телефона "' . $_POST['newPhoneName'] . '" уже существует!');
+        } else {
             $brand = $this->brand->one('*', 'name_brand="' . $_POST['newBrandName'] . '"');
 
-            $newPhoneId = $this->phone->insert(['name' => $_POST['newPhoneName'], 'id_brand' => $brand['id_brand'], 'price' => $_POST['newPhonePrice']]);
+            $newPhoneId = $this->phone->insert(['name_good' => $_POST['newPhoneName'], 'id_brand' => $brand['id_brand'], 'price_good' => $_POST['newPhonePrice']]);
             if ($newPhoneId) {
                 $this->flash('Новая модель "' . $_POST['newPhoneName'] . '" успешно добавлена!');
             } else {
                 $this->flash('По техническим причинам новый бренд добавить не удалось! Поробуйте позже!');
             }
-        } else {
-            $this->flash('Пожалуйста, введите корректные данные!');
         }
+
         $this->phones = $this->phone->selfJoin('*', 'goods, brands', 'goods.id_brand=brands.id_brand');
-        $brands = $this->brand->all();
+        $this->brands = $this->brand->all();
 
         echo $this->blade->render('pages/admin/models', [
-            'userData' => $this->userData,
+            'layout' => $this->layout,
             'phones' => $this->phones,
-            'brands' => $brands,
+            'brands' => $this->brands,
             'newPhoneId' => $newPhoneId
         ]);
     }
@@ -81,14 +91,17 @@ class AdminModelController extends BaseController
      */
     protected function show()
     {
-        $phoneId = (int)Requester::id(); // получение id телефона
-        $phone = $this->phone->selfJoin('*', 'goods, brands', 'goods.id_brand=brands.id_brand AND goods.id=' . $phoneId);
-        // var_dump($phone[0]);die;
+        $phoneId = Requester::id(); // получение id телефона
+
+        $phone = $this->phone->one('*', 'id_good=' . $phoneId);
+        $params = $this->param->one('*', 'id_good=' . $phoneId);
+        // var_dump($params);die;
 
         echo $this->blade->render('pages/admin/model', [
-            'userData' => $this->userData,
+            'layout' => $this->layout,
             'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
-            'phone' => $phone[0]
+            'phone' => $phone,
+            'params' => $params ?? []
         ]);
     }
 
@@ -97,27 +110,45 @@ class AdminModelController extends BaseController
      */
     protected function edit()
     {
-        $phoneId = (int)Requester::id(); // получение id модели
+        if ($layout['user']['id_role'] < 3) {
+            $this->redirect('У Вас нет доступа к изменению данных моделей!', 'tels');
+        }
+        $phoneId = Requester::id(); // получение id модели
 
         $this->phone->clear($_POST);
-        // var_dump($_POST);die;
-        $brand = $this->brand->one('*', 'name_brand="' . $_POST['newBrandName'] . '"');
-        // var_dump($role);die;
 
-        if ($this->phone->update(['name' => $_POST['newPhoneName'], 'price' => $_POST['newPhonePrice'], 'id_brand' => $brand['id_brand']], 'id=' . $phoneId)) {
-            $this->flash('Данные модели успешно изменены!');
+        $phone = $this->phone->one('*', 'name_good="' . $_POST['newPhoneName'] . '"');
+
+        if(isset($phone['id_good']) && $phone['id_good'] != $phoneId) {
+            $phoneId = $phone['id_good'];
+            $this->flash('Модель телефона "' . $_POST['newPhoneName'] . '" уже существует!');
         } else {
-            $this->flash('По техническим причинам изменить данные модели не удалось! Поробуйте позже!');
+            $newPrice = null;
+            $phone = $this->phone->one('*', 'id_good=' . $phoneId);
+            $brand = $this->brand->one('*', 'name_brand="' . $_POST['newBrandName'] . '"');
+            if ($phone['new_price']) {
+                $goodDiscount = new GoodDiscountModel();
+                $discountId = $goodDiscount->one('id_discount', 'id_good=' . $phoneId);
+                $discount = new DiscountModel();
+                $discountPercent = $discount->one('percent', 'id_discount=' . $discountId['id_discount']);
+                // var_dump((int)$_POST['newPhonePrice']);die;
+                $newPrice = (int)$_POST['newPhonePrice'] * (100 - $discountPercent['percent']) / 100;
+            }
+
+            if ($this->phone->update(['name_good' => $_POST['newPhoneName'], 'price_good' => $_POST['newPhonePrice'], 'new_price' => $newPrice, 'id_brand' => $brand['id_brand']], 'id_good=' . $phoneId)) {
+                $this->flash('Данные модели "' . $_POST['newPhoneName'] . '" успешно изменены!');
+            } else {
+                $this->flash('По техническим причинам изменить данные модели не удалось! Поробуйте позже!');
+            }
         }
 
         $this->phones = $this->phone->selfJoin('*', 'goods, brands', 'goods.id_brand=brands.id_brand');
-        $brands = $this->brand->all();
+        $this->brands = $this->brand->all();
 
         echo $this->blade->render('pages/admin/models', [
-            'userData' => $this->userData,
-            'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
+            'layout' => $this->layout,
             'phones' => $this->phones,
-            'brands' => $brands,
+            'brands' => $this->brands,
             'newPhoneId' => $phoneId
         ]);
     }
@@ -127,11 +158,25 @@ class AdminModelController extends BaseController
      */
     public function save()
     {
-        $phoneId = (int)Requester::id(); // получение id модели
+        $phoneId = Requester::id(); // получение id модели
 
         $this->phone->clear($_POST);
-        // var_dump($_POST);die;
-        if (isset($_FILES)) {
+
+        $newPhoneDesc = array_pop($_POST);
+
+        if ($this->param->one('*', 'id_good=' . $phoneId)) {
+            $this->param->update($_POST, 'id_good=' . $phoneId);
+        } else {
+            $_POST['id_good'] = $phoneId;
+            // var_dump($_POST);die;
+            $this->param->insert($_POST);
+        }
+
+        if ($newPhoneDesc) {
+            $this->phone->update(['description' => $newPhoneDesc], 'id_good=' . $phoneId);
+        }
+
+        if ($_FILES["newPhonePhoto"]['name']) {
             $fileName = $_FILES['newPhonePhoto']['name'] ?? '';
             $tmpName = $_FILES['newPhonePhoto']['tmp_name'] ?? '';
             $size = $_FILES['newPhonePhoto']['size'] ?? '';
@@ -142,24 +187,30 @@ class AdminModelController extends BaseController
                 $loadResult = $this->fileUpload(self::$constants['PATH_IMG_LARGE'], $fileName, $tmpName);
 
                 if ($loadResult) {
-                    $this->flash($fileName . ' успешно загружен на сервер!');
+                    $flash = $fileName . ' успешно загружен на сервер!';
                 } else {
                     $this->redirect('Ошибка загрузки файла!', 'tels/' . $phoneId);
                 }
 
                 $this->imageResize(self::$constants['PATH_IMG_LARGE'], self::$constants['PATH_IMG_SMALL'], self::$constants['WIDTH'], self::$constants['HEIGHT'], self::$constants['QUALITY'], $fileName, $fileName, $type);
 
-                $this->phone->update(['photo' => $fileName], 'id=' . $phoneId);
+                $this->phone->update(['photo' => $fileName], 'id_good=' . $phoneId);
             }
 
         }
+        $phone = $this->phone->one('*', 'id_good=' . $phoneId);
 
-        if ($this->phone->update(['short_desc' => $_POST['newPhoneDesc']], 'id=' . $phoneId)) {
-            $this->redirect('Данные модели успешно изменены!', 'tels/' . $phoneId);
-        } else {
-            $this->redirect('По техническим причинам данные модели изменить не удалось! Поробуйте позже!', 'tels/' . $phoneId);
-        }
+        $this->flash('Данные модели "' . $phone['name_good'] . '" успешно изменены!');
 
+        $this->phones = $this->phone->selfJoin('*', 'goods, brands', 'goods.id_brand=brands.id_brand');
+        $this->brands = $this->brand->all();
+
+        echo $this->blade->render('pages/admin/models', [
+            'layout' => $this->layout,
+            'phones' => $this->phones,
+            'brands' => $this->brands,
+            'newPhoneId' => $phoneId
+        ]);
     }
 
     /**
@@ -169,23 +220,18 @@ class AdminModelController extends BaseController
     {
         $phoneId = (int)Requester::id(); // получение id удаляемой модели
 
-        $phoneName = $this->phone->one('name', 'id=' . $phoneId);;
+        $phoneName = $this->phone->one('name_good', 'id_good=' . $phoneId);
         // var_dump($brandName);die;
-        if ($this->phone->delete('id=' . $phoneId)) {
-            $this->flash('Модель телефона "' . $phoneName['name'] . '" успешно удалена!');
-        } else {
-            $this->flash('По техническим причинам удаление модели телефона "' . $phoneName['name'] . '" не удалось! Поробуйте позже!');
+        if ($this->param->one('*', 'id_good=' . $phoneId)) {
+            $this->param->delete('id_good=' . $phoneId);
         }
-        $this->brands = $this->brand->all();
+        if ($this->phone->delete('id_good=' . $phoneId)) {
+            $flash = 'Модель телефона "' . $phoneName['name_good'] . '" успешно удалена!';
+        } else {
+            $flash = 'По техническим причинам удаление модели телефона "' . $phoneName['name_good'] . '" не удалось! Поробуйте позже!';
+        }
 
-        $this->phones = $this->phone->selfJoin('*', 'goods, brands', 'goods.id_brand=brands.id_brand');
-        $brands = $this->brand->all();
-
-        echo $this->blade->render('pages/admin/models', [
-            'userData' => $this->userData,
-            'phones' => $this->phones,
-            'brands' => $brands
-        ]);
+        $this->redirect($flash, 'tels');
     }
 
     /**

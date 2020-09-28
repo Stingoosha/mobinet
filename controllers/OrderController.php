@@ -27,20 +27,19 @@ class OrderController extends BaseController
 	 */
     public function index()
     {
-        $this->active = 'basket';
+        $this->layout['active'] = 'basket';
 
         if (isset($_SESSION['userId'])) { // проверка, есть ли у пользователя свой id
             $id = $_SESSION['userId'];
             $this->phones = $this->basket->allFromBasket($id); // получение всех товаров корзины пользователя
-            // var_dump($phones);die;
+            // var_dump(empty((int)$this->phones[0]['new_price']));die;
         } else {
             // запрет на оформление заказа без наличия id пользователя
-            $this->redirect('Извините, по техническим причинам Вы не можете сделать заказ!', 'phones');
+            $this->redirect('Извините, по техническим причинам Вы не можете сделать заказ! Попробуйте позже!', 'phones');
         }
 
         echo $this->blade->render('pages/order', [
             'layout' => $this->layout,
-            'active' => $this->active,
             'phones' => $this->phones,
             'pathImgSmall' => self::$constants['PATH_IMG_SMALL'],
             'summ' => null
@@ -56,15 +55,17 @@ class OrderController extends BaseController
         $this->order->clearSum();
 
         // установка данных, введенных пользователем во время оформления заказа
+        $this->order->clear($_POST);
         $user = $_POST;
+        // var_dump($user);die;
         $user['mailing'] = isset($_POST['mailing']) ? $_POST['mailing'] : 'off';
-        $user['user_id'] = $_SESSION['userId'];
+        $user['id_user'] = (int)$_SESSION['userId'];
 
         // создание оформленного заказа
         if ($this->order->createOrder($user)) {
             $this->redirect('Ваш заказ отправлен на обработку! Наш менеджер свяжется с Вами в течение 5 минут!', 'basket');
         }
 
-        $this->redirect('По техническим причинам заказ не был обработан. Попробуйте позже!','basket');
+        $this->redirect('По техническим причинам заказ не был обработан! Попробуйте позже!','basket');
     }
 }

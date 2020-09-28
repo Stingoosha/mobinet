@@ -14,13 +14,13 @@
                     </tr>
                     @foreach ($phones as $phone)
                         <?php
-                            $phone['price'] = $phone['new_price'] ?? $phone['price'];
-                            $summ += ($phone['price'] * $phone['amount']);
+                            $phone['price_good'] = empty((int)($phone['new_price'])) ? $phone['price_good'] : $phone['new_price'];
+                            $summ += ($phone['price_good'] * $phone['amount']);
                         ?>
                         <tr>
-                            <td><a href="/phones/{{ $phone['good_id'] }}"><img src="{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}">{{ $phone['name'] }}</img></a></td>
+                            <td><a href="/phones/{{ $phone['id_good'] }}"><img src="{{ $pathImgSmall }}{{ $phone['photo'] ? $phone['photo'] : 'default.jpg' }}">{{ $phone['name_good'] }}</img></a></td>
                             <td>{{ $phone['amount'] }}</td>
-                            <td>{{ $phone['price'] * $phone['amount'] }} &#8381;</td>
+                            <td>{{ $phone['price_good'] * $phone['amount'] }} &#8381;</td>
                         </tr>
                     @endforeach
                 </table>
@@ -41,10 +41,10 @@
                     <label for="mailing" class="col-form-label">Получать спец предложения</label><br>
                     <label for="discount_card" class="col-form-label">Дисконтная карта:</label><br>
                     <input class="form-control" type="text" name="discount_card" value="{{ $user['discount_card'] ?? '' }}"><br>
-                    <label for="addr" class="col-form-label">Адрес:</label><br>
-                    <input class="form-control" type="text" name="addr" value="{{ $user['addr'] ?? '' }}" required><br>
-                    <label for="comment" class="col-form-label">Комментарий:</label><br>
-                    <textarea class="form-control form-control-lg" type="textarea" placeholder="Ваш комментарий" size="300" name="comment">{{ $user['comment'] ?? '' }}</textarea><br><br>
+                    <label for="addresses" class="col-form-label">Адрес:</label><br>
+                    <input class="form-control" type="text" name="addresses" value="{{ $user['addresses'] ?? '' }}" required><br>
+                    <label for="comments" class="col-form-label">Комментарий:</label><br>
+                    <textarea class="form-control form-control-lg" type="textarea" placeholder="Ваш комментарий" size="300" name="comments">{{ $user['comments'] ?? '' }}</textarea><br><br>
                     <div class="btns text-center">
                         <input type="submit" class="btn btn-outline-success col-4" value="Сохранить">
                         <input type="reset" class="btn btn-outline-danger col-4" value="Очистить">
@@ -53,7 +53,6 @@
             </div>
             <div class="btns text-center mt-3 col-6 mx-auto">
                 <a href="/basket" class="mx-auto"><button class="btn btn-outline-warning px-5 col-4">Отмена</button></a>
-                <p style="color: red">{{ $message ?? '' }}</p>
             </div>
         </div>
     </div>

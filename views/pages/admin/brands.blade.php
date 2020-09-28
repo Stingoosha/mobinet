@@ -16,7 +16,7 @@
                     @foreach ($brands as $brand)
                         <tr>
                             <form action="/brands/{{ $brand['id_brand'] }}/edit" method="post">
-                                <td><input type="text" class="form-control {{ $brand['id_brand'] == $newBrandId ? 'bg-success text-light' : '' }}" name="newBrand" value="{{ $brand['name_brand'] }}" required></td>
+                                <td class="{{ $brand['id_brand'] == $newBrandId ? 'bg-success text-light' : '' }}"><input type="text" class="form-control {{ $brand['id_brand'] == $newBrandId ? 'bg-success text-light' : '' }}" name="newBrand" value="{{ $brand['name_brand'] }}" required></td>
                                 <td><input type="submit" value="Изменить" class="btn btn-outline-warning"></td>
                             </form>
                             <!-- Button trigger modal -->

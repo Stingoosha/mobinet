@@ -28,21 +28,17 @@ class BasketController extends BaseController
 	 */
     public function index()
     {
-        $this->active = 'basket';
+        $this->layout['active'] = 'basket';
 
         // var_dump($_SESSION);die;
         if (isset($_SESSION['userId'])) { // проверка, есть ли у пользователя свой id
             $id = (int)$_SESSION['userId'];
 
-            $this->orders = $this->order->allOrders($id); // получение всех заказов пользователя
-            // var_dump($orders);die;
+            $this->orders = $this->order->allWhere('id_user=' . $id); // получение всех заказов пользователя
+            // var_dump($this->orders);die;
             $this->phones = $this->basket->allFromBasket($id); // получение всех товаров корзины пользователя
-            // var_dump($phones);die;
+            // var_dump($this->phones[0]['new_price']);die;
 
-            // if (!$this->orders && !$this->phones) { // проверка на отсутствие данных по заказам и товарам корзины
-            //     // запрет на вход в пустую корзину
-            //     $this->redirect('Извините, Вы не можете открыть пустую корзину!', 'phones');
-            // }
         } else {
             // отправляем пустые массивы
             $this->orders = [];
@@ -51,7 +47,6 @@ class BasketController extends BaseController
 
         echo $this->blade->render('pages/basket', [
             'layout' => $this->layout,
-            'active' => $this->active,
             'orders' => $this->orders,
             'phones' => $this->phones,
             'summ' => null,
@@ -65,15 +60,14 @@ class BasketController extends BaseController
      */
 	public function tobasket()
 	{
-		// var_dump($_SESSION);die;
+		// var_dump($_POST);die;
 		$userId = (int)($_SESSION['userId'] ?? null); // получение id пользователя, кликнувшего "Купить"
 		$phoneId = (int)($_POST['phone_id'] ?? null);
 		$amount = (int)($_POST['amount'] ?? null);
 		$messId = ($_POST['message_id'] ?? null);
 
 		if (!$userId) { // если у пользователя еще нет id, то создание нового пользователя и сохранение его id
-			$user = new UserModel();
-            $userId = $user->createTempUser();
+            $userId = $this->user->createTempUser();
 			$this->session('userId', $userId);
 		}
 		// var_dump($userId);die;
@@ -84,12 +78,12 @@ class BasketController extends BaseController
 			// проверка, были ли раннее добавлены такие же модели этим пользователем
 			// если были, то их количество увеличивается
 			// если не было, то эта модель добавляется в корзину
-			$phone = $this->basket->isPhoneExists(['user_id' => $userId, 'good_id' => $phoneId]);
+			$phone = $this->basket->isPhoneExists(['id_user' => $userId, 'id_good' => $phoneId]);
 			if ($phone) {
-				if ($this->basket->updateBasket(['id' => $phone['id'], 'amount' => $amount])) {
+				if ($this->basket->updateBasket(['id_basket' => $phone['id_basket'], 'amount' => $amount])) {
 					echo 'Товар добавлен в корзину';
 				}
-			} elseif ($this->basket->insert(['user_id' => $userId, 'good_id' => $phoneId, 'amount' => $amount])) {
+			} elseif ($this->basket->insert(['id_user' => $userId, 'id_good' => $phoneId, 'amount' => $amount])) {
 				echo 'Товар добавлен в корзину';
 			} else {
 				echo 'Товар не был добавлен по техническим причинам!';
@@ -107,7 +101,7 @@ class BasketController extends BaseController
         $id = Requester::id();
 
         // удаление товара
-        $this->basket->delete("good_id = $id");
+        $this->basket->delete('id_good=' . $id);
 
         header("Location: /basket");
         exit;

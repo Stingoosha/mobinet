@@ -20,23 +20,22 @@ class BasketModel extends BaseModel
     {
         return $this->query("SELECT * FROM $this->table WHERE id_user=:id_user AND id_good=:id_good AND id_order IS NULL", 'fetch', $params);
     }
-
+    
     /**
      * Функция обновления количества amount ранне добавленного товара при новом заказе одним и тем же пользователем по id корзины
      * @var array $params Массив с id модели и amount добавляемого количества
-     * @var int
      */
-    public function updateBasket(array $params) :int
+    public function updateBasket(array $params)
     {
-        return $this->query("UPDATE basket SET amount = amount + :amount WHERE id_user=:id_user", 'rowCount', $params);
+        // var_dump($params);die;
+        return $this->query("UPDATE basket SET amount = amount + :amount WHERE id_basket=:id_basket", 'rowCount', $params);
     }
 
     /**
      * Функция вывода всех еще не заказанных товаров из корзины пользователя user_id
      * @var int $id Идентификацционный номер пользователя id
-     * @return array
      */
-    public function allFromBasket(int $id) :array
+    public function allFromBasket(int $id)
     {
         return $this->selfJoin('goods.id_good, photo, name_good, price_good, new_price, amount, id_basket', 'goods, basket', 'goods.id_good=basket.id_good AND basket.id_user=' . $id . ' AND basket.id_order IS NULL');
     }

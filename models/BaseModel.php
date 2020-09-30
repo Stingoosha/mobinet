@@ -102,9 +102,8 @@ class BaseModel extends AbstractModel
 
     /**
      * Функция вывода всех данных таблицы
-     * @return array
      */
-    public function all() :array
+    public function all()
     {
         return $this->query("SELECT * FROM $this->table", 'fetchAll');
     }
@@ -112,9 +111,8 @@ class BaseModel extends AbstractModel
     /**
      * Функция вывода всех данных таблицы согласно условию
      * @var string $where условие запроса
-     * @return array
      */
-    public function allWhere(string $where) :array
+    public function allWhere(string $where)
     {
         return $this->query("SELECT * FROM $this->table WHERE $where", 'fetchAll');
     }
@@ -122,9 +120,8 @@ class BaseModel extends AbstractModel
     /**
      * Функция вывода ограниченного количества данных таблицы
      * @var int $limit Максимальное количество моделей
-     * @return array
      */
-    public function some(int $limit) :array
+    public function some(int $limit)
     {
         return $this->query("SELECT * FROM $this->table LIMIT $limit", 'fetchAll');
     }
@@ -172,9 +169,8 @@ class BaseModel extends AbstractModel
      * Функция обновления данных таблицы
      * @var array $object Массив данных для подготовленного SQL-запроса
      * @var string $where Условие, согласно которому будет произведено обновление
-     * @return string
      */
-    public function update(array $object, string $where) :string
+    public function update(array $object, string $where)
     {
         $sets = array();
 
@@ -196,9 +192,8 @@ class BaseModel extends AbstractModel
     /**
      * Функция удаления данных из таблицы
      * @var string Условие, согласно которому будет произведено удаление
-     * @return string
      */
-    public function delete(string $where) :string
+    public function delete(string $where)
     {
         $sql = "DELETE FROM $this->table WHERE $where";
 

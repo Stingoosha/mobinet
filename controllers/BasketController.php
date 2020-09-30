@@ -78,7 +78,8 @@ class BasketController extends BaseController
 			// проверка, были ли раннее добавлены такие же модели этим пользователем
 			// если были, то их количество увеличивается
 			// если не было, то эта модель добавляется в корзину
-			$phone = $this->basket->isPhoneExists(['id_user' => $userId, 'id_good' => $phoneId]);
+            $phone = $this->basket->isPhoneExists(['id_user' => $userId, 'id_good' => $phoneId]);
+            // var_dump($phone);die;
 			if ($phone) {
 				if ($this->basket->updateBasket(['id_basket' => $phone['id_basket'], 'amount' => $amount])) {
 					echo 'Товар добавлен в корзину';
